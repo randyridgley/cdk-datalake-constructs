@@ -17,7 +17,7 @@ const project = new AwsCdkConstructLibrary({
   licensed: true,
   license: 'MIT',
   packageName: 'cdk-datalake-constructs',
-  gitpod: true,
+  gitpod: false,
   cdkDependencies: [
     '@aws-cdk/core',
     '@aws-cdk/aws-athena',
@@ -48,6 +48,7 @@ const project = new AwsCdkConstructLibrary({
     '@aws-cdk/aws-stepfunctions',
     '@aws-cdk/aws-stepfunctions-tasks',
     '@aws-cdk/custom-resources',
+    '@aws-cdk/region-info',
   ],
   gitignore: [
     'src/emr-studio.ts',
@@ -71,7 +72,8 @@ const project = new AwsCdkConstructLibrary({
   eslint: true,
   mergify: true,
   antitamper: true,
-  releaseWorkflow: true,
+  releaseWorkflow: false,
+  buildWorkflow: true,
   packageManager: NodePackageManager.NPM,
   npmRegistryUrl: 'https://npm.pkg.github.com',
   npmTokenSecret: 'GITHUB_TOKEN',
@@ -84,15 +86,15 @@ const project = new AwsCdkConstructLibrary({
     mavenGroupId: 'io.github.randyridgley.cdk.datalake.constructs',
     mavenArtifactId: 'cdk-datalake-constructs',
   },
-  publishToGo: {
-    gitUserName: 'randyridgley',
-    gitUserEmail: 'randy.ridgley@gmail.com',
-    moduleName: 'github.com/randyridgley/cdk-datalake-constructs',
-  },
-  publishToNuget: {
-    dotNetNamespace: 'Cdk.Datalake.Constructs',
-    packageId: 'Cdk.Datalake.Constructs',
-  },
+  // publishToGo: {
+  //   gitUserName: 'randyridgley',
+  //   gitUserEmail: 'randy.ridgley@gmail.com',
+  //   moduleName: 'github.com/randyridgley/cdk-datalake-constructs',
+  // },
+  // publishToNuget: {
+  //   dotNetNamespace: 'Cdk.Datalake.Constructs',
+  //   packageId: 'Cdk.Datalake.Constructs',
+  // },
   releaseToNpm: true,
   catalog: {
     announce: false,
@@ -107,9 +109,15 @@ const project = new AwsCdkConstructLibrary({
     'datamesh',
     'lakeformation',
     'glue'],
+  pullRequestTemplateContents: [
+    '',
+    '----',
+    '',
+    '*By submitting this pull request, I confirm that my contribution is made under the terms of the MIT license*',
+  ],
 });
 
-project.tasks.tryFind('package').prependExec('go env -w GOSUMDB=off');
+// project.tasks.tryFind('package').prependExec('go env -w GOSUMDB=off');
 
 const common_exclude = [
   'cdk.out', 'cdk.context.json', 'images', 'yarn-error.log', '.DS_Store', 'coverage',
@@ -117,11 +125,11 @@ const common_exclude = [
 project.npmignore.exclude(...common_exclude, 'maven_release*');
 project.gitignore.exclude(...common_exclude);
 
-project.gitpod.addTasks({
-  name: 'Setup',
-  init: 'yarn install',
-  command: 'npx projen build',
-});
+// project.gitpod.addTasks({
+//   name: 'Setup',
+//   init: 'yarn install',
+//   command: 'npx projen build',
+// });
 const openCoverage = project.addTask('coverage');
 openCoverage.exec('npx projen test && open coverage/lcov-report/index.html');
 

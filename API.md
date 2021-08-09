@@ -9,7 +9,7 @@
 ```typescript
 import { DataLake } from 'cdk-datalake-constructs'
 
-new DataLake(scope: Construct, id: string, props: DataLakeProps)
+new DataLake(scope: Construct, id: string, props: DataLakeProperties)
 ```
 
 ##### `scope`<sup>Required</sup> <a name="cdk-datalake-constructs.DataLake.parameter.scope"></a>
@@ -26,7 +26,7 @@ new DataLake(scope: Construct, id: string, props: DataLakeProps)
 
 ##### `props`<sup>Required</sup> <a name="cdk-datalake-constructs.DataLake.parameter.props"></a>
 
-- *Type:* [`cdk-datalake-constructs.DataLakeProps`](#cdk-datalake-constructs.DataLakeProps)
+- *Type:* [`cdk-datalake-constructs.DataLakeProperties`](#cdk-datalake-constructs.DataLakeProperties)
 
 ---
 
@@ -62,15 +62,39 @@ public createDatabase(databaseName: string)
 
 ---
 
-##### `registerDataSet` <a name="cdk-datalake-constructs.DataLake.registerDataSet"></a>
+##### `createDownloaderCustomResource` <a name="cdk-datalake-constructs.DataLake.createDownloaderCustomResource"></a>
 
 ```typescript
-public registerDataSet(setting: IDataLocationProperties)
+public createDownloaderCustomResource(accountId: string, region: string, stageName: string)
+```
+
+###### `accountId`<sup>Required</sup> <a name="cdk-datalake-constructs.DataLake.parameter.accountId"></a>
+
+- *Type:* `string`
+
+---
+
+###### `region`<sup>Required</sup> <a name="cdk-datalake-constructs.DataLake.parameter.region"></a>
+
+- *Type:* `string`
+
+---
+
+###### `stageName`<sup>Required</sup> <a name="cdk-datalake-constructs.DataLake.parameter.stageName"></a>
+
+- *Type:* `string`
+
+---
+
+##### `registerDataSetWithLakeFormation` <a name="cdk-datalake-constructs.DataLake.registerDataSetWithLakeFormation"></a>
+
+```typescript
+public registerDataSetWithLakeFormation(setting: DataLocationProperties)
 ```
 
 ###### `setting`<sup>Required</sup> <a name="cdk-datalake-constructs.DataLake.parameter.setting"></a>
 
-- *Type:* [`cdk-datalake-constructs.IDataLocationProperties`](#cdk-datalake-constructs.IDataLocationProperties)
+- *Type:* [`cdk-datalake-constructs.DataLocationProperties`](#cdk-datalake-constructs.DataLocationProperties)
 
 ---
 
@@ -95,12 +119,6 @@ public registerDataSet(setting: IDataLocationProperties)
 
 ---
 
-##### `dataCatalogAccountId`<sup>Required</sup> <a name="cdk-datalake-constructs.DataLake.property.dataCatalogAccountId"></a>
-
-- *Type:* `string`
-
----
-
 ##### `datalakeAdminRole`<sup>Required</sup> <a name="cdk-datalake-constructs.DataLake.property.datalakeAdminRole"></a>
 
 - *Type:* [`@aws-cdk/aws-iam.IRole`](#@aws-cdk/aws-iam.IRole)
@@ -110,12 +128,6 @@ public registerDataSet(setting: IDataLocationProperties)
 ##### `datalakeDbCreatorRole`<sup>Required</sup> <a name="cdk-datalake-constructs.DataLake.property.datalakeDbCreatorRole"></a>
 
 - *Type:* [`@aws-cdk/aws-iam.IRole`](#@aws-cdk/aws-iam.IRole)
-
----
-
-##### `dataLocations`<sup>Required</sup> <a name="cdk-datalake-constructs.DataLake.property.dataLocations"></a>
-
-- *Type:* {[ key: string ]: [`cdk-datalake-constructs.DataSetResult`](#cdk-datalake-constructs.DataSetResult)}
 
 ---
 
@@ -146,12 +158,6 @@ public registerDataSet(setting: IDataLocationProperties)
 ##### `stageName`<sup>Required</sup> <a name="cdk-datalake-constructs.DataLake.property.stageName"></a>
 
 - *Type:* [`cdk-datalake-constructs.Stage`](#cdk-datalake-constructs.Stage)
-
----
-
-##### `glueSecurityGroup`<sup>Optional</sup> <a name="cdk-datalake-constructs.DataLake.property.glueSecurityGroup"></a>
-
-- *Type:* [`@aws-cdk/aws-ec2.SecurityGroup`](#@aws-cdk/aws-ec2.SecurityGroup)
 
 ---
 
@@ -279,6 +285,45 @@ new DataLakeBucket(scope: Construct, id: string, props: DataLakeBucketProps)
 ---
 
 
+### DataLakeCreator <a name="cdk-datalake-constructs.DataLakeCreator"></a>
+
+#### Initializer <a name="cdk-datalake-constructs.DataLakeCreator.Initializer"></a>
+
+```typescript
+import { DataLakeCreator } from 'cdk-datalake-constructs'
+
+new DataLakeCreator(scope: Construct, id: string, props: DataLakeCreatorProperties)
+```
+
+##### `scope`<sup>Required</sup> <a name="cdk-datalake-constructs.DataLakeCreator.parameter.scope"></a>
+
+- *Type:* [`@aws-cdk/core.Construct`](#@aws-cdk/core.Construct)
+
+---
+
+##### `id`<sup>Required</sup> <a name="cdk-datalake-constructs.DataLakeCreator.parameter.id"></a>
+
+- *Type:* `string`
+
+---
+
+##### `props`<sup>Required</sup> <a name="cdk-datalake-constructs.DataLakeCreator.parameter.props"></a>
+
+- *Type:* [`cdk-datalake-constructs.DataLakeCreatorProperties`](#cdk-datalake-constructs.DataLakeCreatorProperties)
+
+---
+
+
+
+#### Properties <a name="Properties"></a>
+
+##### `role`<sup>Required</sup> <a name="cdk-datalake-constructs.DataLakeCreator.property.role"></a>
+
+- *Type:* [`@aws-cdk/aws-iam.IRole`](#@aws-cdk/aws-iam.IRole)
+
+---
+
+
 ### DataSet <a name="cdk-datalake-constructs.DataSet"></a>
 
 #### Initializer <a name="cdk-datalake-constructs.DataSet.Initializer"></a>
@@ -286,7 +331,7 @@ new DataLakeBucket(scope: Construct, id: string, props: DataLakeBucketProps)
 ```typescript
 import { DataSet } from 'cdk-datalake-constructs'
 
-new DataSet(scope: Construct, id: string, props: IDataSetProperties)
+new DataSet(scope: Construct, id: string, props: DataSetProperties)
 ```
 
 ##### `scope`<sup>Required</sup> <a name="cdk-datalake-constructs.DataSet.parameter.scope"></a>
@@ -303,7 +348,7 @@ new DataSet(scope: Construct, id: string, props: IDataSetProperties)
 
 ##### `props`<sup>Required</sup> <a name="cdk-datalake-constructs.DataSet.parameter.props"></a>
 
-- *Type:* [`cdk-datalake-constructs.IDataSetProperties`](#cdk-datalake-constructs.IDataSetProperties)
+- *Type:* [`cdk-datalake-constructs.DataSetProperties`](#cdk-datalake-constructs.DataSetProperties)
 
 ---
 
@@ -317,7 +362,19 @@ new DataSet(scope: Construct, id: string, props: IDataSetProperties)
 
 ---
 
-##### `lakeBucket`<sup>Required</sup> <a name="cdk-datalake-constructs.DataSet.property.lakeBucket"></a>
+##### `rawBucket`<sup>Required</sup> <a name="cdk-datalake-constructs.DataSet.property.rawBucket"></a>
+
+- *Type:* [`@aws-cdk/aws-s3.Bucket`](#@aws-cdk/aws-s3.Bucket)
+
+---
+
+##### `refinedBucket`<sup>Required</sup> <a name="cdk-datalake-constructs.DataSet.property.refinedBucket"></a>
+
+- *Type:* [`@aws-cdk/aws-s3.Bucket`](#@aws-cdk/aws-s3.Bucket)
+
+---
+
+##### `trustedBucket`<sup>Required</sup> <a name="cdk-datalake-constructs.DataSet.property.trustedBucket"></a>
 
 - *Type:* [`@aws-cdk/aws-s3.Bucket`](#@aws-cdk/aws-s3.Bucket)
 
@@ -711,38 +768,6 @@ new GlueJobOps(scope: Construct, id: string, props: IGlueOpsProperties)
 - *Type:* [`@aws-cdk/aws-cloudwatch.Dashboard`](#@aws-cdk/aws-cloudwatch.Dashboard)
 
 ---
-
-
-### GlueNotebook <a name="cdk-datalake-constructs.GlueNotebook"></a>
-
-#### Initializer <a name="cdk-datalake-constructs.GlueNotebook.Initializer"></a>
-
-```typescript
-import { GlueNotebook } from 'cdk-datalake-constructs'
-
-new GlueNotebook(scope: Construct, id: string, props: IGlueNotebookProperties)
-```
-
-##### `scope`<sup>Required</sup> <a name="cdk-datalake-constructs.GlueNotebook.parameter.scope"></a>
-
-- *Type:* [`@aws-cdk/core.Construct`](#@aws-cdk/core.Construct)
-
----
-
-##### `id`<sup>Required</sup> <a name="cdk-datalake-constructs.GlueNotebook.parameter.id"></a>
-
-- *Type:* `string`
-
----
-
-##### `props`<sup>Required</sup> <a name="cdk-datalake-constructs.GlueNotebook.parameter.props"></a>
-
-- *Type:* [`cdk-datalake-constructs.IGlueNotebookProperties`](#cdk-datalake-constructs.IGlueNotebookProperties)
-
----
-
-
-
 
 
 ### GlueTable <a name="cdk-datalake-constructs.GlueTable"></a>
@@ -1229,31 +1254,31 @@ public metricWriteProvisionedThroughputExceeded(props?: MetricOptions)
 ---
 
 
-### RegisteredDataSet <a name="cdk-datalake-constructs.RegisteredDataSet"></a>
+### LFRegisteredDataSet <a name="cdk-datalake-constructs.LFRegisteredDataSet"></a>
 
-#### Initializer <a name="cdk-datalake-constructs.RegisteredDataSet.Initializer"></a>
+#### Initializer <a name="cdk-datalake-constructs.LFRegisteredDataSet.Initializer"></a>
 
 ```typescript
-import { RegisteredDataSet } from 'cdk-datalake-constructs'
+import { LFRegisteredDataSet } from 'cdk-datalake-constructs'
 
-new RegisteredDataSet(scope: Construct, id: string, props: IRegisteredDataSetProperties)
+new LFRegisteredDataSet(scope: Construct, id: string, props: RegisteredDataSetProperties)
 ```
 
-##### `scope`<sup>Required</sup> <a name="cdk-datalake-constructs.RegisteredDataSet.parameter.scope"></a>
+##### `scope`<sup>Required</sup> <a name="cdk-datalake-constructs.LFRegisteredDataSet.parameter.scope"></a>
 
 - *Type:* [`@aws-cdk/core.Construct`](#@aws-cdk/core.Construct)
 
 ---
 
-##### `id`<sup>Required</sup> <a name="cdk-datalake-constructs.RegisteredDataSet.parameter.id"></a>
+##### `id`<sup>Required</sup> <a name="cdk-datalake-constructs.LFRegisteredDataSet.parameter.id"></a>
 
 - *Type:* `string`
 
 ---
 
-##### `props`<sup>Required</sup> <a name="cdk-datalake-constructs.RegisteredDataSet.parameter.props"></a>
+##### `props`<sup>Required</sup> <a name="cdk-datalake-constructs.LFRegisteredDataSet.parameter.props"></a>
 
-- *Type:* [`cdk-datalake-constructs.IRegisteredDataSetProperties`](#cdk-datalake-constructs.IRegisteredDataSetProperties)
+- *Type:* [`cdk-datalake-constructs.RegisteredDataSetProperties`](#cdk-datalake-constructs.RegisteredDataSetProperties)
 
 ---
 
@@ -1268,7 +1293,7 @@ new RegisteredDataSet(scope: Construct, id: string, props: IRegisteredDataSetPro
 ```typescript
 import { S3DeliveryStream } from 'cdk-datalake-constructs'
 
-new S3DeliveryStream(parent: Construct, name: string, props: IDeliveryStreamProperties)
+new S3DeliveryStream(parent: Construct, name: string, props: DeliveryStreamProperties)
 ```
 
 ##### `parent`<sup>Required</sup> <a name="cdk-datalake-constructs.S3DeliveryStream.parameter.parent"></a>
@@ -1285,7 +1310,7 @@ new S3DeliveryStream(parent: Construct, name: string, props: IDeliveryStreamProp
 
 ##### `props`<sup>Required</sup> <a name="cdk-datalake-constructs.S3DeliveryStream.parameter.props"></a>
 
-- *Type:* [`cdk-datalake-constructs.IDeliveryStreamProperties`](#cdk-datalake-constructs.IDeliveryStreamProperties)
+- *Type:* [`cdk-datalake-constructs.DeliveryStreamProperties`](#cdk-datalake-constructs.DeliveryStreamProperties)
 
 ---
 
@@ -1477,29 +1502,29 @@ public metricIncomingRecords(props?: MetricOptions)
 
 ## Structs <a name="Structs"></a>
 
-### CrossAccountProps <a name="cdk-datalake-constructs.CrossAccountProps"></a>
+### CrossAccountProperties <a name="cdk-datalake-constructs.CrossAccountProperties"></a>
 
 #### Initializer <a name="[object Object].Initializer"></a>
 
 ```typescript
-import { CrossAccountProps } from 'cdk-datalake-constructs'
+import { CrossAccountProperties } from 'cdk-datalake-constructs'
 
-const crossAccountProps: CrossAccountProps = { ... }
+const crossAccountProperties: CrossAccountProperties = { ... }
 ```
 
-##### `consumerAccountIds`<sup>Required</sup> <a name="cdk-datalake-constructs.CrossAccountProps.property.consumerAccountIds"></a>
+##### `consumerAccountIds`<sup>Required</sup> <a name="cdk-datalake-constructs.CrossAccountProperties.property.consumerAccountIds"></a>
 
 - *Type:* `string`[]
 
 ---
 
-##### `producerAccountId`<sup>Required</sup> <a name="cdk-datalake-constructs.CrossAccountProps.property.producerAccountId"></a>
+##### `producerAccountId`<sup>Required</sup> <a name="cdk-datalake-constructs.CrossAccountProperties.property.producerAccountId"></a>
 
 - *Type:* `string`
 
 ---
 
-##### `region`<sup>Required</sup> <a name="cdk-datalake-constructs.CrossAccountProps.property.region"></a>
+##### `region`<sup>Required</sup> <a name="cdk-datalake-constructs.CrossAccountProperties.property.region"></a>
 
 - *Type:* `string`
 
@@ -1581,67 +1606,239 @@ const dataLakeBucketProps: DataLakeBucketProps = { ... }
 
 ---
 
+##### `crossAccount`<sup>Required</sup> <a name="cdk-datalake-constructs.DataLakeBucketProps.property.crossAccount"></a>
+
+- *Type:* `boolean`
+
+---
+
 ##### `dataCatalogAccountId`<sup>Required</sup> <a name="cdk-datalake-constructs.DataLakeBucketProps.property.dataCatalogAccountId"></a>
 
 - *Type:* `string`
 
 ---
 
-### DataLakeProps <a name="cdk-datalake-constructs.DataLakeProps"></a>
+##### `logBucket`<sup>Required</sup> <a name="cdk-datalake-constructs.DataLakeBucketProps.property.logBucket"></a>
+
+- *Type:* [`@aws-cdk/aws-s3.Bucket`](#@aws-cdk/aws-s3.Bucket)
+
+---
+
+### DataLakeCreatorProperties <a name="cdk-datalake-constructs.DataLakeCreatorProperties"></a>
 
 #### Initializer <a name="[object Object].Initializer"></a>
 
 ```typescript
-import { DataLakeProps } from 'cdk-datalake-constructs'
+import { DataLakeCreatorProperties } from 'cdk-datalake-constructs'
 
-const dataLakeProps: DataLakeProps = { ... }
+const dataLakeCreatorProperties: DataLakeCreatorProperties = { ... }
 ```
 
-##### `accountId`<sup>Required</sup> <a name="cdk-datalake-constructs.DataLakeProps.property.accountId"></a>
+##### `name`<sup>Required</sup> <a name="cdk-datalake-constructs.DataLakeCreatorProperties.property.name"></a>
 
 - *Type:* `string`
 
 ---
 
-##### `name`<sup>Required</sup> <a name="cdk-datalake-constructs.DataLakeProps.property.name"></a>
+### DataLakeProperties <a name="cdk-datalake-constructs.DataLakeProperties"></a>
+
+#### Initializer <a name="[object Object].Initializer"></a>
+
+```typescript
+import { DataLakeProperties } from 'cdk-datalake-constructs'
+
+const dataLakeProperties: DataLakeProperties = { ... }
+```
+
+##### `accountId`<sup>Required</sup> <a name="cdk-datalake-constructs.DataLakeProperties.property.accountId"></a>
 
 - *Type:* `string`
 
 ---
 
-##### `region`<sup>Required</sup> <a name="cdk-datalake-constructs.DataLakeProps.property.region"></a>
+##### `name`<sup>Required</sup> <a name="cdk-datalake-constructs.DataLakeProperties.property.name"></a>
 
 - *Type:* `string`
 
 ---
 
-##### `stageName`<sup>Required</sup> <a name="cdk-datalake-constructs.DataLakeProps.property.stageName"></a>
+##### `region`<sup>Required</sup> <a name="cdk-datalake-constructs.DataLakeProperties.property.region"></a>
+
+- *Type:* `string`
+
+---
+
+##### `stageName`<sup>Required</sup> <a name="cdk-datalake-constructs.DataLakeProperties.property.stageName"></a>
 
 - *Type:* [`cdk-datalake-constructs.Stage`](#cdk-datalake-constructs.Stage)
 
 ---
 
-##### `crossAccount`<sup>Optional</sup> <a name="cdk-datalake-constructs.DataLakeProps.property.crossAccount"></a>
+##### `crossAccount`<sup>Optional</sup> <a name="cdk-datalake-constructs.DataLakeProperties.property.crossAccount"></a>
 
-- *Type:* [`cdk-datalake-constructs.CrossAccountProps`](#cdk-datalake-constructs.CrossAccountProps)
+- *Type:* [`cdk-datalake-constructs.CrossAccountProperties`](#cdk-datalake-constructs.CrossAccountProperties)
 
 ---
 
-##### `glueSecurityGroup`<sup>Optional</sup> <a name="cdk-datalake-constructs.DataLakeProps.property.glueSecurityGroup"></a>
+##### `dataProducts`<sup>Optional</sup> <a name="cdk-datalake-constructs.DataLakeProperties.property.dataProducts"></a>
+
+- *Type:* [`cdk-datalake-constructs.DataProduct`](#cdk-datalake-constructs.DataProduct)[]
+
+---
+
+##### `glueSecurityGroup`<sup>Optional</sup> <a name="cdk-datalake-constructs.DataLakeProperties.property.glueSecurityGroup"></a>
 
 - *Type:* [`@aws-cdk/aws-ec2.SecurityGroup`](#@aws-cdk/aws-ec2.SecurityGroup)
 
 ---
 
-##### `policyTags`<sup>Optional</sup> <a name="cdk-datalake-constructs.DataLakeProps.property.policyTags"></a>
+##### `policyTags`<sup>Optional</sup> <a name="cdk-datalake-constructs.DataLakeProperties.property.policyTags"></a>
 
 - *Type:* {[ key: string ]: `string`}
 
 ---
 
-##### `vpc`<sup>Optional</sup> <a name="cdk-datalake-constructs.DataLakeProps.property.vpc"></a>
+##### `vpc`<sup>Optional</sup> <a name="cdk-datalake-constructs.DataLakeProperties.property.vpc"></a>
 
 - *Type:* [`@aws-cdk/aws-ec2.Vpc`](#@aws-cdk/aws-ec2.Vpc)
+
+---
+
+### DataLocationProperties <a name="cdk-datalake-constructs.DataLocationProperties"></a>
+
+#### Initializer <a name="[object Object].Initializer"></a>
+
+```typescript
+import { DataLocationProperties } from 'cdk-datalake-constructs'
+
+const dataLocationProperties: DataLocationProperties = { ... }
+```
+
+##### `databaseName`<sup>Required</sup> <a name="cdk-datalake-constructs.DataLocationProperties.property.databaseName"></a>
+
+- *Type:* `string`
+
+---
+
+##### `destinationBucketName`<sup>Required</sup> <a name="cdk-datalake-constructs.DataLocationProperties.property.destinationBucketName"></a>
+
+- *Type:* `string`
+
+---
+
+##### `destinationPrefix`<sup>Required</sup> <a name="cdk-datalake-constructs.DataLocationProperties.property.destinationPrefix"></a>
+
+- *Type:* `string`
+
+---
+
+##### `name`<sup>Required</sup> <a name="cdk-datalake-constructs.DataLocationProperties.property.name"></a>
+
+- *Type:* `string`
+
+---
+
+### DataProductProperties <a name="cdk-datalake-constructs.DataProductProperties"></a>
+
+#### Initializer <a name="[object Object].Initializer"></a>
+
+```typescript
+import { DataProductProperties } from 'cdk-datalake-constructs'
+
+const dataProductProperties: DataProductProperties = { ... }
+```
+
+##### `accountId`<sup>Required</sup> <a name="cdk-datalake-constructs.DataProductProperties.property.accountId"></a>
+
+- *Type:* `string`
+
+---
+
+##### `databaseName`<sup>Required</sup> <a name="cdk-datalake-constructs.DataProductProperties.property.databaseName"></a>
+
+- *Type:* `string`
+
+---
+
+##### `pipelines`<sup>Required</sup> <a name="cdk-datalake-constructs.DataProductProperties.property.pipelines"></a>
+
+- *Type:* [`cdk-datalake-constructs.Pipeline`](#cdk-datalake-constructs.Pipeline)[]
+
+---
+
+### DataSetProperties <a name="cdk-datalake-constructs.DataSetProperties"></a>
+
+#### Initializer <a name="[object Object].Initializer"></a>
+
+```typescript
+import { DataSetProperties } from 'cdk-datalake-constructs'
+
+const dataSetProperties: DataSetProperties = { ... }
+```
+
+##### `dataCatalogAccountId`<sup>Required</sup> <a name="cdk-datalake-constructs.DataSetProperties.property.dataCatalogAccountId"></a>
+
+- *Type:* `string`
+
+---
+
+##### `destinationBucketName`<sup>Required</sup> <a name="cdk-datalake-constructs.DataSetProperties.property.destinationBucketName"></a>
+
+- *Type:* `string`
+
+---
+
+##### `destinationPrefix`<sup>Required</sup> <a name="cdk-datalake-constructs.DataSetProperties.property.destinationPrefix"></a>
+
+- *Type:* `string`
+
+---
+
+##### `logBucket`<sup>Required</sup> <a name="cdk-datalake-constructs.DataSetProperties.property.logBucket"></a>
+
+- *Type:* [`@aws-cdk/aws-s3.Bucket`](#@aws-cdk/aws-s3.Bucket)
+
+---
+
+##### `name`<sup>Required</sup> <a name="cdk-datalake-constructs.DataSetProperties.property.name"></a>
+
+- *Type:* `string`
+
+---
+
+##### `registerCrossAccount`<sup>Required</sup> <a name="cdk-datalake-constructs.DataSetProperties.property.registerCrossAccount"></a>
+
+- *Type:* `boolean`
+
+---
+
+##### `stage`<sup>Required</sup> <a name="cdk-datalake-constructs.DataSetProperties.property.stage"></a>
+
+- *Type:* [`cdk-datalake-constructs.Stage`](#cdk-datalake-constructs.Stage)
+
+---
+
+##### `encryptionKey`<sup>Optional</sup> <a name="cdk-datalake-constructs.DataSetProperties.property.encryptionKey"></a>
+
+- *Type:* [`@aws-cdk/aws-kms.Key`](#@aws-cdk/aws-kms.Key)
+
+---
+
+##### `s3NotificationProps`<sup>Optional</sup> <a name="cdk-datalake-constructs.DataSetProperties.property.s3NotificationProps"></a>
+
+- *Type:* [`cdk-datalake-constructs.S3NotificationProperties`](#cdk-datalake-constructs.S3NotificationProperties)
+
+---
+
+##### `sourceBucketName`<sup>Optional</sup> <a name="cdk-datalake-constructs.DataSetProperties.property.sourceBucketName"></a>
+
+- *Type:* `string`
+
+---
+
+##### `sourceKeys`<sup>Optional</sup> <a name="cdk-datalake-constructs.DataSetProperties.property.sourceKeys"></a>
+
+- *Type:* `string`[]
 
 ---
 
@@ -1679,6 +1876,466 @@ const dataSetResult: DataSetResult = { ... }
 
 ---
 
+### DataStreamProperties <a name="cdk-datalake-constructs.DataStreamProperties"></a>
+
+#### Initializer <a name="[object Object].Initializer"></a>
+
+```typescript
+import { DataStreamProperties } from 'cdk-datalake-constructs'
+
+const dataStreamProperties: DataStreamProperties = { ... }
+```
+
+##### `dataCatalogOwner`<sup>Required</sup> <a name="cdk-datalake-constructs.DataStreamProperties.property.dataCatalogOwner"></a>
+
+- *Type:* [`cdk-datalake-constructs.DataCatalogOwner`](#cdk-datalake-constructs.DataCatalogOwner)
+
+---
+
+##### `destinationBucketName`<sup>Required</sup> <a name="cdk-datalake-constructs.DataStreamProperties.property.destinationBucketName"></a>
+
+- *Type:* `string`
+
+---
+
+##### `destinationPrefix`<sup>Required</sup> <a name="cdk-datalake-constructs.DataStreamProperties.property.destinationPrefix"></a>
+
+- *Type:* `string`
+
+---
+
+##### `lambdaDataGenerator`<sup>Required</sup> <a name="cdk-datalake-constructs.DataStreamProperties.property.lambdaDataGenerator"></a>
+
+- *Type:* [`cdk-datalake-constructs.LambdaDataGeneratorProperties`](#cdk-datalake-constructs.LambdaDataGeneratorProperties)
+
+---
+
+##### `name`<sup>Required</sup> <a name="cdk-datalake-constructs.DataStreamProperties.property.name"></a>
+
+- *Type:* `string`
+
+---
+
+##### `streamName`<sup>Required</sup> <a name="cdk-datalake-constructs.DataStreamProperties.property.streamName"></a>
+
+- *Type:* `string`
+
+---
+
+### DeliveryStreamProperties <a name="cdk-datalake-constructs.DeliveryStreamProperties"></a>
+
+#### Initializer <a name="[object Object].Initializer"></a>
+
+```typescript
+import { DeliveryStreamProperties } from 'cdk-datalake-constructs'
+
+const deliveryStreamProperties: DeliveryStreamProperties = { ... }
+```
+
+##### `kinesisStream`<sup>Required</sup> <a name="cdk-datalake-constructs.DeliveryStreamProperties.property.kinesisStream"></a>
+
+- *Type:* [`@aws-cdk/aws-kinesis.Stream`](#@aws-cdk/aws-kinesis.Stream)
+
+---
+
+##### `s3Bucket`<sup>Required</sup> <a name="cdk-datalake-constructs.DeliveryStreamProperties.property.s3Bucket"></a>
+
+- *Type:* [`@aws-cdk/aws-s3.Bucket`](#@aws-cdk/aws-s3.Bucket)
+
+---
+
+##### `compression`<sup>Optional</sup> <a name="cdk-datalake-constructs.DeliveryStreamProperties.property.compression"></a>
+
+- *Type:* [`cdk-datalake-constructs.CompressionType`](#cdk-datalake-constructs.CompressionType)
+
+---
+
+##### `s3Prefix`<sup>Optional</sup> <a name="cdk-datalake-constructs.DeliveryStreamProperties.property.s3Prefix"></a>
+
+- *Type:* `string`
+
+---
+
+##### `transformFunction`<sup>Optional</sup> <a name="cdk-datalake-constructs.DeliveryStreamProperties.property.transformFunction"></a>
+
+- *Type:* [`@aws-cdk/aws-lambda.Function`](#@aws-cdk/aws-lambda.Function)
+
+---
+
+### JDBCProperties <a name="cdk-datalake-constructs.JDBCProperties"></a>
+
+#### Initializer <a name="[object Object].Initializer"></a>
+
+```typescript
+import { JDBCProperties } from 'cdk-datalake-constructs'
+
+const jDBCProperties: JDBCProperties = { ... }
+```
+
+##### `jdbc`<sup>Required</sup> <a name="cdk-datalake-constructs.JDBCProperties.property.jdbc"></a>
+
+- *Type:* `string`
+
+---
+
+##### `password`<sup>Required</sup> <a name="cdk-datalake-constructs.JDBCProperties.property.password"></a>
+
+- *Type:* `string`
+
+---
+
+##### `username`<sup>Required</sup> <a name="cdk-datalake-constructs.JDBCProperties.property.username"></a>
+
+- *Type:* `string`
+
+---
+
+### JobProperties <a name="cdk-datalake-constructs.JobProperties"></a>
+
+#### Initializer <a name="[object Object].Initializer"></a>
+
+```typescript
+import { JobProperties } from 'cdk-datalake-constructs'
+
+const jobProperties: JobProperties = { ... }
+```
+
+##### `jobScript`<sup>Required</sup> <a name="cdk-datalake-constructs.JobProperties.property.jobScript"></a>
+
+- *Type:* `string`
+
+---
+
+##### `jobType`<sup>Required</sup> <a name="cdk-datalake-constructs.JobProperties.property.jobType"></a>
+
+- *Type:* [`cdk-datalake-constructs.GlueJobType`](#cdk-datalake-constructs.GlueJobType)
+
+---
+
+##### `name`<sup>Required</sup> <a name="cdk-datalake-constructs.JobProperties.property.name"></a>
+
+- *Type:* `string`
+
+---
+
+##### `workerType`<sup>Required</sup> <a name="cdk-datalake-constructs.JobProperties.property.workerType"></a>
+
+- *Type:* [`cdk-datalake-constructs.GlueWorkerType`](#cdk-datalake-constructs.GlueWorkerType)
+
+---
+
+##### `description`<sup>Optional</sup> <a name="cdk-datalake-constructs.JobProperties.property.description"></a>
+
+- *Type:* `string`
+
+---
+
+##### `glueVersion`<sup>Optional</sup> <a name="cdk-datalake-constructs.JobProperties.property.glueVersion"></a>
+
+- *Type:* [`cdk-datalake-constructs.GlueVersion`](#cdk-datalake-constructs.GlueVersion)
+
+---
+
+##### `jobArgs`<sup>Optional</sup> <a name="cdk-datalake-constructs.JobProperties.property.jobArgs"></a>
+
+- *Type:* {[ key: string ]: `string`}
+
+---
+
+##### `maxCapacity`<sup>Optional</sup> <a name="cdk-datalake-constructs.JobProperties.property.maxCapacity"></a>
+
+- *Type:* `number`
+
+---
+
+##### `maxConcurrentRuns`<sup>Optional</sup> <a name="cdk-datalake-constructs.JobProperties.property.maxConcurrentRuns"></a>
+
+- *Type:* `number`
+
+---
+
+##### `maxRetries`<sup>Optional</sup> <a name="cdk-datalake-constructs.JobProperties.property.maxRetries"></a>
+
+- *Type:* `number`
+
+---
+
+##### `numberOfWorkers`<sup>Optional</sup> <a name="cdk-datalake-constructs.JobProperties.property.numberOfWorkers"></a>
+
+- *Type:* `number`
+
+---
+
+##### `readAccessBuckets`<sup>Optional</sup> <a name="cdk-datalake-constructs.JobProperties.property.readAccessBuckets"></a>
+
+- *Type:* [`@aws-cdk/aws-s3.IBucket`](#@aws-cdk/aws-s3.IBucket)[]
+
+---
+
+##### `roleName`<sup>Optional</sup> <a name="cdk-datalake-constructs.JobProperties.property.roleName"></a>
+
+- *Type:* `string`
+
+---
+
+##### `timeout`<sup>Optional</sup> <a name="cdk-datalake-constructs.JobProperties.property.timeout"></a>
+
+- *Type:* `number`
+
+---
+
+##### `writeAccessBuckets`<sup>Optional</sup> <a name="cdk-datalake-constructs.JobProperties.property.writeAccessBuckets"></a>
+
+- *Type:* [`@aws-cdk/aws-s3.IBucket`](#@aws-cdk/aws-s3.IBucket)[]
+
+---
+
+### LambdaDataGeneratorProperties <a name="cdk-datalake-constructs.LambdaDataGeneratorProperties"></a>
+
+#### Initializer <a name="[object Object].Initializer"></a>
+
+```typescript
+import { LambdaDataGeneratorProperties } from 'cdk-datalake-constructs'
+
+const lambdaDataGeneratorProperties: LambdaDataGeneratorProperties = { ... }
+```
+
+##### `code`<sup>Required</sup> <a name="cdk-datalake-constructs.LambdaDataGeneratorProperties.property.code"></a>
+
+- *Type:* [`@aws-cdk/aws-lambda.Code`](#@aws-cdk/aws-lambda.Code)
+
+---
+
+##### `functionName`<sup>Required</sup> <a name="cdk-datalake-constructs.LambdaDataGeneratorProperties.property.functionName"></a>
+
+- *Type:* `string`
+
+---
+
+##### `handler`<sup>Required</sup> <a name="cdk-datalake-constructs.LambdaDataGeneratorProperties.property.handler"></a>
+
+- *Type:* `string`
+
+---
+
+##### `ruleName`<sup>Required</sup> <a name="cdk-datalake-constructs.LambdaDataGeneratorProperties.property.ruleName"></a>
+
+- *Type:* `string`
+
+---
+
+##### `runtime`<sup>Required</sup> <a name="cdk-datalake-constructs.LambdaDataGeneratorProperties.property.runtime"></a>
+
+- *Type:* [`@aws-cdk/aws-lambda.Runtime`](#@aws-cdk/aws-lambda.Runtime)
+
+---
+
+##### `schedule`<sup>Required</sup> <a name="cdk-datalake-constructs.LambdaDataGeneratorProperties.property.schedule"></a>
+
+- *Type:* [`@aws-cdk/aws-events.Schedule`](#@aws-cdk/aws-events.Schedule)
+
+---
+
+##### `timeout`<sup>Required</sup> <a name="cdk-datalake-constructs.LambdaDataGeneratorProperties.property.timeout"></a>
+
+- *Type:* [`@aws-cdk/core.Duration`](#@aws-cdk/core.Duration)
+
+---
+
+### RegisteredDataSetProperties <a name="cdk-datalake-constructs.RegisteredDataSetProperties"></a>
+
+#### Initializer <a name="[object Object].Initializer"></a>
+
+```typescript
+import { RegisteredDataSetProperties } from 'cdk-datalake-constructs'
+
+const registeredDataSetProperties: RegisteredDataSetProperties = { ... }
+```
+
+##### `databaseName`<sup>Required</sup> <a name="cdk-datalake-constructs.RegisteredDataSetProperties.property.databaseName"></a>
+
+- *Type:* `string`
+
+---
+
+##### `dataLakeAdminRoleArn`<sup>Required</sup> <a name="cdk-datalake-constructs.RegisteredDataSetProperties.property.dataLakeAdminRoleArn"></a>
+
+- *Type:* `string`
+
+---
+
+##### `dataLakeDbCreatorRoleArn`<sup>Required</sup> <a name="cdk-datalake-constructs.RegisteredDataSetProperties.property.dataLakeDbCreatorRoleArn"></a>
+
+- *Type:* `string`
+
+---
+
+##### `destinationBucketName`<sup>Required</sup> <a name="cdk-datalake-constructs.RegisteredDataSetProperties.property.destinationBucketName"></a>
+
+- *Type:* `string`
+
+---
+
+##### `destinationPrefix`<sup>Required</sup> <a name="cdk-datalake-constructs.RegisteredDataSetProperties.property.destinationPrefix"></a>
+
+- *Type:* `string`
+
+---
+
+##### `name`<sup>Required</sup> <a name="cdk-datalake-constructs.RegisteredDataSetProperties.property.name"></a>
+
+- *Type:* `string`
+
+---
+
+##### `stage`<sup>Required</sup> <a name="cdk-datalake-constructs.RegisteredDataSetProperties.property.stage"></a>
+
+- *Type:* [`cdk-datalake-constructs.Stage`](#cdk-datalake-constructs.Stage)
+
+---
+
+### S3NotificationProperties <a name="cdk-datalake-constructs.S3NotificationProperties"></a>
+
+#### Initializer <a name="[object Object].Initializer"></a>
+
+```typescript
+import { S3NotificationProperties } from 'cdk-datalake-constructs'
+
+const s3NotificationProperties: S3NotificationProperties = { ... }
+```
+
+##### `event`<sup>Required</sup> <a name="cdk-datalake-constructs.S3NotificationProperties.property.event"></a>
+
+- *Type:* [`@aws-cdk/aws-s3.EventType`](#@aws-cdk/aws-s3.EventType)
+
+---
+
+##### `prefix`<sup>Required</sup> <a name="cdk-datalake-constructs.S3NotificationProperties.property.prefix"></a>
+
+- *Type:* `string`
+
+---
+
+##### `suffix`<sup>Required</sup> <a name="cdk-datalake-constructs.S3NotificationProperties.property.suffix"></a>
+
+- *Type:* `string`
+
+---
+
+### S3Properties <a name="cdk-datalake-constructs.S3Properties"></a>
+
+#### Initializer <a name="[object Object].Initializer"></a>
+
+```typescript
+import { S3Properties } from 'cdk-datalake-constructs'
+
+const s3Properties: S3Properties = { ... }
+```
+
+##### `sourceBucketName`<sup>Required</sup> <a name="cdk-datalake-constructs.S3Properties.property.sourceBucketName"></a>
+
+- *Type:* `string`
+
+---
+
+##### `sourceKeys`<sup>Required</sup> <a name="cdk-datalake-constructs.S3Properties.property.sourceKeys"></a>
+
+- *Type:* `string`[]
+
+---
+
+### StreamProperties <a name="cdk-datalake-constructs.StreamProperties"></a>
+
+#### Initializer <a name="[object Object].Initializer"></a>
+
+```typescript
+import { StreamProperties } from 'cdk-datalake-constructs'
+
+const streamProperties: StreamProperties = { ... }
+```
+
+##### `streamName`<sup>Required</sup> <a name="cdk-datalake-constructs.StreamProperties.property.streamName"></a>
+
+- *Type:* `string`
+
+---
+
+##### `lambdaDataGenerator`<sup>Optional</sup> <a name="cdk-datalake-constructs.StreamProperties.property.lambdaDataGenerator"></a>
+
+- *Type:* [`cdk-datalake-constructs.LambdaDataGeneratorProperties`](#cdk-datalake-constructs.LambdaDataGeneratorProperties)
+
+---
+
+### TableProps <a name="cdk-datalake-constructs.TableProps"></a>
+
+#### Initializer <a name="[object Object].Initializer"></a>
+
+```typescript
+import { TableProps } from 'cdk-datalake-constructs'
+
+const tableProps: TableProps = { ... }
+```
+
+##### `catalogId`<sup>Required</sup> <a name="cdk-datalake-constructs.TableProps.property.catalogId"></a>
+
+- *Type:* `string`
+
+---
+
+##### `columns`<sup>Required</sup> <a name="cdk-datalake-constructs.TableProps.property.columns"></a>
+
+- *Type:* [`@aws-cdk/core.IResolvable`](#@aws-cdk/core.IResolvable) | [`@aws-cdk/aws-glue.CfnTable.ColumnProperty`](#@aws-cdk/aws-glue.CfnTable.ColumnProperty) | [`@aws-cdk/core.IResolvable`](#@aws-cdk/core.IResolvable)[]
+
+---
+
+##### `description`<sup>Required</sup> <a name="cdk-datalake-constructs.TableProps.property.description"></a>
+
+- *Type:* `string`
+
+---
+
+##### `inputFormat`<sup>Required</sup> <a name="cdk-datalake-constructs.TableProps.property.inputFormat"></a>
+
+- *Type:* `string`
+
+---
+
+##### `outputFormat`<sup>Required</sup> <a name="cdk-datalake-constructs.TableProps.property.outputFormat"></a>
+
+- *Type:* `string`
+
+---
+
+##### `parameters`<sup>Required</sup> <a name="cdk-datalake-constructs.TableProps.property.parameters"></a>
+
+- *Type:* {[ key: string ]: `any`}
+
+---
+
+##### `partitionKeys`<sup>Required</sup> <a name="cdk-datalake-constructs.TableProps.property.partitionKeys"></a>
+
+- *Type:* [`@aws-cdk/core.IResolvable`](#@aws-cdk/core.IResolvable) | [`@aws-cdk/aws-glue.CfnTable.ColumnProperty`](#@aws-cdk/aws-glue.CfnTable.ColumnProperty) | [`@aws-cdk/core.IResolvable`](#@aws-cdk/core.IResolvable)[]
+
+---
+
+##### `serdeParameters`<sup>Required</sup> <a name="cdk-datalake-constructs.TableProps.property.serdeParameters"></a>
+
+- *Type:* {[ key: string ]: `any`}
+
+---
+
+##### `serializationLibrary`<sup>Required</sup> <a name="cdk-datalake-constructs.TableProps.property.serializationLibrary"></a>
+
+- *Type:* `string`
+
+---
+
+##### `tableName`<sup>Required</sup> <a name="cdk-datalake-constructs.TableProps.property.tableName"></a>
+
+- *Type:* `string`
+
+---
+
 ## Classes <a name="Classes"></a>
 
 ### DataProduct <a name="cdk-datalake-constructs.DataProduct"></a>
@@ -1688,12 +2345,12 @@ const dataSetResult: DataSetResult = { ... }
 ```typescript
 import { DataProduct } from 'cdk-datalake-constructs'
 
-new DataProduct(props: IDataProductProperties)
+new DataProduct(props: DataProductProperties)
 ```
 
 ##### `props`<sup>Required</sup> <a name="cdk-datalake-constructs.DataProduct.parameter.props"></a>
 
-- *Type:* [`cdk-datalake-constructs.IDataProductProperties`](#cdk-datalake-constructs.IDataProductProperties)
+- *Type:* [`cdk-datalake-constructs.DataProductProperties`](#cdk-datalake-constructs.DataProductProperties)
 
 ---
 
@@ -1772,245 +2429,42 @@ new Pipeline(props: IPipelineProperties)
 
 ##### `jdbcProperties`<sup>Optional</sup> <a name="cdk-datalake-constructs.Pipeline.property.jdbcProperties"></a>
 
-- *Type:* [`cdk-datalake-constructs.IJDBCProperties`](#cdk-datalake-constructs.IJDBCProperties)
+- *Type:* [`cdk-datalake-constructs.JDBCProperties`](#cdk-datalake-constructs.JDBCProperties)
 
 ---
 
 ##### `job`<sup>Optional</sup> <a name="cdk-datalake-constructs.Pipeline.property.job"></a>
 
-- *Type:* [`cdk-datalake-constructs.IJobProperties`](#cdk-datalake-constructs.IJobProperties)
+- *Type:* [`cdk-datalake-constructs.JobProperties`](#cdk-datalake-constructs.JobProperties)
 
 ---
 
 ##### `s3NotificationProps`<sup>Optional</sup> <a name="cdk-datalake-constructs.Pipeline.property.s3NotificationProps"></a>
 
-- *Type:* [`cdk-datalake-constructs.IS3NotificationProperties`](#cdk-datalake-constructs.IS3NotificationProperties)
+- *Type:* [`cdk-datalake-constructs.S3NotificationProperties`](#cdk-datalake-constructs.S3NotificationProperties)
 
 ---
 
 ##### `s3Properties`<sup>Optional</sup> <a name="cdk-datalake-constructs.Pipeline.property.s3Properties"></a>
 
-- *Type:* [`cdk-datalake-constructs.IS3Properties`](#cdk-datalake-constructs.IS3Properties)
+- *Type:* [`cdk-datalake-constructs.S3Properties`](#cdk-datalake-constructs.S3Properties)
 
 ---
 
 ##### `streamProperties`<sup>Optional</sup> <a name="cdk-datalake-constructs.Pipeline.property.streamProperties"></a>
 
-- *Type:* [`cdk-datalake-constructs.IStreamProperties`](#cdk-datalake-constructs.IStreamProperties)
+- *Type:* [`cdk-datalake-constructs.StreamProperties`](#cdk-datalake-constructs.StreamProperties)
 
 ---
 
 ##### `table`<sup>Optional</sup> <a name="cdk-datalake-constructs.Pipeline.property.table"></a>
 
-- *Type:* [`cdk-datalake-constructs.ITableProps`](#cdk-datalake-constructs.ITableProps)
+- *Type:* [`cdk-datalake-constructs.TableProps`](#cdk-datalake-constructs.TableProps)
 
 ---
 
 
 ## Protocols <a name="Protocols"></a>
-
-### IDataLocationProperties <a name="cdk-datalake-constructs.IDataLocationProperties"></a>
-
-- *Implemented By:* [`cdk-datalake-constructs.IDataLocationProperties`](#cdk-datalake-constructs.IDataLocationProperties)
-
-
-#### Properties <a name="Properties"></a>
-
-##### `databaseName`<sup>Required</sup> <a name="cdk-datalake-constructs.IDataLocationProperties.property.databaseName"></a>
-
-- *Type:* `string`
-
----
-
-##### `destinationBucketName`<sup>Required</sup> <a name="cdk-datalake-constructs.IDataLocationProperties.property.destinationBucketName"></a>
-
-- *Type:* `string`
-
----
-
-##### `destinationPrefix`<sup>Required</sup> <a name="cdk-datalake-constructs.IDataLocationProperties.property.destinationPrefix"></a>
-
-- *Type:* `string`
-
----
-
-##### `name`<sup>Required</sup> <a name="cdk-datalake-constructs.IDataLocationProperties.property.name"></a>
-
-- *Type:* `string`
-
----
-
-### IDataProductProperties <a name="cdk-datalake-constructs.IDataProductProperties"></a>
-
-- *Implemented By:* [`cdk-datalake-constructs.IDataProductProperties`](#cdk-datalake-constructs.IDataProductProperties)
-
-
-#### Properties <a name="Properties"></a>
-
-##### `accountId`<sup>Required</sup> <a name="cdk-datalake-constructs.IDataProductProperties.property.accountId"></a>
-
-- *Type:* `string`
-
----
-
-##### `databaseName`<sup>Required</sup> <a name="cdk-datalake-constructs.IDataProductProperties.property.databaseName"></a>
-
-- *Type:* `string`
-
----
-
-##### `pipelines`<sup>Required</sup> <a name="cdk-datalake-constructs.IDataProductProperties.property.pipelines"></a>
-
-- *Type:* [`cdk-datalake-constructs.Pipeline`](#cdk-datalake-constructs.Pipeline)[]
-
----
-
-### IDataSetProperties <a name="cdk-datalake-constructs.IDataSetProperties"></a>
-
-- *Implemented By:* [`cdk-datalake-constructs.IDataSetProperties`](#cdk-datalake-constructs.IDataSetProperties)
-
-
-#### Properties <a name="Properties"></a>
-
-##### `dataCatalogAccountId`<sup>Required</sup> <a name="cdk-datalake-constructs.IDataSetProperties.property.dataCatalogAccountId"></a>
-
-- *Type:* `string`
-
----
-
-##### `destinationBucketName`<sup>Required</sup> <a name="cdk-datalake-constructs.IDataSetProperties.property.destinationBucketName"></a>
-
-- *Type:* `string`
-
----
-
-##### `destinationPrefix`<sup>Required</sup> <a name="cdk-datalake-constructs.IDataSetProperties.property.destinationPrefix"></a>
-
-- *Type:* `string`
-
----
-
-##### `logBucket`<sup>Required</sup> <a name="cdk-datalake-constructs.IDataSetProperties.property.logBucket"></a>
-
-- *Type:* [`@aws-cdk/aws-s3.Bucket`](#@aws-cdk/aws-s3.Bucket)
-
----
-
-##### `name`<sup>Required</sup> <a name="cdk-datalake-constructs.IDataSetProperties.property.name"></a>
-
-- *Type:* `string`
-
----
-
-##### `sourceBucketName`<sup>Required</sup> <a name="cdk-datalake-constructs.IDataSetProperties.property.sourceBucketName"></a>
-
-- *Type:* `string`
-
----
-
-##### `sourceKeys`<sup>Required</sup> <a name="cdk-datalake-constructs.IDataSetProperties.property.sourceKeys"></a>
-
-- *Type:* `string`[]
-
----
-
-##### `stage`<sup>Required</sup> <a name="cdk-datalake-constructs.IDataSetProperties.property.stage"></a>
-
-- *Type:* [`cdk-datalake-constructs.Stage`](#cdk-datalake-constructs.Stage)
-
----
-
-##### `encryptionKey`<sup>Optional</sup> <a name="cdk-datalake-constructs.IDataSetProperties.property.encryptionKey"></a>
-
-- *Type:* [`@aws-cdk/aws-kms.Key`](#@aws-cdk/aws-kms.Key)
-
----
-
-##### `s3NotificationProps`<sup>Optional</sup> <a name="cdk-datalake-constructs.IDataSetProperties.property.s3NotificationProps"></a>
-
-- *Type:* [`cdk-datalake-constructs.IS3NotificationProperties`](#cdk-datalake-constructs.IS3NotificationProperties)
-
----
-
-### IDataStreamProperties <a name="cdk-datalake-constructs.IDataStreamProperties"></a>
-
-- *Implemented By:* [`cdk-datalake-constructs.IDataStreamProperties`](#cdk-datalake-constructs.IDataStreamProperties)
-
-
-#### Properties <a name="Properties"></a>
-
-##### `dataCatalogOwner`<sup>Required</sup> <a name="cdk-datalake-constructs.IDataStreamProperties.property.dataCatalogOwner"></a>
-
-- *Type:* [`cdk-datalake-constructs.DataCatalogOwner`](#cdk-datalake-constructs.DataCatalogOwner)
-
----
-
-##### `destinationBucket`<sup>Required</sup> <a name="cdk-datalake-constructs.IDataStreamProperties.property.destinationBucket"></a>
-
-- *Type:* `string`
-
----
-
-##### `destinationPrefix`<sup>Required</sup> <a name="cdk-datalake-constructs.IDataStreamProperties.property.destinationPrefix"></a>
-
-- *Type:* `string`
-
----
-
-##### `lambdaDataGenerator`<sup>Required</sup> <a name="cdk-datalake-constructs.IDataStreamProperties.property.lambdaDataGenerator"></a>
-
-- *Type:* [`cdk-datalake-constructs.ILambdaDataGeneratorProperties`](#cdk-datalake-constructs.ILambdaDataGeneratorProperties)
-
----
-
-##### `name`<sup>Required</sup> <a name="cdk-datalake-constructs.IDataStreamProperties.property.name"></a>
-
-- *Type:* `string`
-
----
-
-##### `streamName`<sup>Required</sup> <a name="cdk-datalake-constructs.IDataStreamProperties.property.streamName"></a>
-
-- *Type:* `string`
-
----
-
-### IDeliveryStreamProperties <a name="cdk-datalake-constructs.IDeliveryStreamProperties"></a>
-
-- *Implemented By:* [`cdk-datalake-constructs.IDeliveryStreamProperties`](#cdk-datalake-constructs.IDeliveryStreamProperties)
-
-
-#### Properties <a name="Properties"></a>
-
-##### `kinesisStream`<sup>Required</sup> <a name="cdk-datalake-constructs.IDeliveryStreamProperties.property.kinesisStream"></a>
-
-- *Type:* [`@aws-cdk/aws-kinesis.Stream`](#@aws-cdk/aws-kinesis.Stream)
-
----
-
-##### `s3Bucket`<sup>Required</sup> <a name="cdk-datalake-constructs.IDeliveryStreamProperties.property.s3Bucket"></a>
-
-- *Type:* [`@aws-cdk/aws-s3.Bucket`](#@aws-cdk/aws-s3.Bucket)
-
----
-
-##### `compression`<sup>Optional</sup> <a name="cdk-datalake-constructs.IDeliveryStreamProperties.property.compression"></a>
-
-- *Type:* [`cdk-datalake-constructs.CompressionType`](#cdk-datalake-constructs.CompressionType)
-
----
-
-##### `s3Prefix`<sup>Optional</sup> <a name="cdk-datalake-constructs.IDeliveryStreamProperties.property.s3Prefix"></a>
-
-- *Type:* `string`
-
----
-
-##### `transformFunction`<sup>Optional</sup> <a name="cdk-datalake-constructs.IDeliveryStreamProperties.property.transformFunction"></a>
-
-- *Type:* [`@aws-cdk/aws-lambda.Function`](#@aws-cdk/aws-lambda.Function)
-
----
 
 ### IGlueCrawlerProperties <a name="cdk-datalake-constructs.IGlueCrawlerProperties"></a>
 
@@ -2158,79 +2612,6 @@ new Pipeline(props: IPipelineProperties)
 
 ---
 
-### IGlueNotebookProperties <a name="cdk-datalake-constructs.IGlueNotebookProperties"></a>
-
-- *Implemented By:* [`cdk-datalake-constructs.IGlueNotebookProperties`](#cdk-datalake-constructs.IGlueNotebookProperties)
-
-
-#### Properties <a name="Properties"></a>
-
-##### `accountId`<sup>Required</sup> <a name="cdk-datalake-constructs.IGlueNotebookProperties.property.accountId"></a>
-
-- *Type:* `string`
-
----
-
-##### `database`<sup>Required</sup> <a name="cdk-datalake-constructs.IGlueNotebookProperties.property.database"></a>
-
-- *Type:* `string`
-
----
-
-##### `glueVersion`<sup>Required</sup> <a name="cdk-datalake-constructs.IGlueNotebookProperties.property.glueVersion"></a>
-
-- *Type:* [`cdk-datalake-constructs.GlueVersion`](#cdk-datalake-constructs.GlueVersion)
-
----
-
-##### `notebookInstanceType`<sup>Required</sup> <a name="cdk-datalake-constructs.IGlueNotebookProperties.property.notebookInstanceType"></a>
-
-- *Type:* `string`
-
----
-
-##### `notebookName`<sup>Required</sup> <a name="cdk-datalake-constructs.IGlueNotebookProperties.property.notebookName"></a>
-
-- *Type:* `string`
-
----
-
-##### `numberOfWorkers`<sup>Required</sup> <a name="cdk-datalake-constructs.IGlueNotebookProperties.property.numberOfWorkers"></a>
-
-- *Type:* `number`
-
----
-
-##### `region`<sup>Required</sup> <a name="cdk-datalake-constructs.IGlueNotebookProperties.property.region"></a>
-
-- *Type:* `string`
-
----
-
-##### `stage`<sup>Required</sup> <a name="cdk-datalake-constructs.IGlueNotebookProperties.property.stage"></a>
-
-- *Type:* `string`
-
----
-
-##### `workerType`<sup>Required</sup> <a name="cdk-datalake-constructs.IGlueNotebookProperties.property.workerType"></a>
-
-- *Type:* [`cdk-datalake-constructs.GlueWorkerType`](#cdk-datalake-constructs.GlueWorkerType)
-
----
-
-##### `readAccessBuckets`<sup>Optional</sup> <a name="cdk-datalake-constructs.IGlueNotebookProperties.property.readAccessBuckets"></a>
-
-- *Type:* [`@aws-cdk/aws-s3.IBucket`](#@aws-cdk/aws-s3.IBucket)[]
-
----
-
-##### `writeAccessBuckets`<sup>Optional</sup> <a name="cdk-datalake-constructs.IGlueNotebookProperties.property.writeAccessBuckets"></a>
-
-- *Type:* [`@aws-cdk/aws-s3.IBucket`](#@aws-cdk/aws-s3.IBucket)[]
-
----
-
 ### IGlueOpsProperties <a name="cdk-datalake-constructs.IGlueOpsProperties"></a>
 
 - *Implemented By:* [`cdk-datalake-constructs.IGlueOpsProperties`](#cdk-datalake-constructs.IGlueOpsProperties)
@@ -2347,128 +2728,6 @@ new Pipeline(props: IPipelineProperties)
 
 ---
 
-### IJDBCProperties <a name="cdk-datalake-constructs.IJDBCProperties"></a>
-
-- *Implemented By:* [`cdk-datalake-constructs.IJDBCProperties`](#cdk-datalake-constructs.IJDBCProperties)
-
-
-#### Properties <a name="Properties"></a>
-
-##### `jdbc`<sup>Required</sup> <a name="cdk-datalake-constructs.IJDBCProperties.property.jdbc"></a>
-
-- *Type:* `string`
-
----
-
-##### `password`<sup>Required</sup> <a name="cdk-datalake-constructs.IJDBCProperties.property.password"></a>
-
-- *Type:* `string`
-
----
-
-##### `username`<sup>Required</sup> <a name="cdk-datalake-constructs.IJDBCProperties.property.username"></a>
-
-- *Type:* `string`
-
----
-
-### IJobProperties <a name="cdk-datalake-constructs.IJobProperties"></a>
-
-- *Implemented By:* [`cdk-datalake-constructs.IJobProperties`](#cdk-datalake-constructs.IJobProperties)
-
-
-#### Properties <a name="Properties"></a>
-
-##### `jobScript`<sup>Required</sup> <a name="cdk-datalake-constructs.IJobProperties.property.jobScript"></a>
-
-- *Type:* `string`
-
----
-
-##### `jobType`<sup>Required</sup> <a name="cdk-datalake-constructs.IJobProperties.property.jobType"></a>
-
-- *Type:* [`cdk-datalake-constructs.GlueJobType`](#cdk-datalake-constructs.GlueJobType)
-
----
-
-##### `name`<sup>Required</sup> <a name="cdk-datalake-constructs.IJobProperties.property.name"></a>
-
-- *Type:* `string`
-
----
-
-##### `workerType`<sup>Required</sup> <a name="cdk-datalake-constructs.IJobProperties.property.workerType"></a>
-
-- *Type:* [`cdk-datalake-constructs.GlueWorkerType`](#cdk-datalake-constructs.GlueWorkerType)
-
----
-
-##### `description`<sup>Optional</sup> <a name="cdk-datalake-constructs.IJobProperties.property.description"></a>
-
-- *Type:* `string`
-
----
-
-##### `glueVersion`<sup>Optional</sup> <a name="cdk-datalake-constructs.IJobProperties.property.glueVersion"></a>
-
-- *Type:* [`cdk-datalake-constructs.GlueVersion`](#cdk-datalake-constructs.GlueVersion)
-
----
-
-##### `jobArgs`<sup>Optional</sup> <a name="cdk-datalake-constructs.IJobProperties.property.jobArgs"></a>
-
-- *Type:* {[ key: string ]: `string`}
-
----
-
-##### `maxCapacity`<sup>Optional</sup> <a name="cdk-datalake-constructs.IJobProperties.property.maxCapacity"></a>
-
-- *Type:* `number`
-
----
-
-##### `maxConcurrentRuns`<sup>Optional</sup> <a name="cdk-datalake-constructs.IJobProperties.property.maxConcurrentRuns"></a>
-
-- *Type:* `number`
-
----
-
-##### `maxRetries`<sup>Optional</sup> <a name="cdk-datalake-constructs.IJobProperties.property.maxRetries"></a>
-
-- *Type:* `number`
-
----
-
-##### `numberOfWorkers`<sup>Optional</sup> <a name="cdk-datalake-constructs.IJobProperties.property.numberOfWorkers"></a>
-
-- *Type:* `number`
-
----
-
-##### `readAccessBuckets`<sup>Optional</sup> <a name="cdk-datalake-constructs.IJobProperties.property.readAccessBuckets"></a>
-
-- *Type:* [`@aws-cdk/aws-s3.IBucket`](#@aws-cdk/aws-s3.IBucket)[]
-
----
-
-##### `roleName`<sup>Optional</sup> <a name="cdk-datalake-constructs.IJobProperties.property.roleName"></a>
-
-- *Type:* `string`
-
----
-
-##### `timeout`<sup>Optional</sup> <a name="cdk-datalake-constructs.IJobProperties.property.timeout"></a>
-
-- *Type:* `number`
-
----
-
-##### `writeAccessBuckets`<sup>Optional</sup> <a name="cdk-datalake-constructs.IJobProperties.property.writeAccessBuckets"></a>
-
-- *Type:* [`@aws-cdk/aws-s3.IBucket`](#@aws-cdk/aws-s3.IBucket)[]
-
----
-
 ### IKinesisOpsProperties <a name="cdk-datalake-constructs.IKinesisOpsProperties"></a>
 
 - *Implemented By:* [`cdk-datalake-constructs.IKinesisOpsProperties`](#cdk-datalake-constructs.IKinesisOpsProperties)
@@ -2536,55 +2795,6 @@ new Pipeline(props: IPipelineProperties)
 
 ---
 
-### ILambdaDataGeneratorProperties <a name="cdk-datalake-constructs.ILambdaDataGeneratorProperties"></a>
-
-- *Implemented By:* [`cdk-datalake-constructs.ILambdaDataGeneratorProperties`](#cdk-datalake-constructs.ILambdaDataGeneratorProperties)
-
-
-#### Properties <a name="Properties"></a>
-
-##### `code`<sup>Required</sup> <a name="cdk-datalake-constructs.ILambdaDataGeneratorProperties.property.code"></a>
-
-- *Type:* [`@aws-cdk/aws-lambda.Code`](#@aws-cdk/aws-lambda.Code)
-
----
-
-##### `functionName`<sup>Required</sup> <a name="cdk-datalake-constructs.ILambdaDataGeneratorProperties.property.functionName"></a>
-
-- *Type:* `string`
-
----
-
-##### `handler`<sup>Required</sup> <a name="cdk-datalake-constructs.ILambdaDataGeneratorProperties.property.handler"></a>
-
-- *Type:* `string`
-
----
-
-##### `ruleName`<sup>Required</sup> <a name="cdk-datalake-constructs.ILambdaDataGeneratorProperties.property.ruleName"></a>
-
-- *Type:* `string`
-
----
-
-##### `runtime`<sup>Required</sup> <a name="cdk-datalake-constructs.ILambdaDataGeneratorProperties.property.runtime"></a>
-
-- *Type:* [`@aws-cdk/aws-lambda.Runtime`](#@aws-cdk/aws-lambda.Runtime)
-
----
-
-##### `schedule`<sup>Required</sup> <a name="cdk-datalake-constructs.ILambdaDataGeneratorProperties.property.schedule"></a>
-
-- *Type:* [`@aws-cdk/aws-events.Schedule`](#@aws-cdk/aws-events.Schedule)
-
----
-
-##### `timeout`<sup>Required</sup> <a name="cdk-datalake-constructs.ILambdaDataGeneratorProperties.property.timeout"></a>
-
-- *Type:* [`@aws-cdk/core.Duration`](#@aws-cdk/core.Duration)
-
----
-
 ### IPipelineProperties <a name="cdk-datalake-constructs.IPipelineProperties"></a>
 
 - *Implemented By:* [`cdk-datalake-constructs.IPipelineProperties`](#cdk-datalake-constructs.IPipelineProperties)
@@ -2624,216 +2834,37 @@ new Pipeline(props: IPipelineProperties)
 
 ##### `jdbcProperties`<sup>Optional</sup> <a name="cdk-datalake-constructs.IPipelineProperties.property.jdbcProperties"></a>
 
-- *Type:* [`cdk-datalake-constructs.IJDBCProperties`](#cdk-datalake-constructs.IJDBCProperties)
+- *Type:* [`cdk-datalake-constructs.JDBCProperties`](#cdk-datalake-constructs.JDBCProperties)
 
 ---
 
 ##### `job`<sup>Optional</sup> <a name="cdk-datalake-constructs.IPipelineProperties.property.job"></a>
 
-- *Type:* [`cdk-datalake-constructs.IJobProperties`](#cdk-datalake-constructs.IJobProperties)
+- *Type:* [`cdk-datalake-constructs.JobProperties`](#cdk-datalake-constructs.JobProperties)
 
 ---
 
 ##### `s3NotificationProps`<sup>Optional</sup> <a name="cdk-datalake-constructs.IPipelineProperties.property.s3NotificationProps"></a>
 
-- *Type:* [`cdk-datalake-constructs.IS3NotificationProperties`](#cdk-datalake-constructs.IS3NotificationProperties)
+- *Type:* [`cdk-datalake-constructs.S3NotificationProperties`](#cdk-datalake-constructs.S3NotificationProperties)
 
 ---
 
 ##### `s3Properties`<sup>Optional</sup> <a name="cdk-datalake-constructs.IPipelineProperties.property.s3Properties"></a>
 
-- *Type:* [`cdk-datalake-constructs.IS3Properties`](#cdk-datalake-constructs.IS3Properties)
+- *Type:* [`cdk-datalake-constructs.S3Properties`](#cdk-datalake-constructs.S3Properties)
 
 ---
 
 ##### `streamProperties`<sup>Optional</sup> <a name="cdk-datalake-constructs.IPipelineProperties.property.streamProperties"></a>
 
-- *Type:* [`cdk-datalake-constructs.IStreamProperties`](#cdk-datalake-constructs.IStreamProperties)
+- *Type:* [`cdk-datalake-constructs.StreamProperties`](#cdk-datalake-constructs.StreamProperties)
 
 ---
 
 ##### `table`<sup>Optional</sup> <a name="cdk-datalake-constructs.IPipelineProperties.property.table"></a>
 
-- *Type:* [`cdk-datalake-constructs.ITableProps`](#cdk-datalake-constructs.ITableProps)
-
----
-
-### IRegisteredDataSetProperties <a name="cdk-datalake-constructs.IRegisteredDataSetProperties"></a>
-
-- *Implemented By:* [`cdk-datalake-constructs.IRegisteredDataSetProperties`](#cdk-datalake-constructs.IRegisteredDataSetProperties)
-
-
-#### Properties <a name="Properties"></a>
-
-##### `databaseName`<sup>Required</sup> <a name="cdk-datalake-constructs.IRegisteredDataSetProperties.property.databaseName"></a>
-
-- *Type:* `string`
-
----
-
-##### `dataLakeAdminRoleArn`<sup>Required</sup> <a name="cdk-datalake-constructs.IRegisteredDataSetProperties.property.dataLakeAdminRoleArn"></a>
-
-- *Type:* `string`
-
----
-
-##### `dataLakeDbCreatorRoleArn`<sup>Required</sup> <a name="cdk-datalake-constructs.IRegisteredDataSetProperties.property.dataLakeDbCreatorRoleArn"></a>
-
-- *Type:* `string`
-
----
-
-##### `destinationBucketName`<sup>Required</sup> <a name="cdk-datalake-constructs.IRegisteredDataSetProperties.property.destinationBucketName"></a>
-
-- *Type:* `string`
-
----
-
-##### `destinationPrefix`<sup>Required</sup> <a name="cdk-datalake-constructs.IRegisteredDataSetProperties.property.destinationPrefix"></a>
-
-- *Type:* `string`
-
----
-
-##### `name`<sup>Required</sup> <a name="cdk-datalake-constructs.IRegisteredDataSetProperties.property.name"></a>
-
-- *Type:* `string`
-
----
-
-##### `stage`<sup>Required</sup> <a name="cdk-datalake-constructs.IRegisteredDataSetProperties.property.stage"></a>
-
-- *Type:* [`cdk-datalake-constructs.Stage`](#cdk-datalake-constructs.Stage)
-
----
-
-### IS3NotificationProperties <a name="cdk-datalake-constructs.IS3NotificationProperties"></a>
-
-- *Implemented By:* [`cdk-datalake-constructs.IS3NotificationProperties`](#cdk-datalake-constructs.IS3NotificationProperties)
-
-
-#### Properties <a name="Properties"></a>
-
-##### `event`<sup>Required</sup> <a name="cdk-datalake-constructs.IS3NotificationProperties.property.event"></a>
-
-- *Type:* [`@aws-cdk/aws-s3.EventType`](#@aws-cdk/aws-s3.EventType)
-
----
-
-##### `prefix`<sup>Required</sup> <a name="cdk-datalake-constructs.IS3NotificationProperties.property.prefix"></a>
-
-- *Type:* `string`
-
----
-
-##### `suffix`<sup>Required</sup> <a name="cdk-datalake-constructs.IS3NotificationProperties.property.suffix"></a>
-
-- *Type:* `string`
-
----
-
-### IS3Properties <a name="cdk-datalake-constructs.IS3Properties"></a>
-
-- *Implemented By:* [`cdk-datalake-constructs.IS3Properties`](#cdk-datalake-constructs.IS3Properties)
-
-
-#### Properties <a name="Properties"></a>
-
-##### `sourceBucketName`<sup>Required</sup> <a name="cdk-datalake-constructs.IS3Properties.property.sourceBucketName"></a>
-
-- *Type:* `string`
-
----
-
-##### `sourceKeys`<sup>Required</sup> <a name="cdk-datalake-constructs.IS3Properties.property.sourceKeys"></a>
-
-- *Type:* `string`[]
-
----
-
-### IStreamProperties <a name="cdk-datalake-constructs.IStreamProperties"></a>
-
-- *Implemented By:* [`cdk-datalake-constructs.IStreamProperties`](#cdk-datalake-constructs.IStreamProperties)
-
-
-#### Properties <a name="Properties"></a>
-
-##### `lambdaDataGenerator`<sup>Required</sup> <a name="cdk-datalake-constructs.IStreamProperties.property.lambdaDataGenerator"></a>
-
-- *Type:* [`cdk-datalake-constructs.ILambdaDataGeneratorProperties`](#cdk-datalake-constructs.ILambdaDataGeneratorProperties)
-
----
-
-##### `streamName`<sup>Required</sup> <a name="cdk-datalake-constructs.IStreamProperties.property.streamName"></a>
-
-- *Type:* `string`
-
----
-
-### ITableProps <a name="cdk-datalake-constructs.ITableProps"></a>
-
-- *Implemented By:* [`cdk-datalake-constructs.ITableProps`](#cdk-datalake-constructs.ITableProps)
-
-
-#### Properties <a name="Properties"></a>
-
-##### `catalogId`<sup>Required</sup> <a name="cdk-datalake-constructs.ITableProps.property.catalogId"></a>
-
-- *Type:* `string`
-
----
-
-##### `columns`<sup>Required</sup> <a name="cdk-datalake-constructs.ITableProps.property.columns"></a>
-
-- *Type:* [`@aws-cdk/core.IResolvable`](#@aws-cdk/core.IResolvable) | [`@aws-cdk/aws-glue.CfnTable.ColumnProperty`](#@aws-cdk/aws-glue.CfnTable.ColumnProperty) | [`@aws-cdk/core.IResolvable`](#@aws-cdk/core.IResolvable)[]
-
----
-
-##### `description`<sup>Required</sup> <a name="cdk-datalake-constructs.ITableProps.property.description"></a>
-
-- *Type:* `string`
-
----
-
-##### `inputFormat`<sup>Required</sup> <a name="cdk-datalake-constructs.ITableProps.property.inputFormat"></a>
-
-- *Type:* `string`
-
----
-
-##### `outputFormat`<sup>Required</sup> <a name="cdk-datalake-constructs.ITableProps.property.outputFormat"></a>
-
-- *Type:* `string`
-
----
-
-##### `parameters`<sup>Required</sup> <a name="cdk-datalake-constructs.ITableProps.property.parameters"></a>
-
-- *Type:* {[ key: string ]: `any`}
-
----
-
-##### `partitionKeys`<sup>Required</sup> <a name="cdk-datalake-constructs.ITableProps.property.partitionKeys"></a>
-
-- *Type:* [`@aws-cdk/core.IResolvable`](#@aws-cdk/core.IResolvable) | [`@aws-cdk/aws-glue.CfnTable.ColumnProperty`](#@aws-cdk/aws-glue.CfnTable.ColumnProperty) | [`@aws-cdk/core.IResolvable`](#@aws-cdk/core.IResolvable)[]
-
----
-
-##### `serdeParameters`<sup>Required</sup> <a name="cdk-datalake-constructs.ITableProps.property.serdeParameters"></a>
-
-- *Type:* {[ key: string ]: `any`}
-
----
-
-##### `serializationLibrary`<sup>Required</sup> <a name="cdk-datalake-constructs.ITableProps.property.serializationLibrary"></a>
-
-- *Type:* `string`
-
----
-
-##### `tableName`<sup>Required</sup> <a name="cdk-datalake-constructs.ITableProps.property.tableName"></a>
-
-- *Type:* `string`
+- *Type:* [`cdk-datalake-constructs.TableProps`](#cdk-datalake-constructs.TableProps)
 
 ---
 

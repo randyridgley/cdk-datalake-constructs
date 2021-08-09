@@ -92,29 +92,29 @@ export interface JobProperties {
 }
 
 export interface DataLocationProperties {
-  destinationPrefix: string;
-  destinationBucketName: string;
-  name: string;
-  databaseName: string;
+  readonly destinationPrefix: string;
+  readonly destinationBucketName: string;
+  readonly name: string;
+  readonly databaseName: string;
 }
 
 export interface DataStreamProperties {
-  name: string;
-  destinationBucketName: string;
-  destinationPrefix: string;
-  dataCatalogOwner: DataCatalogOwner;
-  streamName: string;
-  lambdaDataGenerator: LambdaDataGeneratorProperties;
+  readonly name: string;
+  readonly destinationBucketName: string;
+  readonly destinationPrefix: string;
+  readonly dataCatalogOwner: DataCatalogOwner;
+  readonly streamName: string;
+  readonly lambdaDataGenerator: LambdaDataGeneratorProperties;
 }
 
 export interface LambdaDataGeneratorProperties {
-  code: lambda.Code;
-  handler: string;
-  timeout: cdk.Duration;
-  runtime: lambda.Runtime;
-  functionName: string;
-  schedule: events.Schedule;
-  ruleName: string;
+  readonly code: lambda.Code;
+  readonly handler: string;
+  readonly timeout: cdk.Duration;
+  readonly runtime: lambda.Runtime;
+  readonly functionName: string;
+  readonly schedule: events.Schedule;
+  readonly ruleName: string;
 }
 
 export interface DataCatalogOwner {

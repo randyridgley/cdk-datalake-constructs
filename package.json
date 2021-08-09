@@ -13,9 +13,6 @@
     "build": "npx projen build",
     "test:watch": "npx projen test:watch",
     "test:update": "npx projen test:update",
-    "bump": "npx projen bump",
-    "unbump": "npx projen unbump",
-    "publish:github": "npx projen publish:github",
     "upgrade": "npx projen upgrade",
     "upgrade-projen": "npx projen upgrade-projen",
     "default": "npx projen default",
@@ -23,14 +20,8 @@
     "package": "npx projen package",
     "eslint": "npx projen eslint",
     "compat": "npx projen compat",
-    "publish:npm": "npx projen publish:npm",
-    "publish:maven": "npx projen publish:maven",
-    "publish:pypi": "npx projen publish:pypi",
-    "publish:nuget": "npx projen publish:nuget",
-    "publish:golang": "npx projen publish:golang",
     "docgen": "npx projen docgen",
     "coverage": "npx projen coverage",
-    "release": "npx projen release",
     "projen": "npx projen"
   },
   "author": {
@@ -57,7 +48,6 @@
     "json-schema": "^0.3.0",
     "npm-check-updates": "^11",
     "projen": "^0.27.27",
-    "standard-version": "^9",
     "ts-jest": "^27.0.4",
     "typescript": "^4.3.5"
   },
@@ -91,6 +81,7 @@
     "@aws-cdk/aws-stepfunctions-tasks": "^1.117.0",
     "@aws-cdk/core": "^1.117.0",
     "@aws-cdk/custom-resources": "^1.117.0",
+    "@aws-cdk/region-info": "^1.117.0",
     "constructs": "^3.2.27"
   },
   "dependencies": {
@@ -122,7 +113,8 @@
     "@aws-cdk/aws-stepfunctions": "^1.117.0",
     "@aws-cdk/aws-stepfunctions-tasks": "^1.117.0",
     "@aws-cdk/core": "^1.117.0",
-    "@aws-cdk/custom-resources": "^1.117.0"
+    "@aws-cdk/custom-resources": "^1.117.0",
+    "@aws-cdk/region-info": "^1.117.0"
   },
   "bundledDependencies": [],
   "keywords": [
@@ -196,13 +188,6 @@
       "python": {
         "distName": "cdk-datalake-constructs",
         "module": "cdk_datalake_constructs"
-      },
-      "dotnet": {
-        "namespace": "Cdk.Datalake.Constructs",
-        "packageId": "Cdk.Datalake.Constructs"
-      },
-      "go": {
-        "moduleName": "github.com/randyridgley/cdk-datalake-constructs"
       }
     },
     "tsc": {
