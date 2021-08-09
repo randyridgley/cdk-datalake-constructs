@@ -2,7 +2,7 @@
   "dependencies": [
     {
       "name": "@aws-cdk/assert",
-      "version": "^1.117.0",
+      "version": "^1.110.0",
       "type": "build"
     },
     {
@@ -91,152 +91,152 @@
     },
     {
       "name": "@aws-cdk/aws-athena",
-      "version": "^1.117.0",
+      "version": "^1.110.0",
       "type": "peer"
     },
     {
       "name": "@aws-cdk/aws-cloudwatch",
-      "version": "^1.117.0",
+      "version": "^1.110.0",
       "type": "peer"
     },
     {
       "name": "@aws-cdk/aws-dynamodb",
-      "version": "^1.117.0",
+      "version": "^1.110.0",
       "type": "peer"
     },
     {
       "name": "@aws-cdk/aws-ec2",
-      "version": "^1.117.0",
+      "version": "^1.110.0",
       "type": "peer"
     },
     {
       "name": "@aws-cdk/aws-emr",
-      "version": "^1.117.0",
+      "version": "^1.110.0",
       "type": "peer"
     },
     {
       "name": "@aws-cdk/aws-events-targets",
-      "version": "^1.117.0",
+      "version": "^1.110.0",
       "type": "peer"
     },
     {
       "name": "@aws-cdk/aws-events",
-      "version": "^1.117.0",
+      "version": "^1.110.0",
       "type": "peer"
     },
     {
       "name": "@aws-cdk/aws-glue",
-      "version": "^1.117.0",
+      "version": "^1.110.0",
       "type": "peer"
     },
     {
       "name": "@aws-cdk/aws-iam",
-      "version": "^1.117.0",
+      "version": "^1.110.0",
       "type": "peer"
     },
     {
       "name": "@aws-cdk/aws-kinesis",
-      "version": "^1.117.0",
+      "version": "^1.110.0",
       "type": "peer"
     },
     {
       "name": "@aws-cdk/aws-kinesisanalytics",
-      "version": "^1.117.0",
+      "version": "^1.110.0",
       "type": "peer"
     },
     {
       "name": "@aws-cdk/aws-kinesisfirehose",
-      "version": "^1.117.0",
+      "version": "^1.110.0",
       "type": "peer"
     },
     {
       "name": "@aws-cdk/aws-kms",
-      "version": "^1.117.0",
+      "version": "^1.110.0",
       "type": "peer"
     },
     {
       "name": "@aws-cdk/aws-lakeformation",
-      "version": "^1.117.0",
+      "version": "^1.110.0",
       "type": "peer"
     },
     {
       "name": "@aws-cdk/aws-lambda-nodejs",
-      "version": "^1.117.0",
+      "version": "^1.110.0",
       "type": "peer"
     },
     {
       "name": "@aws-cdk/aws-lambda",
-      "version": "^1.117.0",
+      "version": "^1.110.0",
       "type": "peer"
     },
     {
       "name": "@aws-cdk/aws-logs",
-      "version": "^1.117.0",
+      "version": "^1.110.0",
       "type": "peer"
     },
     {
       "name": "@aws-cdk/aws-s3-assets",
-      "version": "^1.117.0",
+      "version": "^1.110.0",
       "type": "peer"
     },
     {
       "name": "@aws-cdk/aws-s3-deployment",
-      "version": "^1.117.0",
+      "version": "^1.110.0",
       "type": "peer"
     },
     {
       "name": "@aws-cdk/aws-s3-notifications",
-      "version": "^1.117.0",
+      "version": "^1.110.0",
       "type": "peer"
     },
     {
       "name": "@aws-cdk/aws-s3",
-      "version": "^1.117.0",
+      "version": "^1.110.0",
       "type": "peer"
     },
     {
       "name": "@aws-cdk/aws-sagemaker",
-      "version": "^1.117.0",
+      "version": "^1.110.0",
       "type": "peer"
     },
     {
       "name": "@aws-cdk/aws-sam",
-      "version": "^1.117.0",
+      "version": "^1.110.0",
       "type": "peer"
     },
     {
       "name": "@aws-cdk/aws-servicecatalog",
-      "version": "^1.117.0",
+      "version": "^1.110.0",
       "type": "peer"
     },
     {
       "name": "@aws-cdk/aws-sns",
-      "version": "^1.117.0",
+      "version": "^1.110.0",
       "type": "peer"
     },
     {
       "name": "@aws-cdk/aws-stepfunctions-tasks",
-      "version": "^1.117.0",
+      "version": "^1.110.0",
       "type": "peer"
     },
     {
       "name": "@aws-cdk/aws-stepfunctions",
-      "version": "^1.117.0",
+      "version": "^1.110.0",
       "type": "peer"
     },
     {
       "name": "@aws-cdk/core",
-      "version": "^1.117.0",
+      "version": "^1.110.0",
       "type": "peer"
     },
     {
       "name": "@aws-cdk/custom-resources",
-      "version": "^1.117.0",
+      "version": "^1.110.0",
       "type": "peer"
     },
     {
       "name": "@aws-cdk/region-info",
-      "version": "^1.117.0",
+      "version": "^1.110.0",
       "type": "peer"
     },
     {
@@ -246,152 +246,152 @@
     },
     {
       "name": "@aws-cdk/aws-athena",
-      "version": "^1.117.0",
+      "version": "^1.110.0",
       "type": "runtime"
     },
     {
       "name": "@aws-cdk/aws-cloudwatch",
-      "version": "^1.117.0",
+      "version": "^1.110.0",
       "type": "runtime"
     },
     {
       "name": "@aws-cdk/aws-dynamodb",
-      "version": "^1.117.0",
+      "version": "^1.110.0",
       "type": "runtime"
     },
     {
       "name": "@aws-cdk/aws-ec2",
-      "version": "^1.117.0",
+      "version": "^1.110.0",
       "type": "runtime"
     },
     {
       "name": "@aws-cdk/aws-emr",
-      "version": "^1.117.0",
+      "version": "^1.110.0",
       "type": "runtime"
     },
     {
       "name": "@aws-cdk/aws-events-targets",
-      "version": "^1.117.0",
+      "version": "^1.110.0",
       "type": "runtime"
     },
     {
       "name": "@aws-cdk/aws-events",
-      "version": "^1.117.0",
+      "version": "^1.110.0",
       "type": "runtime"
     },
     {
       "name": "@aws-cdk/aws-glue",
-      "version": "^1.117.0",
+      "version": "^1.110.0",
       "type": "runtime"
     },
     {
       "name": "@aws-cdk/aws-iam",
-      "version": "^1.117.0",
+      "version": "^1.110.0",
       "type": "runtime"
     },
     {
       "name": "@aws-cdk/aws-kinesis",
-      "version": "^1.117.0",
+      "version": "^1.110.0",
       "type": "runtime"
     },
     {
       "name": "@aws-cdk/aws-kinesisanalytics",
-      "version": "^1.117.0",
+      "version": "^1.110.0",
       "type": "runtime"
     },
     {
       "name": "@aws-cdk/aws-kinesisfirehose",
-      "version": "^1.117.0",
+      "version": "^1.110.0",
       "type": "runtime"
     },
     {
       "name": "@aws-cdk/aws-kms",
-      "version": "^1.117.0",
+      "version": "^1.110.0",
       "type": "runtime"
     },
     {
       "name": "@aws-cdk/aws-lakeformation",
-      "version": "^1.117.0",
+      "version": "^1.110.0",
       "type": "runtime"
     },
     {
       "name": "@aws-cdk/aws-lambda-nodejs",
-      "version": "^1.117.0",
+      "version": "^1.110.0",
       "type": "runtime"
     },
     {
       "name": "@aws-cdk/aws-lambda",
-      "version": "^1.117.0",
+      "version": "^1.110.0",
       "type": "runtime"
     },
     {
       "name": "@aws-cdk/aws-logs",
-      "version": "^1.117.0",
+      "version": "^1.110.0",
       "type": "runtime"
     },
     {
       "name": "@aws-cdk/aws-s3-assets",
-      "version": "^1.117.0",
+      "version": "^1.110.0",
       "type": "runtime"
     },
     {
       "name": "@aws-cdk/aws-s3-deployment",
-      "version": "^1.117.0",
+      "version": "^1.110.0",
       "type": "runtime"
     },
     {
       "name": "@aws-cdk/aws-s3-notifications",
-      "version": "^1.117.0",
+      "version": "^1.110.0",
       "type": "runtime"
     },
     {
       "name": "@aws-cdk/aws-s3",
-      "version": "^1.117.0",
+      "version": "^1.110.0",
       "type": "runtime"
     },
     {
       "name": "@aws-cdk/aws-sagemaker",
-      "version": "^1.117.0",
+      "version": "^1.110.0",
       "type": "runtime"
     },
     {
       "name": "@aws-cdk/aws-sam",
-      "version": "^1.117.0",
+      "version": "^1.110.0",
       "type": "runtime"
     },
     {
       "name": "@aws-cdk/aws-servicecatalog",
-      "version": "^1.117.0",
+      "version": "^1.110.0",
       "type": "runtime"
     },
     {
       "name": "@aws-cdk/aws-sns",
-      "version": "^1.117.0",
+      "version": "^1.110.0",
       "type": "runtime"
     },
     {
       "name": "@aws-cdk/aws-stepfunctions-tasks",
-      "version": "^1.117.0",
+      "version": "^1.110.0",
       "type": "runtime"
     },
     {
       "name": "@aws-cdk/aws-stepfunctions",
-      "version": "^1.117.0",
+      "version": "^1.110.0",
       "type": "runtime"
     },
     {
       "name": "@aws-cdk/core",
-      "version": "^1.117.0",
+      "version": "^1.110.0",
       "type": "runtime"
     },
     {
       "name": "@aws-cdk/custom-resources",
-      "version": "^1.117.0",
+      "version": "^1.110.0",
       "type": "runtime"
     },
     {
       "name": "@aws-cdk/region-info",
-      "version": "^1.117.0",
+      "version": "^1.110.0",
       "type": "runtime"
     }
   ],

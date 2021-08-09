@@ -1,11 +1,13 @@
 const { AwsCdkConstructLibrary, ProjectType, NpmAccess, NodePackageManager, DependenciesUpgradeMechanism, Stability } = require('projen');
 
+const CDK_VERSION = '1.110.0';
+
 const project = new AwsCdkConstructLibrary({
   author: 'Randy Ridgley',
   authorAddress: 'randy.ridgley@gmail.com',
   description: 'AWS CDK Constructs that can be used to create datalakes/meshes and more',
   stability: Stability.EXPERIMENTAL,
-  cdkVersion: '1.117.0',
+  cdkVersion: CDK_VERSION,
   defaultReleaseBranch: 'main',
   name: 'cdk-datalake-constructs',
   repositoryUrl: 'https://github.com/randyridgley/cdk-datalake-constructs.git',
@@ -124,6 +126,7 @@ const common_exclude = [
 ];
 project.npmignore.exclude(...common_exclude, 'maven_release*');
 project.gitignore.exclude(...common_exclude);
+
 
 // project.gitpod.addTasks({
 //   name: 'Setup',
