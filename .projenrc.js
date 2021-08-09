@@ -72,7 +72,7 @@ const project = new AwsCdkConstructLibrary({
   eslint: true,
   mergify: true,
   antitamper: true,
-  releaseWorkflow: false,
+  releaseWorkflow: true,
   buildWorkflow: true,
   packageManager: NodePackageManager.NPM,
   npmRegistryUrl: 'https://npm.pkg.github.com',
