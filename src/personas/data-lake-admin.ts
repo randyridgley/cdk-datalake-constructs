@@ -1,0 +1,117 @@
+import * as iam from '@aws-cdk/aws-iam';
+import * as lf from '@aws-cdk/aws-lakeformation';
+import * as cdk from '@aws-cdk/core';
+
+export interface DataLakeAdministratorProps {
+  readonly name: string;
+}
+
+export class DataLakeAdministrator extends cdk.Construct {
+  public readonly role: iam.IRole;
+
+  constructor(scope: cdk.Construct, id: string, props: DataLakeAdministratorProps) {
+    super(scope, id);
+
+    const accountId = cdk.Stack.of(this).account;
+
+    this.role = new iam.Role(this, 'datalake-administrator-role', {
+      roleName: props.name,
+      assumedBy: new iam.CompositePrincipal(
+        new iam.ServicePrincipal('lakeformation.amazonaws.com'),
+        new iam.ServicePrincipal('lambda.amazonaws.com'),
+        new iam.ServicePrincipal('sagemaker.amazonaws.com'),
+      ), // hack to allow Lambda function provide LF fuctionality to add tags
+      managedPolicies: [
+        iam.ManagedPolicy.fromAwsManagedPolicyName('AWSLakeFormationDataAdmin'),
+        iam.ManagedPolicy.fromAwsManagedPolicyName('AWSGlueConsoleFullAccess'),
+        iam.ManagedPolicy.fromAwsManagedPolicyName('CloudWatchLogsReadOnlyAccess'),
+        iam.ManagedPolicy.fromAwsManagedPolicyName('AWSLakeFormationCrossAccountManager'),
+        iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonAthenaFullAccess'),
+        iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonSageMakerFullAccess'),
+      ],
+    });
+
+    this.role.attachInlinePolicy(new iam.Policy(this, 'datalake-administrator-basic', {
+      statements: [
+        new iam.PolicyStatement({
+          effect: iam.Effect.ALLOW,
+          actions: [
+            'iam:CreateServiceLinkedRole',
+          ],
+          resources: ['*'],
+          conditions: {
+            StringEquals: {
+              'iam:AWSServiceName': 'lakeformation.amazonaws.com',
+            },
+          },
+        }),
+        new iam.PolicyStatement({
+          effect: iam.Effect.ALLOW,
+          actions: [
+            'iam:PutRolePolicy',
+          ],
+          resources: [`arn:aws:iam::${accountId}:role/aws-service-role/lakeformation.amazonaws.com/AWSServiceRoleForLakeFormationDataAccess`],
+        }),
+      ],
+    }));
+
+    this.role.attachInlinePolicy(new iam.Policy(this, 'datalake-administrator-lambda-writeCW-logs', {
+      statements: [
+        new iam.PolicyStatement({
+          resources: ['*'],
+          actions: [
+            'logs:CreateLogGroup',
+            'logs:CreateLogStream',
+            'logs:PutLogEvents',
+          ],
+          effect: iam.Effect.ALLOW,
+          sid: 'AllowLogging',
+        }),
+      ],
+    }));
+
+    this.role.attachInlinePolicy(new iam.Policy(this, 'datalake-administrator-TBAC', {
+      statements: [
+        new iam.PolicyStatement({
+          effect: iam.Effect.ALLOW,
+          actions: [
+            'lakeformation:AddLFTagsToResource',
+            'lakeformation:RemoveLFTagsFromResource',
+            'lakeformation:GetResourceLFTags',
+            'lakeformation:ListLFTags',
+            'lakeformation:CreateLFTag',
+            'lakeformation:GetLFTag',
+            'lakeformation:UpdateLFTag',
+            'lakeformation:DeleteLFTag',
+            'lakeformation:SearchTablesByLFTags',
+            'lakeformation:SearchDatabasesByLFTags',
+          ],
+          resources: ['*'],
+        }),
+      ],
+    }));
+
+    this.role.attachInlinePolicy(new iam.Policy(this, 'datalake-administrator-cross-account', {
+      statements: [
+        new iam.PolicyStatement({
+          effect: iam.Effect.ALLOW,
+          actions: [
+            'ram:AcceptResourceShareInvitation',
+            'ram:RejectResourceShareInvitation',
+            'ec2:DescribeAvailabilityZones',
+            'ram:EnableSharingWithAwsOrganization',
+          ],
+          resources: ['*'],
+        }),
+      ],
+    }));
+
+    const lfAdminRole = new lf.CfnDataLakeSettings(this, 'lf-datalake-role-admin-settings', {
+      admins: [{
+        dataLakePrincipalIdentifier: this.role.roleArn,
+      }],
+    });
+    lfAdminRole.node.addDependency(this.role);
+    new cdk.CfnOutput(this, 'DataLakeAdminRole', { value: this.role.roleName });
+  }
+}
