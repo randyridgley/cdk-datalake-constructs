@@ -56,6 +56,10 @@
       "type": "build"
     },
     {
+      "name": "jsii-docgen",
+      "type": "build"
+    },
+    {
       "name": "jsii-pacmak",
       "type": "build"
     },
@@ -69,13 +73,7 @@
       "type": "build"
     },
     {
-      "name": "npm-check-updates",
-      "version": "^11",
-      "type": "build"
-    },
-    {
       "name": "projen",
-      "version": "^0.18.16",
       "type": "build"
     },
     {

@@ -3,10 +3,13 @@
 /.eslintrc.json
 /.github
 /.idea
+/.mergify.yml
 /.projen
 /.projenrc.js
 /.vscode
 /coverage
+/dist/changelog.md
+/dist/version.txt
 /src
 /test
 /test-reports/
