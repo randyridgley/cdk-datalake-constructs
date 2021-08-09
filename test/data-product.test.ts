@@ -12,14 +12,13 @@ const taxiPipes: Array<Pipeline> = [
   pipelines.GreenPipeline(dataProductAccount, centralCatalogAccount, region, stage),
 ];
 
-const dataProducts: Array<DataProduct> = [{
-  pipelines: taxiPipes,
-  accountId: dataProductAccount,
-  databaseName: databaseName,
-}];
-
 test('Check Resources', () => {
-  expect(dataProducts[0].pipelines.length).toEqual(2);
-  expect(dataProducts[0].accountId).toMatch(dataProductAccount);
-  expect(dataProducts[0].databaseName).toMatch(databaseName);
+  const dataProduct = new DataProduct({
+    pipelines: taxiPipes,
+    accountId: dataProductAccount,
+    databaseName: databaseName,
+  });
+  expect(dataProduct.pipelines.length).toEqual(2);
+  expect(dataProduct.accountId).toMatch(dataProductAccount);
+  expect(dataProduct.databaseName).toMatch(databaseName);
 });

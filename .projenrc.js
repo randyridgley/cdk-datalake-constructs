@@ -1,6 +1,6 @@
 const { AwsCdkConstructLibrary, ProjectType, NpmAccess, NodePackageManager, DependenciesUpgradeMechanism, Stability } = require('projen');
 
-const CDK_VERSION = '1.110.0';
+const CDK_VERSION = '1.117.0';
 
 const project = new AwsCdkConstructLibrary({
   author: 'Randy Ridgley',
@@ -14,12 +14,12 @@ const project = new AwsCdkConstructLibrary({
   projectType: ProjectType.LIB,
   jsiiFqn: 'projen.AwsCdkConstructLibrary',
   npmAccess: NpmAccess.PUBLIC,
-  packageManager: NodePackageManager.NPM,
+  packageManager: NodePackageManager.YARN,
   cdkAssert: true,
   licensed: true,
   license: 'MIT',
   packageName: 'cdk-datalake-constructs',
-  gitpod: false,
+  gitpod: true,
   cdkDependencies: [
     '@aws-cdk/core',
     '@aws-cdk/aws-athena',
@@ -59,6 +59,11 @@ const project = new AwsCdkConstructLibrary({
     'src/etl/glue-notebook.ts',
     'workflows/*',
   ],
+  devDeps: [
+    'ts-node',
+    'constructs',
+    'source-map-support',
+  ],
   projenUpgradeSecret: 'PROJEN_GITHUB_TOKEN',
   depsUpgrade: DependenciesUpgradeMechanism.githubWorkflow({
     workflowOptions: {
@@ -83,11 +88,11 @@ const project = new AwsCdkConstructLibrary({
     distName: 'cdk-datalake-constructs',
     module: 'cdk_datalake_constructs',
   },
-  publishToMaven: {
-    javaPackage: 'io.github.randyridgley.cdk.datalake.constructs',
-    mavenGroupId: 'io.github.randyridgley.cdk.datalake.constructs',
-    mavenArtifactId: 'cdk-datalake-constructs',
-  },
+  // publishToMaven: {
+  //   javaPackage: 'io.github.randyridgley.cdk.datalake.constructs',
+  //   mavenGroupId: 'io.github.randyridgley.cdk.datalake.constructs',
+  //   mavenArtifactId: 'cdk-datalake-constructs',
+  // },
   // publishToGo: {
   //   gitUserName: 'randyridgley',
   //   gitUserEmail: 'randy.ridgley@gmail.com',
@@ -119,7 +124,7 @@ const project = new AwsCdkConstructLibrary({
   ],
 });
 
-// project.tasks.tryFind('package').prependExec('go env -w GOSUMDB=off');
+project.tasks.tryFind('package').prependExec('go env -w GOSUMDB=off');
 
 const common_exclude = [
   'cdk.out', 'cdk.context.json', 'images', 'yarn-error.log', '.DS_Store', 'coverage',
@@ -127,13 +132,14 @@ const common_exclude = [
 project.npmignore.exclude(...common_exclude, 'maven_release*');
 project.gitignore.exclude(...common_exclude);
 
+project.gitpod.addTasks({
+  name: 'Setup',
+  init: 'yarn install',
+  command: 'npx projen build',
+});
 
-// project.gitpod.addTasks({
-//   name: 'Setup',
-//   init: 'yarn install',
-//   command: 'npx projen build',
-// });
 const openCoverage = project.addTask('coverage');
 openCoverage.exec('npx projen test && open coverage/lcov-report/index.html');
+project.npmignore.exclude('examples');
 
 project.synth();

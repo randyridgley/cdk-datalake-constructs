@@ -50,6 +50,7 @@ yarn-error.log*
 !/.github/workflows/stale.yml
 !/.github/workflows/upgrade-projen.yml
 !/.github/workflows/upgrade.yml
+!/.gitpod.yml
 !/.mergify.yml
 !/.npmignore
 !/.projen/deps.json
