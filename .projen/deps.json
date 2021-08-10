@@ -133,10 +133,6 @@
       "type": "build"
     },
     {
-      "name": "constructs",
-      "type": "build"
-    },
-    {
       "name": "eslint",
       "type": "build"
     },
@@ -191,20 +187,12 @@
       "type": "build"
     },
     {
-      "name": "source-map-support",
-      "type": "build"
-    },
-    {
       "name": "standard-version",
       "version": "^9",
       "type": "build"
     },
     {
       "name": "ts-jest",
-      "type": "build"
-    },
-    {
-      "name": "ts-node",
       "type": "build"
     },
     {

@@ -114,11 +114,11 @@ const project = new AwsCdkConstructLibrary({
     'workflows/*',
     '.DS_Store',
   ],
-  devDeps: [
-    'ts-node',
-    'constructs',
-    'source-map-support',
-  ],
+  // devDeps: [
+  //   'ts-node',
+  //   'constructs',
+  //   'source-map-support',
+  // ],
   projenUpgradeSecret: 'PROJEN_GITHUB_TOKEN',
   depsUpgrade: DependenciesUpgradeMechanism.githubWorkflow({
     workflowOptions: {
