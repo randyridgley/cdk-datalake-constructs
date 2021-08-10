@@ -24,6 +24,7 @@
     "eslint": "npx projen eslint",
     "compat": "npx projen compat",
     "publish:pypi": "npx projen publish:pypi",
+    "publish:golang": "npx projen publish:golang",
     "docgen": "npx projen docgen",
     "coverage": "npx projen coverage",
     "release": "npx projen release",
@@ -272,6 +273,9 @@
       "python": {
         "distName": "cdk-datalake-constructs",
         "module": "cdk_datalake_constructs"
+      },
+      "go": {
+        "moduleName": "github.com/randyridgley/cdk-datalake-constructs"
       }
     },
     "tsc": {

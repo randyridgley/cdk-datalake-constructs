@@ -114,11 +114,6 @@ const project = new AwsCdkConstructLibrary({
     'workflows/*',
     '.DS_Store',
   ],
-  // devDeps: [
-  //   'ts-node',
-  //   'constructs',
-  //   'source-map-support',
-  // ],
   projenUpgradeSecret: 'PROJEN_GITHUB_TOKEN',
   depsUpgrade: DependenciesUpgradeMechanism.githubWorkflow({
     workflowOptions: {
@@ -138,7 +133,8 @@ const project = new AwsCdkConstructLibrary({
   buildWorkflow: true,
   minNodeVersion: '14.15.0',
   npmRegistryUrl: 'https://npm.pkg.github.com',
-  npmTokenSecret: 'GITHUB_TOKEN',
+  npmTokenSecret: 'NPM_TOKEN',
+  releaseToNpm: true,
   publishToPypi: {
     distName: 'cdk-datalake-constructs',
     module: 'cdk_datalake_constructs',
@@ -148,11 +144,11 @@ const project = new AwsCdkConstructLibrary({
   //   mavenGroupId: 'io.github.randyridgley.cdk.datalake.constructs',
   //   mavenArtifactId: 'cdk-datalake-constructs',
   // },
-  // publishToGo: {
-  //   gitUserName: 'randyridgley',
-  //   gitUserEmail: 'randy.ridgley@gmail.com',
-  //   moduleName: 'github.com/randyridgley/cdk-datalake-constructs',
-  // },
+  publishToGo: {
+    gitUserName: 'randyridgley',
+    gitUserEmail: 'randy.ridgley@gmail.com',
+    moduleName: 'github.com/randyridgley/cdk-datalake-constructs',
+  },
   // publishToNuget: {
   //   dotNetNamespace: 'Cdk.Datalake.Constructs',
   //   packageId: 'Cdk.Datalake.Constructs',
