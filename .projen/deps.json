@@ -11,7 +11,7 @@
     },
     {
       "name": "@types/node",
-      "version": "^10.17.0",
+      "version": "^14.0.0",
       "type": "build"
     },
     {
@@ -82,11 +82,6 @@
     },
     {
       "name": "source-map-support",
-      "type": "build"
-    },
-    {
-      "name": "standard-version",
-      "version": "^9",
       "type": "build"
     },
     {

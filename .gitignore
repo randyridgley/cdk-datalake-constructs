@@ -14,8 +14,6 @@
 .yarn-integrity
 /coverage
 /dist
-/dist/changelog.md
-/dist/version.txt
 /lib
 /test-reports/
 build/Release
@@ -45,8 +43,6 @@ yarn-error.log*
 !/.gitattributes
 !/.github/pull_request_template.md
 !/.github/workflows/auto-approve.yml
-!/.github/workflows/build.yml
-!/.github/workflows/release.yml
 !/.github/workflows/stale.yml
 !/.github/workflows/upgrade-projen.yml
 !/.github/workflows/upgrade.yml
