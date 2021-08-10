@@ -266,7 +266,7 @@ export class DataLake extends cdk.Construct {
     // need the latest boto3 library to utilize API calls that have no CFN equivalent call i.e. createLFTags
     const upgradeBoto3Layer = new lambda.LayerVersion(this, 'upgrade-boto3', {
       compatibleRuntimes: [lambda.Runtime.PYTHON_3_7],
-      code: lambda.Code.fromAsset(path.join(__dirname, 'lambda-layer/boto3'), {
+      code: lambda.Code.fromAsset(path.join(__dirname, './lambda-layer/boto3'), {
         bundling: {
           image: lambda.Runtime.PYTHON_3_7.bundlingImage,
           command: [
