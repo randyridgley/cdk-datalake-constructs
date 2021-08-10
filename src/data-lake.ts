@@ -7,7 +7,7 @@ import * as glue from '@aws-cdk/aws-glue';
 import * as iam from '@aws-cdk/aws-iam';
 import * as lf from '@aws-cdk/aws-lakeformation';
 import * as lambda from '@aws-cdk/aws-lambda';
-import { PythonLayerVersion } from '@aws-cdk/aws-lambda-python';
+import { PythonFunction, PythonLayerVersion } from '@aws-cdk/aws-lambda-python';
 import * as logs from '@aws-cdk/aws-logs';
 import * as s3 from '@aws-cdk/aws-s3';
 import * as cdk from '@aws-cdk/core';
@@ -264,10 +264,10 @@ export class DataLake extends cdk.Construct {
     });
     new cdk.CfnOutput(this, 'DataLakeAthenaWorkgroup', { value: this.athenaWorkgroup.name });
 
-    const upgradeBoto3Layer = new PythonLayerVersion(this, 'python-layer', {
-      entry: path.join(__dirname, './lambda-layer/boto3'),
-      compatibleRuntimes: [lambda.Runtime.PYTHON_3_7, lambda.Runtime.PYTHON_3_8],
-    });
+    // const upgradeBoto3Layer = new PythonLayerVersion(this, 'python-layer', {
+    //   entry: path.join(__dirname, './lambda-layer/boto3'),
+    //   compatibleRuntimes: [lambda.Runtime.PYTHON_3_7, lambda.Runtime.PYTHON_3_8],
+    // });
     // // need the latest boto3 library to utilize API calls that have no CFN equivalent call i.e. createLFTags
     // const upgradeBoto3Layer = new lambda.LayerVersion(this, 'upgrade-boto3', {
     //   compatibleRuntimes: [lambda.Runtime.PYTHON_3_7],
@@ -285,11 +285,11 @@ export class DataLake extends cdk.Construct {
     // });
 
     if (props.policyTags) {
-      this.createPolicyTagsCustomResource(upgradeBoto3Layer, props.policyTags, this.datalakeAdminRole);
+      this.createPolicyTagsCustomResource(props.policyTags, this.datalakeAdminRole);
     }
 
     if (this.crossAccountAccess) {
-      this.createCrossAccountGlueCatalog(upgradeBoto3Layer);
+      this.createCrossAccountGlueCatalog();
     }
 
     if (props.dataProducts && props.dataProducts.length > 0) {
@@ -563,12 +563,11 @@ export class DataLake extends cdk.Construct {
     }
   }
 
-  private createPolicyTagsCustomResource(latestBoto: lambda.LayerVersion, policyTags: { [name: string]: string }, datalakeAdminRole: iam.IRole) {
-    const onEvent = new lambda.Function(this, 'create-policy-tags-handler', {
+  private createPolicyTagsCustomResource(policyTags: { [name: string]: string }, datalakeAdminRole: iam.IRole) {
+    const onEvent = new PythonFunction(this, 'create-policy-tags-handler', {
       runtime: lambda.Runtime.PYTHON_3_7,
-      code: lambda.Code.fromAsset(path.join(__dirname, 'lambda/create-tags-handler')),
+      entry: path.join(__dirname, 'lambda/create-tags-handler'),
       handler: 'index.on_event',
-      layers: [latestBoto],
       role: this.datalakeAdminRole,
       functionName: buildLambdaFunctionName({
         name: 'create-tags',
@@ -596,12 +595,11 @@ export class DataLake extends cdk.Construct {
     outputs.node.addDependency(datalakeAdminRole);
   }
 
-  private createCrossAccountGlueCatalog(latestBoto: lambda.LayerVersion) {
-    const onCatalogEvent = new lambda.Function(this, 'enable-hybrid-catalog-handler', {
+  private createCrossAccountGlueCatalog() {
+    const onCatalogEvent = new PythonFunction(this, 'enable-hybrid-catalog-handler', {
       runtime: lambda.Runtime.PYTHON_3_7,
-      code: lambda.Code.fromAsset(path.join(__dirname, 'lambda/enable-hybrid-catalog')),
+      entry: path.join(__dirname, 'lambda/enable-hybrid-catalog'),
       handler: 'index.on_event',
-      layers: [latestBoto],
       role: this.datalakeAdminRole,
       functionName: buildLambdaFunctionName({
         name: 'create-catalog',
