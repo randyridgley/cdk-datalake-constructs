@@ -1,4 +1,4 @@
-const { AwsCdkConstructLibrary, ProjectType, NpmAccess, NodePackageManager, DependenciesUpgradeMechanism, Stability } = require('projen');
+const { AwsCdkConstructLibrary, ProjectType, NpmAccess, DependenciesUpgradeMechanism, Stability } = require('projen');
 
 const CDK_VERSION = '1.117.0';
 
