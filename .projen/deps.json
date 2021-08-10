@@ -102,6 +102,16 @@
       "type": "build"
     },
     {
+      "name": "@aws-cdk/aws-apigateway",
+      "version": "^1.117.0",
+      "type": "peer"
+    },
+    {
+      "name": "@aws-cdk/aws-applicationautoscaling",
+      "version": "^1.117.0",
+      "type": "peer"
+    },
+    {
       "name": "@aws-cdk/aws-athena",
       "version": "^1.117.0",
       "type": "peer"
@@ -112,12 +122,37 @@
       "type": "peer"
     },
     {
+      "name": "@aws-cdk/aws-codebuild",
+      "version": "^1.117.0",
+      "type": "peer"
+    },
+    {
+      "name": "@aws-cdk/aws-codepipeline",
+      "version": "^1.117.0",
+      "type": "peer"
+    },
+    {
       "name": "@aws-cdk/aws-dynamodb",
       "version": "^1.117.0",
       "type": "peer"
     },
     {
       "name": "@aws-cdk/aws-ec2",
+      "version": "^1.117.0",
+      "type": "peer"
+    },
+    {
+      "name": "@aws-cdk/aws-ecr-assets",
+      "version": "^1.117.0",
+      "type": "peer"
+    },
+    {
+      "name": "@aws-cdk/aws-ecr",
+      "version": "^1.117.0",
+      "type": "peer"
+    },
+    {
+      "name": "@aws-cdk/aws-ecs",
       "version": "^1.117.0",
       "type": "peer"
     },
@@ -222,7 +257,17 @@
       "type": "peer"
     },
     {
+      "name": "@aws-cdk/aws-signer",
+      "version": "^1.117.0",
+      "type": "peer"
+    },
+    {
       "name": "@aws-cdk/aws-sns",
+      "version": "^1.117.0",
+      "type": "peer"
+    },
+    {
+      "name": "@aws-cdk/aws-sqs",
       "version": "^1.117.0",
       "type": "peer"
     },
@@ -257,6 +302,16 @@
       "type": "peer"
     },
     {
+      "name": "@aws-cdk/aws-apigateway",
+      "version": "^1.117.0",
+      "type": "runtime"
+    },
+    {
+      "name": "@aws-cdk/aws-applicationautoscaling",
+      "version": "^1.117.0",
+      "type": "runtime"
+    },
+    {
       "name": "@aws-cdk/aws-athena",
       "version": "^1.117.0",
       "type": "runtime"
@@ -267,12 +322,37 @@
       "type": "runtime"
     },
     {
+      "name": "@aws-cdk/aws-codebuild",
+      "version": "^1.117.0",
+      "type": "runtime"
+    },
+    {
+      "name": "@aws-cdk/aws-codepipeline",
+      "version": "^1.117.0",
+      "type": "runtime"
+    },
+    {
       "name": "@aws-cdk/aws-dynamodb",
       "version": "^1.117.0",
       "type": "runtime"
     },
     {
       "name": "@aws-cdk/aws-ec2",
+      "version": "^1.117.0",
+      "type": "runtime"
+    },
+    {
+      "name": "@aws-cdk/aws-ecr-assets",
+      "version": "^1.117.0",
+      "type": "runtime"
+    },
+    {
+      "name": "@aws-cdk/aws-ecr",
+      "version": "^1.117.0",
+      "type": "runtime"
+    },
+    {
+      "name": "@aws-cdk/aws-ecs",
       "version": "^1.117.0",
       "type": "runtime"
     },
@@ -377,7 +457,17 @@
       "type": "runtime"
     },
     {
+      "name": "@aws-cdk/aws-signer",
+      "version": "^1.117.0",
+      "type": "runtime"
+    },
+    {
       "name": "@aws-cdk/aws-sns",
+      "version": "^1.117.0",
+      "type": "runtime"
+    },
+    {
+      "name": "@aws-cdk/aws-sqs",
       "version": "^1.117.0",
       "type": "runtime"
     },

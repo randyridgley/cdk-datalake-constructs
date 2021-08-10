@@ -21,7 +21,7 @@
     "@aws-cdk/cx-api" "1.117.0"
     "constructs" "^3.3.69"
 
-"@aws-cdk/aws-apigateway@1.117.0":
+"@aws-cdk/aws-apigateway@^1.117.0", "@aws-cdk/aws-apigateway@1.117.0":
   "integrity" "sha512-bVRhvLKBTKwrH4Kp6V92Hf4T82bEnIF50OyEbItIuhyG6C72Qz6j+XRe+Mil+KTEIOPE5tOu+UH/tjgdTOd5tA=="
   "resolved" "https://registry.npmjs.org/@aws-cdk/aws-apigateway/-/aws-apigateway-1.117.0.tgz"
   "version" "1.117.0"
@@ -40,7 +40,7 @@
     "@aws-cdk/cx-api" "1.117.0"
     "constructs" "^3.3.69"
 
-"@aws-cdk/aws-applicationautoscaling@1.117.0":
+"@aws-cdk/aws-applicationautoscaling@^1.117.0", "@aws-cdk/aws-applicationautoscaling@1.117.0":
   "integrity" "sha512-2+LmA133T/CFyAX04iODf9Ms5k3VJc7ROuE4xm4lB4HnaKIU+zN5W6xwh81gZSbinzwDTW2wNmGsKC8FTnzc9g=="
   "resolved" "https://registry.npmjs.org/@aws-cdk/aws-applicationautoscaling/-/aws-applicationautoscaling-1.117.0.tgz"
   "version" "1.117.0"
@@ -149,7 +149,7 @@
     "@aws-cdk/core" "1.117.0"
     "constructs" "^3.3.69"
 
-"@aws-cdk/aws-codebuild@1.117.0":
+"@aws-cdk/aws-codebuild@^1.117.0", "@aws-cdk/aws-codebuild@1.117.0":
   "integrity" "sha512-W0NXOPl/5+xhyyfZVIwWelE2F7hptTkPHYDfD62kwDSa3OVCARN+briHIVU9vJf3jtlyISZw06mzcL3jzTE3JQ=="
   "resolved" "https://registry.npmjs.org/@aws-cdk/aws-codebuild/-/aws-codebuild-1.117.0.tgz"
   "version" "1.117.0"
@@ -191,7 +191,7 @@
     "@aws-cdk/core" "1.117.0"
     "constructs" "^3.3.69"
 
-"@aws-cdk/aws-codepipeline@1.117.0":
+"@aws-cdk/aws-codepipeline@^1.117.0", "@aws-cdk/aws-codepipeline@1.117.0":
   "integrity" "sha512-wqAK8tPgTILCDcH3jOKVF1Mq+pTF39H8/msX54pVGObpDNYN6OWgO6szCSB+OZrZMIQ75WlXfHEPOYHoEcSPlQ=="
   "resolved" "https://registry.npmjs.org/@aws-cdk/aws-codepipeline/-/aws-codepipeline-1.117.0.tgz"
   "version" "1.117.0"
@@ -258,7 +258,7 @@
     "@aws-cdk/region-info" "1.117.0"
     "constructs" "^3.3.69"
 
-"@aws-cdk/aws-ecr-assets@1.117.0":
+"@aws-cdk/aws-ecr-assets@^1.117.0", "@aws-cdk/aws-ecr-assets@1.117.0":
   "integrity" "sha512-eD7iH9Ui+Dr3gF5ln2vdUI9RHj774XVNdc3Pc9TDrh50uuTPsBcWmcUs+zZe0z++d16Js04DleFYOvwTDA98rA=="
   "resolved" "https://registry.npmjs.org/@aws-cdk/aws-ecr-assets/-/aws-ecr-assets-1.117.0.tgz"
   "version" "1.117.0"
@@ -272,7 +272,7 @@
     "constructs" "^3.3.69"
     "minimatch" "^3.0.4"
 
-"@aws-cdk/aws-ecr@1.117.0":
+"@aws-cdk/aws-ecr@^1.117.0", "@aws-cdk/aws-ecr@1.117.0":
   "integrity" "sha512-FYWVoSBICdlI2OHybE9zN+2/Rty+6Fv7kIeQ2EudnmJ+LBsCgSaJNA4nnb5KvvRokQD82TxxoFtQM5YW45PSxw=="
   "resolved" "https://registry.npmjs.org/@aws-cdk/aws-ecr/-/aws-ecr-1.117.0.tgz"
   "version" "1.117.0"
@@ -282,7 +282,7 @@
     "@aws-cdk/core" "1.117.0"
     "constructs" "^3.3.69"
 
-"@aws-cdk/aws-ecs@1.117.0":
+"@aws-cdk/aws-ecs@^1.117.0", "@aws-cdk/aws-ecs@1.117.0":
   "integrity" "sha512-ssNkE5XI9W9oAgIhMeUDLr/zziO68pY9DZNoKW4Ma0P23BYP3NxJw2cAp2tROPE4QAXQDZRS5fHnUs4LFPK7NQ=="
   "resolved" "https://registry.npmjs.org/@aws-cdk/aws-ecs/-/aws-ecs-1.117.0.tgz"
   "version" "1.117.0"
@@ -683,7 +683,7 @@
     "@aws-cdk/core" "1.117.0"
     "constructs" "^3.3.69"
 
-"@aws-cdk/aws-signer@1.117.0":
+"@aws-cdk/aws-signer@^1.117.0", "@aws-cdk/aws-signer@1.117.0":
   "integrity" "sha512-3pwm0elGYGNjDM8hGv+kItL8pNGePND4Y2yglMc+Tlj28NVVV2AEuVpqJzF3ZGQWtyxsBH6PFwkFIyc9O8C1uQ=="
   "resolved" "https://registry.npmjs.org/@aws-cdk/aws-signer/-/aws-signer-1.117.0.tgz"
   "version" "1.117.0"
@@ -718,7 +718,7 @@
     "@aws-cdk/core" "1.117.0"
     "constructs" "^3.3.69"
 
-"@aws-cdk/aws-sqs@1.117.0":
+"@aws-cdk/aws-sqs@^1.117.0", "@aws-cdk/aws-sqs@1.117.0":
   "integrity" "sha512-yEJKDqod2jNyhqA6CB+h3lYDH1NIqk7vl0H08fA/o2WGbiO+Ufa169n+QbDROceiBv1ORNzcrYUfJMRaefClpA=="
   "resolved" "https://registry.npmjs.org/@aws-cdk/aws-sqs/-/aws-sqs-1.117.0.tgz"
   "version" "1.117.0"
