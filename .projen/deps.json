@@ -352,6 +352,11 @@
       "type": "peer"
     },
     {
+      "name": "@aws-cdk/aws-autoscaling",
+      "version": "^1.117.0",
+      "type": "peer"
+    },
+    {
       "name": "@aws-cdk/aws-certificatemanager",
       "version": "^1.117.0",
       "type": "peer"
@@ -408,6 +413,11 @@
     },
     {
       "name": "@aws-cdk/aws-ecs",
+      "version": "^1.117.0",
+      "type": "peer"
+    },
+    {
+      "name": "@aws-cdk/aws-elasticloadbalancing",
       "version": "^1.117.0",
       "type": "peer"
     },
@@ -482,6 +492,11 @@
       "type": "peer"
     },
     {
+      "name": "@aws-cdk/aws-route53",
+      "version": "^1.117.0",
+      "type": "peer"
+    },
+    {
       "name": "@aws-cdk/aws-s3-assets",
       "version": "^1.117.0",
       "type": "peer"
@@ -522,6 +537,11 @@
       "type": "peer"
     },
     {
+      "name": "@aws-cdk/aws-servicediscovery",
+      "version": "^1.117.0",
+      "type": "peer"
+    },
+    {
       "name": "@aws-cdk/aws-signer",
       "version": "^1.117.0",
       "type": "peer"
@@ -537,12 +557,22 @@
       "type": "peer"
     },
     {
+      "name": "@aws-cdk/aws-ssm",
+      "version": "^1.117.0",
+      "type": "peer"
+    },
+    {
       "name": "@aws-cdk/aws-stepfunctions-tasks",
       "version": "^1.117.0",
       "type": "peer"
     },
     {
       "name": "@aws-cdk/aws-stepfunctions",
+      "version": "^1.117.0",
+      "type": "peer"
+    },
+    {
+      "name": "@aws-cdk/cloud-assembly-schema",
       "version": "^1.117.0",
       "type": "peer"
     },
@@ -587,6 +617,11 @@
       "type": "runtime"
     },
     {
+      "name": "@aws-cdk/aws-autoscaling",
+      "version": "^1.117.0",
+      "type": "runtime"
+    },
+    {
       "name": "@aws-cdk/aws-certificatemanager",
       "version": "^1.117.0",
       "type": "runtime"
@@ -643,6 +678,11 @@
     },
     {
       "name": "@aws-cdk/aws-ecs",
+      "version": "^1.117.0",
+      "type": "runtime"
+    },
+    {
+      "name": "@aws-cdk/aws-elasticloadbalancing",
       "version": "^1.117.0",
       "type": "runtime"
     },
@@ -717,6 +757,11 @@
       "type": "runtime"
     },
     {
+      "name": "@aws-cdk/aws-route53",
+      "version": "^1.117.0",
+      "type": "runtime"
+    },
+    {
       "name": "@aws-cdk/aws-s3-assets",
       "version": "^1.117.0",
       "type": "runtime"
@@ -757,6 +802,11 @@
       "type": "runtime"
     },
     {
+      "name": "@aws-cdk/aws-servicediscovery",
+      "version": "^1.117.0",
+      "type": "runtime"
+    },
+    {
       "name": "@aws-cdk/aws-signer",
       "version": "^1.117.0",
       "type": "runtime"
@@ -772,12 +822,22 @@
       "type": "runtime"
     },
     {
+      "name": "@aws-cdk/aws-ssm",
+      "version": "^1.117.0",
+      "type": "runtime"
+    },
+    {
       "name": "@aws-cdk/aws-stepfunctions-tasks",
       "version": "^1.117.0",
       "type": "runtime"
     },
     {
       "name": "@aws-cdk/aws-stepfunctions",
+      "version": "^1.117.0",
+      "type": "runtime"
+    },
+    {
+      "name": "@aws-cdk/cloud-assembly-schema",
       "version": "^1.117.0",
       "type": "runtime"
     },

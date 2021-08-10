@@ -83,7 +83,7 @@
     "@aws-cdk/core" "1.117.0"
     "constructs" "^3.3.69"
 
-"@aws-cdk/aws-autoscaling@1.117.0":
+"@aws-cdk/aws-autoscaling@^1.117.0", "@aws-cdk/aws-autoscaling@1.117.0":
   "integrity" "sha512-R18vpfP1MXgDeU8YOOTZC5SypXFZ4meS2N/PLclM3TAAhe9/bAGD6cFe74auIgH+BM7AcOpIB9uQFKStkgCHLA=="
   "resolved" "https://registry.npmjs.org/@aws-cdk/aws-autoscaling/-/aws-autoscaling-1.117.0.tgz"
   "version" "1.117.0"
@@ -345,7 +345,7 @@
     "constructs" "^3.3.69"
     "yaml" "1.10.2"
 
-"@aws-cdk/aws-elasticloadbalancing@1.117.0":
+"@aws-cdk/aws-elasticloadbalancing@^1.117.0", "@aws-cdk/aws-elasticloadbalancing@1.117.0":
   "integrity" "sha512-sQYYm3cYaU3whhLSmPqhMjZvIUJUYs4S7JFUAfo95roL99srXER2DytCPnAyOxqwlpLWn3CE2x5xAhXDOOeaoA=="
   "resolved" "https://registry.npmjs.org/@aws-cdk/aws-elasticloadbalancing/-/aws-elasticloadbalancing-1.117.0.tgz"
   "version" "1.117.0"
@@ -564,7 +564,7 @@
     "@aws-cdk/region-info" "1.117.0"
     "constructs" "^3.3.69"
 
-"@aws-cdk/aws-route53@1.117.0":
+"@aws-cdk/aws-route53@^1.117.0", "@aws-cdk/aws-route53@1.117.0":
   "integrity" "sha512-DLJvVhbZDD5mPE0R/ewLHxghwaEVgvRHn44nbZoKfWXtIlUcmdl93Piwlu89zcDQdjPcR9K9yI/eO//6u91KZA=="
   "resolved" "https://registry.npmjs.org/@aws-cdk/aws-route53/-/aws-route53-1.117.0.tgz"
   "version" "1.117.0"
@@ -672,7 +672,7 @@
     "@aws-cdk/core" "1.117.0"
     "constructs" "^3.3.69"
 
-"@aws-cdk/aws-servicediscovery@1.117.0":
+"@aws-cdk/aws-servicediscovery@^1.117.0", "@aws-cdk/aws-servicediscovery@1.117.0":
   "integrity" "sha512-wDL3tYWSBqLqhFjbthFIBrQW8UlWyTfJfsXui8s0/1Hw7HJLVp0vuUaPiDapXZVKstuOFCRE9a65NKwlToX+vA=="
   "resolved" "https://registry.npmjs.org/@aws-cdk/aws-servicediscovery/-/aws-servicediscovery-1.117.0.tgz"
   "version" "1.117.0"
@@ -729,7 +729,7 @@
     "@aws-cdk/core" "1.117.0"
     "constructs" "^3.3.69"
 
-"@aws-cdk/aws-ssm@1.117.0":
+"@aws-cdk/aws-ssm@^1.117.0", "@aws-cdk/aws-ssm@1.117.0":
   "integrity" "sha512-oCUj+pBuLadFGDyDnGFJtcoB3bVYm2tLV2FBKH4qzdOlkhS+VkOkU55nYHhZHb7Kty2/p7A4mUmsG74Sikcg1Q=="
   "resolved" "https://registry.npmjs.org/@aws-cdk/aws-ssm/-/aws-ssm-1.117.0.tgz"
   "version" "1.117.0"
@@ -785,7 +785,7 @@
   dependencies:
     "md5" "^2.3.0"
 
-"@aws-cdk/cloud-assembly-schema@1.117.0":
+"@aws-cdk/cloud-assembly-schema@^1.117.0", "@aws-cdk/cloud-assembly-schema@1.117.0":
   "integrity" "sha512-Dj+R9FEjWu8ha/ZCVMWYrNNBbpp2dV0fhh2WOyo+OF99BJqiGtZLMye7T646Tj2EGzZBf0SGetB9nANpS+aE9A=="
   "resolved" "https://registry.npmjs.org/@aws-cdk/cloud-assembly-schema/-/cloud-assembly-schema-1.117.0.tgz"
   "version" "1.117.0"
