@@ -21,3 +21,4 @@
 /package.json                        	linguist-generated
 /tsconfig.eslint.json                	linguist-generated
 /tsconfig.jest.json                  	linguist-generated
+/yarn.lock                           	linguist-generated

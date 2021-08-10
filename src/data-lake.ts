@@ -266,7 +266,7 @@ export class DataLake extends cdk.Construct {
     // need the latest boto3 library to utilize API calls that have no CFN equivalent call i.e. createLFTags
     const upgradeBoto3Layer = new lambda.LayerVersion(this, 'upgrade-boto3', {
       compatibleRuntimes: [lambda.Runtime.PYTHON_3_7],
-      code: lambda.Code.fromAsset(path.join(__dirname, '../lambda-layer/boto3'), {
+      code: lambda.Code.fromAsset(path.join(__dirname, 'lambda-layer/boto3'), {
         bundling: {
           image: lambda.Runtime.PYTHON_3_7.bundlingImage,
           command: [
@@ -561,7 +561,7 @@ export class DataLake extends cdk.Construct {
   private createPolicyTagsCustomResource(latestBoto: lambda.LayerVersion, policyTags: { [name: string]: string }, datalakeAdminRole: iam.IRole) {
     const onEvent = new lambda.Function(this, 'create-policy-tags-handler', {
       runtime: lambda.Runtime.PYTHON_3_7,
-      code: lambda.Code.fromAsset(path.join(__dirname, '../lambda/create-tags-handler')),
+      code: lambda.Code.fromAsset(path.join(__dirname, 'lambda/create-tags-handler')),
       handler: 'index.on_event',
       layers: [latestBoto],
       role: this.datalakeAdminRole,
@@ -594,7 +594,7 @@ export class DataLake extends cdk.Construct {
   private createCrossAccountGlueCatalog(latestBoto: lambda.LayerVersion) {
     const onCatalogEvent = new lambda.Function(this, 'enable-hybrid-catalog-handler', {
       runtime: lambda.Runtime.PYTHON_3_7,
-      code: lambda.Code.fromAsset(path.join(__dirname, '../lambda/enable-hybrid-catalog')),
+      code: lambda.Code.fromAsset(path.join(__dirname, 'lambda/enable-hybrid-catalog')),
       handler: 'index.on_event',
       layers: [latestBoto],
       role: this.datalakeAdminRole,
@@ -629,7 +629,7 @@ export class DataLake extends cdk.Construct {
     // download the data sets with the custom resource after successfull creation of resource
     const onEvent = new lambda.Function(this, 'DataloaderHandler', {
       runtime: lambda.Runtime.PYTHON_3_7,
-      code: lambda.Code.fromAsset(path.join(__dirname, '../lambda/download-data')),
+      code: lambda.Code.fromAsset(path.join(__dirname, 'lambda/download-data')),
       handler: 'index.on_event',
       timeout: cdk.Duration.minutes(15),
       functionName: buildLambdaFunctionName({
