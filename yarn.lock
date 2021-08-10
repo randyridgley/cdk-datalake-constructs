@@ -110,7 +110,7 @@
     "@aws-cdk/core" "1.117.0"
     "constructs" "^3.3.69"
 
-"@aws-cdk/aws-cloudformation@1.117.0":
+"@aws-cdk/aws-cloudformation@^1.117.0", "@aws-cdk/aws-cloudformation@1.117.0":
   "integrity" "sha512-OTFnlWl7+vhlztRtZyGoiI6G9z0ofdOtc87nsVYY6Uaozn6XA5kG4bqAsACG9U7eZS6J6IiSUBd4MJ+rx8B/aQ=="
   "resolved" "https://registry.npmjs.org/@aws-cdk/aws-cloudformation/-/aws-cloudformation-1.117.0.tgz"
   "version" "1.117.0"
@@ -182,7 +182,7 @@
     "@aws-cdk/core" "1.117.0"
     "constructs" "^3.3.69"
 
-"@aws-cdk/aws-codeguruprofiler@1.117.0":
+"@aws-cdk/aws-codeguruprofiler@^1.117.0", "@aws-cdk/aws-codeguruprofiler@1.117.0":
   "integrity" "sha512-ahyOT8KiGo1ufuI0xuPx/kLSnig1Kl60br5PcZK/0F/UvuZUh5yLLJS5DvvmLA2odizCkMztpCN/ts6+Iq2m7g=="
   "resolved" "https://registry.npmjs.org/@aws-cdk/aws-codeguruprofiler/-/aws-codeguruprofiler-1.117.0.tgz"
   "version" "1.117.0"
@@ -314,7 +314,7 @@
     "@aws-cdk/cx-api" "1.117.0"
     "constructs" "^3.3.69"
 
-"@aws-cdk/aws-efs@1.117.0":
+"@aws-cdk/aws-efs@^1.117.0", "@aws-cdk/aws-efs@1.117.0":
   "integrity" "sha512-DS9tMoil5jUQUXTRq8omIHUKfjvtRNt+Dr7JvFBAPq9i5DovG6Gb6FEx1gYlxoTYqHE4R54uMVj1L3Mznxv3Ow=="
   "resolved" "https://registry.npmjs.org/@aws-cdk/aws-efs/-/aws-efs-1.117.0.tgz"
   "version" "1.117.0"
@@ -327,7 +327,7 @@
     "@aws-cdk/cx-api" "1.117.0"
     "constructs" "^3.3.69"
 
-"@aws-cdk/aws-eks@1.117.0":
+"@aws-cdk/aws-eks@^1.117.0", "@aws-cdk/aws-eks@1.117.0":
   "integrity" "sha512-RIg2H+BE67TKQY8BEeBm6VMP6dsgd63p34G8Ll+KGm77ZdiGOxXKge6eKBy++/qN/GY8j8KvFkzvyRTztDNCCQ=="
   "resolved" "https://registry.npmjs.org/@aws-cdk/aws-eks/-/aws-eks-1.117.0.tgz"
   "version" "1.117.0"
