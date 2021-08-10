@@ -7,7 +7,7 @@ import * as glue from '@aws-cdk/aws-glue';
 import * as iam from '@aws-cdk/aws-iam';
 import * as lf from '@aws-cdk/aws-lakeformation';
 import * as lambda from '@aws-cdk/aws-lambda';
-import { PythonFunction, PythonLayerVersion } from '@aws-cdk/aws-lambda-python';
+import { PythonFunction } from '@aws-cdk/aws-lambda-python';
 import * as logs from '@aws-cdk/aws-logs';
 import * as s3 from '@aws-cdk/aws-s3';
 import * as cdk from '@aws-cdk/core';
