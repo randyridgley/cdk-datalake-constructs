@@ -144,16 +144,15 @@ const project = new AwsCdkConstructLibrary({
   //   mavenGroupId: 'io.github.randyridgley.cdk.datalake.constructs',
   //   mavenArtifactId: 'cdk-datalake-constructs',
   // },
-  publishToGo: {
-    gitUserName: 'randyridgley',
-    gitUserEmail: 'randy.ridgley@gmail.com',
-    moduleName: 'github.com/randyridgley/cdk-datalake-constructs',
-  },
+  // publishToGo: {
+  //   gitUserName: 'randyridgley',
+  //   gitUserEmail: 'randy.ridgley@gmail.com',
+  //   moduleName: 'github.com/randyridgley/cdk-datalake-constructs',
+  // },
   // publishToNuget: {
   //   dotNetNamespace: 'Cdk.Datalake.Constructs',
   //   packageId: 'Cdk.Datalake.Constructs',
   // },
-  releaseToNpm: false,
   catalog: {
     announce: false,
     twitter: 'randyridgley',
