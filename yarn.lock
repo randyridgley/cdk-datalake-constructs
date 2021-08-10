@@ -68,7 +68,7 @@
     "@aws-cdk/core" "1.117.0"
     "constructs" "^3.3.69"
 
-"@aws-cdk/aws-autoscaling-hooktargets@1.117.0":
+"@aws-cdk/aws-autoscaling-hooktargets@^1.117.0", "@aws-cdk/aws-autoscaling-hooktargets@1.117.0":
   "integrity" "sha512-itWEXwhmdl0m7RhHKLWDdTu+mSx12sk28OIQv89WrOXuWeWjiGISEa76B+lRkznknewf7crsBnwsxEpaMIoQsQ=="
   "resolved" "https://registry.npmjs.org/@aws-cdk/aws-autoscaling-hooktargets/-/aws-autoscaling-hooktargets-1.117.0.tgz"
   "version" "1.117.0"

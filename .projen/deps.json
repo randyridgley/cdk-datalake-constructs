@@ -357,6 +357,11 @@
       "type": "peer"
     },
     {
+      "name": "@aws-cdk/aws-autoscaling-hooktargets",
+      "version": "^1.117.0",
+      "type": "peer"
+    },
+    {
       "name": "@aws-cdk/aws-autoscaling",
       "version": "^1.117.0",
       "type": "peer"
@@ -643,6 +648,11 @@
     },
     {
       "name": "@aws-cdk/aws-autoscaling-common",
+      "version": "^1.117.0",
+      "type": "runtime"
+    },
+    {
+      "name": "@aws-cdk/aws-autoscaling-hooktargets",
       "version": "^1.117.0",
       "type": "runtime"
     },
