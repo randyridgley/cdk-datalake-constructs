@@ -59,7 +59,7 @@
     "@aws-cdk/core" "1.117.0"
     "constructs" "^3.3.69"
 
-"@aws-cdk/aws-autoscaling-common@1.117.0":
+"@aws-cdk/aws-autoscaling-common@^1.117.0", "@aws-cdk/aws-autoscaling-common@1.117.0":
   "integrity" "sha512-kC/ATb0Lt7H0CbJ4nBLDHv9E3z/rUASjqfjaclgh/xpB22/pOK3XeSZVJyy2h4ZDVSsglTsHt2ZcW+NYQvsAeA=="
   "resolved" "https://registry.npmjs.org/@aws-cdk/aws-autoscaling-common/-/aws-autoscaling-common-1.117.0.tgz"
   "version" "1.117.0"

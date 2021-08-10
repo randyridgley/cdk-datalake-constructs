@@ -24,6 +24,7 @@ const project = new AwsCdkConstructLibrary({
     '@aws-cdk/core',
     '@aws-cdk/assets',
     '@aws-cdk/aws-autoscaling',
+    '@aws-cdk/aws-autoscaling-common',
     '@aws-cdk/aws-applicationautoscaling',
     '@aws-cdk/aws-apigateway',
     '@aws-cdk/aws-athena',
