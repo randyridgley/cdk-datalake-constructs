@@ -132,7 +132,6 @@ const project = new AwsCdkConstructLibrary({
   releaseWorkflow: true,
   buildWorkflow: true,
   minNodeVersion: '14.15.0',
-  npmRegistryUrl: 'https://npm.pkg.github.com',
   npmTokenSecret: 'NPM_TOKEN',
   releaseToNpm: true,
   publishToPypi: {

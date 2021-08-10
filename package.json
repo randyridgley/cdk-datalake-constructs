@@ -222,9 +222,6 @@
   },
   "main": "lib/index.js",
   "license": "MIT",
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com/"
-  },
   "version": "0.0.0",
   "jest": {
     "testMatch": [
