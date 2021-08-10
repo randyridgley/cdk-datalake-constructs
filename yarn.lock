@@ -12,7 +12,7 @@
     "@aws-cdk/cx-api" "1.117.0"
     "constructs" "^3.3.69"
 
-"@aws-cdk/assets@1.117.0":
+"@aws-cdk/assets@^1.117.0", "@aws-cdk/assets@1.117.0":
   "integrity" "sha512-3Oo/h//to6gxYaQwBE0VRyJsZ4r0ilTR4uIAFoy975M2ZuFjv8PUpM1QLYaWIrX6P/scqePPTkw26E2Rqt/I4g=="
   "resolved" "https://registry.npmjs.org/@aws-cdk/assets/-/assets-1.117.0.tgz"
   "version" "1.117.0"
@@ -98,7 +98,7 @@
     "@aws-cdk/core" "1.117.0"
     "constructs" "^3.3.69"
 
-"@aws-cdk/aws-certificatemanager@1.117.0":
+"@aws-cdk/aws-certificatemanager@^1.117.0", "@aws-cdk/aws-certificatemanager@1.117.0":
   "integrity" "sha512-D8pEqVfmKNop5wl3PoEok8dbbTBCedWSoitlsrn+10kf+11VsfH8wEL5ghcE3oNo2+E27NyGu7aqI5lasiWz1Q=="
   "resolved" "https://registry.npmjs.org/@aws-cdk/aws-certificatemanager/-/aws-certificatemanager-1.117.0.tgz"
   "version" "1.117.0"
@@ -172,7 +172,7 @@
     "constructs" "^3.3.69"
     "yaml" "1.10.2"
 
-"@aws-cdk/aws-codecommit@1.117.0":
+"@aws-cdk/aws-codecommit@^1.117.0", "@aws-cdk/aws-codecommit@1.117.0":
   "integrity" "sha512-XreEqld1YnsdHe9MtYqunaulPaZSEyaC6o1zyjTZUohi7EY6iuL4w693K1J9H0BnD5s6b9vpXqFUeM9wprFNBg=="
   "resolved" "https://registry.npmjs.org/@aws-cdk/aws-codecommit/-/aws-codecommit-1.117.0.tgz"
   "version" "1.117.0"
@@ -204,7 +204,7 @@
     "@aws-cdk/core" "1.117.0"
     "constructs" "^3.3.69"
 
-"@aws-cdk/aws-codestarnotifications@1.117.0":
+"@aws-cdk/aws-codestarnotifications@^1.117.0", "@aws-cdk/aws-codestarnotifications@1.117.0":
   "integrity" "sha512-oxrLsuGr0s5dGwXHqmK/SCJLB48OpANHS5itgVI6oM7vtaL1r0NQBTo5/VJtlp1ajuLY9AOkjZnjEqBXWkAhUg=="
   "resolved" "https://registry.npmjs.org/@aws-cdk/aws-codestarnotifications/-/aws-codestarnotifications-1.117.0.tgz"
   "version" "1.117.0"
@@ -212,7 +212,7 @@
     "@aws-cdk/core" "1.117.0"
     "constructs" "^3.3.69"
 
-"@aws-cdk/aws-cognito@1.117.0":
+"@aws-cdk/aws-cognito@^1.117.0", "@aws-cdk/aws-cognito@1.117.0":
   "integrity" "sha512-0OCRFK2MrHNg8ZlEy6OE/LNblKPx2QeSYH+7JGe6v95lQIRneozq6CEgroIfbY9QxV9M7yArZpsfYohXOqnsiQ=="
   "resolved" "https://registry.npmjs.org/@aws-cdk/aws-cognito/-/aws-cognito-1.117.0.tgz"
   "version" "1.117.0"
@@ -354,7 +354,7 @@
     "@aws-cdk/core" "1.117.0"
     "constructs" "^3.3.69"
 
-"@aws-cdk/aws-elasticloadbalancingv2@1.117.0":
+"@aws-cdk/aws-elasticloadbalancingv2@^1.117.0", "@aws-cdk/aws-elasticloadbalancingv2@1.117.0":
   "integrity" "sha512-EAAmrW+AJZJeoi44CmTGQcvK3DwoUzZbbJjF0VRrx6xO/PiHsqC0DtlGfLUSfUazvBpl0nq05AJzIuilpe1HdQ=="
   "resolved" "https://registry.npmjs.org/@aws-cdk/aws-elasticloadbalancingv2/-/aws-elasticloadbalancingv2-1.117.0.tgz"
   "version" "1.117.0"
@@ -647,7 +647,7 @@
     "@aws-cdk/core" "1.117.0"
     "constructs" "^3.3.69"
 
-"@aws-cdk/aws-secretsmanager@1.117.0":
+"@aws-cdk/aws-secretsmanager@^1.117.0", "@aws-cdk/aws-secretsmanager@1.117.0":
   "integrity" "sha512-1H/LFGfFrC4vjoJd9Fzob23AZxgMDxMiaH3tRVM4BRp13VH2gXGVVPixcweSZfnq29Mhz4Onu4F7FwAV7arQYg=="
   "resolved" "https://registry.npmjs.org/@aws-cdk/aws-secretsmanager/-/aws-secretsmanager-1.117.0.tgz"
   "version" "1.117.0"
