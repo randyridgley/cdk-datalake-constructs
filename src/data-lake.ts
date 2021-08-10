@@ -7,6 +7,7 @@ import * as glue from '@aws-cdk/aws-glue';
 import * as iam from '@aws-cdk/aws-iam';
 import * as lf from '@aws-cdk/aws-lakeformation';
 import * as lambda from '@aws-cdk/aws-lambda';
+import { PythonLayerVersion } from '@aws-cdk/aws-lambda-python';
 import * as logs from '@aws-cdk/aws-logs';
 import * as s3 from '@aws-cdk/aws-s3';
 import * as cdk from '@aws-cdk/core';
@@ -263,21 +264,25 @@ export class DataLake extends cdk.Construct {
     });
     new cdk.CfnOutput(this, 'DataLakeAthenaWorkgroup', { value: this.athenaWorkgroup.name });
 
-    // need the latest boto3 library to utilize API calls that have no CFN equivalent call i.e. createLFTags
-    const upgradeBoto3Layer = new lambda.LayerVersion(this, 'upgrade-boto3', {
-      compatibleRuntimes: [lambda.Runtime.PYTHON_3_7],
-      code: lambda.Code.fromAsset(path.join(__dirname, './lambda-layer/boto3'), {
-        bundling: {
-          image: lambda.Runtime.PYTHON_3_7.bundlingImage,
-          command: [
-            'bash', '-c', `
-            pip install -r requirements.txt -t /asset-output/python &&
-            cp -au . /asset-output/python/
-            `,
-          ],
-        },
-      }),
+    const upgradeBoto3Layer = new PythonLayerVersion(this, 'python-layer', {
+      entry: path.join(__dirname, './lambda-layer/boto3'),
+      compatibleRuntimes: [lambda.Runtime.PYTHON_3_7, lambda.Runtime.PYTHON_3_8],
     });
+    // // need the latest boto3 library to utilize API calls that have no CFN equivalent call i.e. createLFTags
+    // const upgradeBoto3Layer = new lambda.LayerVersion(this, 'upgrade-boto3', {
+    //   compatibleRuntimes: [lambda.Runtime.PYTHON_3_7],
+    //   code: lambda.Code.fromAsset(path.join(__dirname, './lambda-layer/boto3'), {
+    //     bundling: {
+    //       image: lambda.Runtime.PYTHON_3_7.bundlingImage,
+    //       command: [
+    //         'bash', '-c', `
+    //         pip install -r requirements.txt -t /asset-output/python &&
+    //         cp -au . /asset-output/python/
+    //         `,
+    //       ],
+    //     },
+    //   }),
+    // });
 
     if (props.policyTags) {
       this.createPolicyTagsCustomResource(upgradeBoto3Layer, props.policyTags, this.datalakeAdminRole);

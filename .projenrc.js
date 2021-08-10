@@ -80,6 +80,7 @@ const project = new AwsCdkConstructLibrary({
     '@aws-cdk/aws-stepfunctions-tasks',
     '@aws-cdk/custom-resources',
     '@aws-cdk/region-info',
+    '@aws-cdk/aws-lambda-python',
   ],
   cdkTestDependencies: [
     '@aws-cdk/core',
@@ -111,7 +112,7 @@ const project = new AwsCdkConstructLibrary({
     'src/etl/kda-studio.ts',
     'src/etl/glue-notebook.ts',
     'workflows/*',
-    '.DS_Store'
+    '.DS_Store',
   ],
   devDeps: [
     'ts-node',
