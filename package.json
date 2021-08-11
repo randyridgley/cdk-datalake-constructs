@@ -24,7 +24,9 @@
     "eslint": "npx projen eslint",
     "compat": "npx projen compat",
     "publish:npm": "npx projen publish:npm",
+    "publish:maven": "npx projen publish:maven",
     "publish:pypi": "npx projen publish:pypi",
+    "publish:nuget": "npx projen publish:nuget",
     "docgen": "npx projen docgen",
     "coverage": "npx projen coverage",
     "release": "npx projen release",
@@ -267,9 +269,20 @@
   "jsii": {
     "outdir": "dist",
     "targets": {
+      "java": {
+        "package": "io.github.randyridgley.cdk.datalake.constructs",
+        "maven": {
+          "groupId": "io.github.randyridgley.cdk.datalake.constructs",
+          "artifactId": "cdk-datalake-constructs"
+        }
+      },
       "python": {
         "distName": "cdk-datalake-constructs",
         "module": "cdk_datalake_constructs"
+      },
+      "dotnet": {
+        "namespace": "Cdk.Datalake.Constructs",
+        "packageId": "Cdk.Datalake.Constructs"
       }
     },
     "tsc": {

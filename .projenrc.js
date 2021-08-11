@@ -9,7 +9,7 @@ const project = new AwsCdkConstructLibrary({
   stability: Stability.EXPERIMENTAL,
   cdkVersion: CDK_VERSION,
   defaultReleaseBranch: 'main',
-  name: 'cdk-datalake-constructs',
+  name: '@cdk-7layer-constructs/datalake-constructs',
   repositoryUrl: 'https://github.com/randyridgley/cdk-datalake-constructs.git',
   projectType: ProjectType.LIB,
   jsiiFqn: 'projen.AwsCdkConstructLibrary',
@@ -139,20 +139,21 @@ const project = new AwsCdkConstructLibrary({
     distName: 'cdk-datalake-constructs',
     module: 'cdk_datalake_constructs',
   },
-  // publishToMaven: {
-  //   javaPackage: 'io.github.randyridgley.cdk.datalake.constructs',
-  //   mavenGroupId: 'io.github.randyridgley.cdk.7layer.constructs',
-  //   mavenArtifactId: 'cdk-datalake-constructs',
-  // },
+  publishToMaven: {
+    javaPackage: 'io.github.randyridgley.cdk.datalake.constructs',
+    mavenGroupId: 'io.github.randyridgley.cdk.datalake.constructs',
+    mavenArtifactId: 'cdk-datalake-constructs',
+    mavenEndpoint: 'https://s01.oss.sonatype.org'
+  },
   // publishToGo: {
   //   gitUserName: 'randyridgley',
   //   gitUserEmail: 'randy.ridgley@gmail.com',
   //   moduleName: 'github.com/randyridgley/cdk-datalake-constructs',
   // },
-  // publishToNuget: {
-  //   dotNetNamespace: 'Cdk.Datalake.Constructs',
-  //   packageId: 'Cdk.Datalake.Constructs',
-  // },
+  publishToNuget: {
+    dotNetNamespace: 'Cdk.Datalake.Constructs',
+    packageId: 'Cdk.Datalake.Constructs',
+  },
   catalog: {
     announce: false,
     twitter: 'randyridgley',
