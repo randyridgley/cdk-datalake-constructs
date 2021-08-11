@@ -4,7 +4,7 @@ import * as ec2 from '@aws-cdk/aws-ec2';
 import * as s3 from '@aws-cdk/aws-s3';
 import * as sam from '@aws-cdk/aws-sam';
 
-import * as dl from '@cdk-7layer-constructs/datalake-constructs';
+import * as dl from '@randyridgley/cdk-datalake-constructs';
 
 export interface DataConsumerStackProps extends cdk.StackProps {
   readonly stageName: dl.Stage;
@@ -24,13 +24,7 @@ export class DataConsumerStack extends cdk.Stack {
       natGateways: 0
     });
 
-    cdk.Tags.of(vpc).add('Name', dl.buildUniqueName({
-      name: 'vpc',
-      accountId: accountId,
-      region: region,
-      stage: props.stageName,
-      resourceUse: 'datalake'
-    }, 60));
+    cdk.Tags.of(vpc).add('Name', 'DemoVPC');
 
     const datalake = new dl.DataLake(this, 'ConsumerDataLake', {
       name: props.lakeName,
@@ -53,10 +47,10 @@ export class DataConsumerStack extends cdk.Stack {
         "LambdaTimeout": "900",
       }
     });
-
+    
     const namedQuery = new athena.CfnNamedQuery(this, 'text-udf-named-query', {
-      database: dl.databases[props.lakeName].databaseName,
-      workGroup: dl.athenaWorkgroup.name,
+      database: datalake.databases[props.lakeName].databaseName,
+      workGroup: datalake.athenaWorkgroup.name,
       name: 'TextAnalyticsUDFDemo',
       queryString: `SELECT * FROM central_reviews limit 10;
 SELECT AVG(LENGTH(review_body)) AS average_review_length FROM central_reviews;
@@ -99,11 +93,11 @@ FROM amazon_reviews_with_text_analysis;
 
 select * from amazon_reviews_with_text_analysis limit 10;`
     });
-    namedQuery.node.addDependency(dl.athenaWorkgroup)
+    namedQuery.node.addDependency(datalake.athenaWorkgroup)
 
     const yellowNamedQuery = new athena.CfnNamedQuery(this, 'yellow-named-query', {
-      database: dl.databases[props.lakeName].databaseName,
-      workGroup: dl.athenaWorkgroup.name,
+      database: datalake.databases[props.lakeName].databaseName,
+      workGroup: datalake.athenaWorkgroup.name,
       name: 'YellowTaxiDDBDemo',
       queryString: `SELECT pl.borough as pickup_borough, pl.zone as pickup_zone, do.borough as dropoff_borough, do.zone as dropoff_zone, y.trip_distance, p.name as payment_name, y.fare_amount 
 FROM "consumer-lake"."central_yellow" y
@@ -115,7 +109,7 @@ LEFT JOIN "dynamodb-catalog"."default"."zone-lookup" do
 on y.pulocationid = do.locationid
 limit 50;`
     });
-    yellowNamedQuery.node.addDependency(dl.athenaWorkgroup)
+    yellowNamedQuery.node.addDependency(datalake.athenaWorkgroup)
 
     const athenaDataSource = new athena.CfnDataCatalog(this, 'athena-source', {
       name: "dynamodb-catalog",
@@ -127,13 +121,7 @@ limit 50;`
     });
 
     const athenaSpillBucket = new s3.Bucket(this, 'bucket-ath-spill', {
-      bucketName: dl.buildS3BucketName({
-        name: 'spill',
-        accountId: accountId,
-        region: region,
-        resourceUse: 'datalake',
-        stage: props.stageName
-      }),
+      bucketName: 'demo-cdk-datalake-spill-bucket',
       autoDeleteObjects: true,
       removalPolicy: cdk.RemovalPolicy.DESTROY
     });
@@ -155,10 +143,10 @@ limit 50;`
     const daUser = new dl.DataLakeAnalyst(this, 'datalake-analyst-user', {
       name: 'datalakeAnalyst',
       readAccessBuckets: [
-        dl.logBucket
+        datalake.logBucket
       ],
       writeAccessBuckets: [
-        dl.logBucket
+        datalake.logBucket
       ]
     });
   }

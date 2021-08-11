@@ -6,8 +6,8 @@ import { DataCentralStack } from '../lib/data-central-stack';
 import { DataProductStack } from '../lib/data-product-stack';
 import { DataConsumerStack } from '../lib/data-consumer-stack';
 
-import * as pipelines from '../../../../test/pipelines';
-import * as dl from '@cdk-7layer-constructs/datalake-constructs';
+import * as pipelines from '../pipelines';
+import * as dl from '@randyridgley/cdk-datalake-constructs';
 
 const app = new cdk.App();
 const region = app.node.tryGetContext('region')
@@ -16,21 +16,12 @@ const centralAccountId = app.node.tryGetContext('centralAccountId')
 const consumerAccountId = app.node.tryGetContext('consumerAccountId')
 const stage = dl.Stage.PROD // pass in a var
 
-const pipes: Array<dl.Pipeline> = [
-  pipelines.ReviewsPipeline(lakeAccountId, centralAccountId, region, stage),
-  pipelines.IoTDataPipeline(lakeAccountId, centralAccountId, region, stage)
-]
-
 const taxiPipes: Array<dl.Pipeline> = [
   pipelines.YellowPipeline(lakeAccountId, centralAccountId, region, stage),
   pipelines.GreenPipeline(lakeAccountId, centralAccountId, region, stage),
 ]
 
-const dataProducts: Array<dl.DataProduct> = [{
-  pipelines: pipes,
-  accountId: lakeAccountId,
-  databaseName: 'data-product'
-},
+const dataProducts: Array<dl.DataProduct> = [
 {
   pipelines: taxiPipes,
   accountId: lakeAccountId,

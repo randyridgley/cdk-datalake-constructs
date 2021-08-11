@@ -2,7 +2,7 @@ import * as cdk from '@aws-cdk/core';
 import * as glue from '@aws-cdk/aws-glue';
 import * as s3 from '@aws-cdk/aws-s3';
 
-import * as dl from '@cdk-7layer-constructs/datalake-constructs';
+import * as dl from '@randyridgley/cdk-datalake-constructs';
 
 export interface DataCentralStackProps extends cdk.StackProps {
   readonly lakeName: string;

@@ -1,7 +1,7 @@
 import * as cdk from '@aws-cdk/core';
 import * as ec2 from '@aws-cdk/aws-ec2';
 
-import * as dl from '@cdk-7layer-constructs/datalake-constructs';
+import * as dl from '@randyridgley/cdk-datalake-constructs';
 
 export interface DataProductStackProps extends cdk.StackProps {
   readonly dataProducts: dl.DataProduct[]
@@ -17,7 +17,7 @@ export class DataProductStack extends cdk.Stack {
   
     const region = cdk.Stack.of(this).region;
     const accountId = cdk.Stack.of(this).account;
-    const vpc = this.create_vpc(accountId, region, props.stageName)
+    const vpc = this.create_vpc()
 
     // create the local data lake with their own Glue Data catalog and IAM Role to act as data lake administrator 
     const datalake = new dl.DataLake(this, 'LocalDataLake', {
@@ -31,7 +31,7 @@ export class DataProductStack extends cdk.Stack {
     });
   }
   
-  private create_vpc(accountId: string, region: string, stageName: string) : ec2.Vpc {
+  private create_vpc() : ec2.Vpc {
     const vpc = new ec2.Vpc(this, 'lake-vpc', {
       maxAzs: 3,
       subnetConfiguration: [
@@ -49,13 +49,7 @@ export class DataProductStack extends cdk.Stack {
       natGateways: 0
     });
 
-    cdk.Tags.of(vpc).add('Name', dl.buildUniqueName({
-      name: 'vpc',
-      accountId: accountId,
-      region: region,
-      stage: stageName,
-      resourceUse: 'datalake'
-    }, 60));
+    cdk.Tags.of(vpc).add('Name', 'DemoVPC');
 
     // add endpoints for S3 and Glue private access on the VPC
     vpc.addGatewayEndpoint("s3-endpoint", {
