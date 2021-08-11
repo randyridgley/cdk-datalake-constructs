@@ -1,4 +1,3 @@
-import { SynthUtils } from '@aws-cdk/assert';
 import { Stack } from '@aws-cdk/core';
 import { DataLake, Stage, Pipeline, DataProduct } from '../src';
 import * as pipelines from '../test/pipelines';
