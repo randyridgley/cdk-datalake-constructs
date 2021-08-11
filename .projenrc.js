@@ -9,7 +9,7 @@ const project = new AwsCdkConstructLibrary({
   stability: Stability.EXPERIMENTAL,
   cdkVersion: CDK_VERSION,
   defaultReleaseBranch: 'main',
-  name: '@cdk-7layer-constructs/datalake-constructs',
+  name: 'cdk-datalake-constructs',
   repositoryUrl: 'https://github.com/randyridgley/cdk-datalake-constructs.git',
   projectType: ProjectType.LIB,
   jsiiFqn: 'projen.AwsCdkConstructLibrary',
