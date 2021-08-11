@@ -1,5 +1,5 @@
 {
-  "name": "@cdk-7layer-constructs/datalake-constructs",
+  "name": "@randyridgley/cdk-datalake-constructs",
   "description": "AWS CDK Constructs that can be used to create datalakes/meshes and more",
   "repository": {
     "type": "git",
