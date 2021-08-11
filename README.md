@@ -12,8 +12,8 @@ This is my attempt at simplifying deploying various datalake strategies in AWS w
 
 [![License](https://img.shields.io/badge/License-MIT-green)](https://opensource.org/licenses/MIT)  
 [![Current cdk version](https://img.shields.io/github/package-json/dependency-version/randyridgley/cdk-datalake-constructs/@aws-cdk/core)](https://github.com/aws/aws-cdk)  
-[![Build](https://img.shields.io/github/package-json/dependency-version/randyridgley/cdk-datalake-constructs/actions/workflows/build.yml/badge.svg)](https://img.shields.io/github/package-json/dependency-version/randyridgley/cdk-datalake-constructs/actions/workflows/build.yml) 
-[![Release](https://github.com/randyridgley/cdk-datalake-constructs/workflows/release/badge.svg)](https://img.shields.io/github/package-json/dependency-version/randyridgley/cdk-datalake-constructs/actions/workflows/release.yml)
+[![Build](https://github.com/randyridgley/cdk-datalake-constructs/workflows/build/badge.svg)](https://github.com/randyridgley/cdk-datalake-constructs/workflows/build.yml) 
+[![Release](https://github.com/randyridgley/cdk-datalake-constructs/workflows/release/badge.svg)](https://github.com/randyridgley/cdk-datalake-constructs/workflows/release.yml)
 [![Python](https://img.shields.io/pypi/pyversions/cdk-datalake-constructs)](https://pypi.org) [![pip](https://img.shields.io/badge/pip%20install-cdk--datalake--constructs-blue)](https://pypi.org/project/cdk-datalake-constructs/)  
 [![npm version](https://img.shields.io/npm/v/cdk-datalake-constructs)](https://www.npmjs.com/package/cdk-datalake-constructs) [![pypi version](https://img.shields.io/pypi/v/cdk-datalake-constructs)](https://pypi.org/project/cdk-datalake-constructs/) [![Maven](https://img.shields.io/maven-central/v/io.github.randyridgley/cdk-datalake-constructs)](https://search.maven.org/search?q=a:cdk-comprehend-s3olap) [![nuget](https://img.shields.io/nuget/v/Cdk.Datalake.Constructs)](https://www.nuget.org/packages/Cdk.Datalake.Constructs/)
 
