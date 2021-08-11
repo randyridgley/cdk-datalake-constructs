@@ -48,5 +48,4 @@ test('Check Resources', () => {
 
   expect(stack).toHaveResource('AWS::S3::Bucket');
   expect(stack).toHaveResource('AWS::Athena::WorkGroup');
-  expect(SynthUtils.toCloudFormation(stack)).toMatchSnapshot();
 });
