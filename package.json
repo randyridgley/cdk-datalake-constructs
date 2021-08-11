@@ -1,5 +1,5 @@
 {
-  "name": "cdk-datalake-constructs",
+  "name": "@cdk-7layer-constructs/datalake-constructs",
   "description": "AWS CDK Constructs that can be used to create datalakes/meshes and more",
   "repository": {
     "type": "git",
@@ -224,6 +224,9 @@
   },
   "main": "lib/index.js",
   "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
   "version": "0.0.0",
   "jest": {
     "testMatch": [

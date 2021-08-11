@@ -17,7 +17,6 @@ const project = new AwsCdkConstructLibrary({
   cdkAssert: true,
   licensed: true,
   license: 'MIT',
-  packageName: 'cdk-datalake-constructs',
   gitpod: true,
   devenv: true,
   cdkDependencies: [
