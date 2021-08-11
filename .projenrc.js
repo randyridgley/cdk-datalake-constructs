@@ -9,7 +9,7 @@ const project = new AwsCdkConstructLibrary({
   stability: Stability.EXPERIMENTAL,
   cdkVersion: CDK_VERSION,
   defaultReleaseBranch: 'main',
-  name: 'cdk-datalake-constructs',
+  name: '@cdk-7layer-constructs/datalake-constructs',
   repositoryUrl: 'https://github.com/randyridgley/cdk-datalake-constructs.git',
   projectType: ProjectType.LIB,
   jsiiFqn: 'projen.AwsCdkConstructLibrary',
@@ -112,7 +112,7 @@ const project = new AwsCdkConstructLibrary({
     'src/etl/kda-studio.ts',
     'src/etl/glue-notebook.ts',
     'workflows/*',
-    '.DS_Store',
+    '**/.DS_Store',
   ],
   projenUpgradeSecret: 'PROJEN_GITHUB_TOKEN',
   depsUpgrade: DependenciesUpgradeMechanism.githubWorkflow({
@@ -129,18 +129,19 @@ const project = new AwsCdkConstructLibrary({
   eslint: true,
   mergify: true,
   antitamper: true,
+  releaseEveryCommit: false,
   releaseWorkflow: true,
   buildWorkflow: true,
   minNodeVersion: '14.15.0',
   npmTokenSecret: 'NPM_TOKEN',
-  releaseToNpm: true,
-  publishToPypi: {
-    distName: 'cdk-datalake-constructs',
-    module: 'cdk_datalake_constructs',
-  },
+  // releaseToNpm: true,
+  // publishToPypi: {
+  //   distName: 'cdk-7layer-constructs',
+  //   module: 'cdk_datalake_constructs',
+  // },
   // publishToMaven: {
   //   javaPackage: 'io.github.randyridgley.cdk.datalake.constructs',
-  //   mavenGroupId: 'io.github.randyridgley.cdk.datalake.constructs',
+  //   mavenGroupId: 'io.github.randyridgley.cdk.7layer.constructs',
   //   mavenArtifactId: 'cdk-datalake-constructs',
   // },
   // publishToGo: {
@@ -165,12 +166,8 @@ const project = new AwsCdkConstructLibrary({
     'datamesh',
     'lakeformation',
     'glue'],
-  pullRequestTemplateContents: [
-    '',
-    '----',
-    '',
-    '*By submitting this pull request, I confirm that my contribution is made under the terms of the MIT license*',
-  ],
+  tsconfig: {
+  }
 });
 
 project.tasks.tryFind('package').prependExec('go env -w GOSUMDB=off');
@@ -178,7 +175,7 @@ project.tasks.tryFind('package').prependExec('go env -w GOSUMDB=off');
 const common_exclude = [
   'cdk.out', 'cdk.context.json', 'images', 'yarn-error.log', '.DS_Store', 'coverage',
 ];
-project.npmignore.exclude(...common_exclude, 'maven_release*');
+project.npmignore.exclude(...common_exclude, 'maven_release*', 'examples');
 project.gitignore.exclude(...common_exclude);
 
 project.gitpod.addTasks({
