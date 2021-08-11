@@ -1,3 +1,4 @@
+import { SynthUtils } from '@aws-cdk/assert';
 import { Stack } from '@aws-cdk/core';
 import { DataLake, Stage, Pipeline, DataProduct } from '../src';
 import * as pipelines from '../test/pipelines';
@@ -42,4 +43,10 @@ test('Check Resources', () => {
   expect(datalake.accountId).toMatch(centralCatalogAccount);
   expect(datalake.stageName).toMatch(Stage.ALPHA);
   expect(datalake.region).toMatch(region);
+  expect(Object.keys(datalake.dataSets).length).toEqual(3);
+  expect(Object.keys(datalake.dataStreams).length).toEqual(1);
+
+  expect(stack).toHaveResource('AWS::S3::Bucket');
+  expect(stack).toHaveResource('AWS::Athena::WorkGroup');
+  expect(SynthUtils.toCloudFormation(stack)).toMatchSnapshot();
 });

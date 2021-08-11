@@ -264,26 +264,6 @@ export class DataLake extends cdk.Construct {
     });
     new cdk.CfnOutput(this, 'DataLakeAthenaWorkgroup', { value: this.athenaWorkgroup.name });
 
-    // const upgradeBoto3Layer = new PythonLayerVersion(this, 'python-layer', {
-    //   entry: path.join(__dirname, './lambda-layer/boto3'),
-    //   compatibleRuntimes: [lambda.Runtime.PYTHON_3_7, lambda.Runtime.PYTHON_3_8],
-    // });
-    // // need the latest boto3 library to utilize API calls that have no CFN equivalent call i.e. createLFTags
-    // const upgradeBoto3Layer = new lambda.LayerVersion(this, 'upgrade-boto3', {
-    //   compatibleRuntimes: [lambda.Runtime.PYTHON_3_7],
-    //   code: lambda.Code.fromAsset(path.join(__dirname, './lambda-layer/boto3'), {
-    //     bundling: {
-    //       image: lambda.Runtime.PYTHON_3_7.bundlingImage,
-    //       command: [
-    //         'bash', '-c', `
-    //         pip install -r requirements.txt -t /asset-output/python &&
-    //         cp -au . /asset-output/python/
-    //         `,
-    //       ],
-    //     },
-    //   }),
-    // });
-
     if (props.policyTags) {
       this.createPolicyTagsCustomResource(props.policyTags, this.datalakeAdminRole);
     }
