@@ -2,7 +2,7 @@
 
 This is my attempt at a data mesh strategy in AWS using the CDK to aid in repeatable deployments. This is based on looking at best practices and example diagrams and bringing them all together into a cohesive demo. What I want to accomplish is giving you the ability to isolate the data in your data lake, provide a central Glue data catalog and ultimately allow consumers to access the data in their accounts without having direct access to the source objects in S3. I started this project based on watching a presentation with the diagram below and wondered how hard it would be to implement. It shows the breakout of accounts into 3 main accounts: the data product, the data governance, and consumer accounts respectively. There are a few configuration steps required for cross account tagging to take place and make the whole thing work.
 
-![Data Mesh](images/data-mesh-central-governance.png)
+![Data Mesh](../../../assets/images/data-mesh-central-governance.png)
 
 ## Setup
 
@@ -10,7 +10,7 @@ In order to run this solution as intended you should create 3 accounts in AWS. Y
 
 * Data Product Account
 * Governance Account
-* Consumer Account
+* Data Consumer Account
 
 With those accounts created, lets ensure your workstation is setup to launch the resources in each account. We will be using the AWS CLI and the Cloud Development Kit.
 
@@ -79,7 +79,7 @@ Lake Formation starts with the "Use only IAM access control" settings enabled fo
 
 1. Clear both check boxes and choose `Save`.
 
-  ![dl-setting](images/dl-settings-page.png)
+  ![dl-setting](../../../assets/images/dl-settings-page.png)
 
 
 5. In the navigation pane, under `Permissions`, choose `Admins and database creators`.
@@ -296,7 +296,7 @@ The central account will be the account that hosts the centralized Glue data cat
 
 The first thing we want to do is populate the Glue data catalog with the metadata of the data in the `Product` account. The CDK script created a Glue crawler for each data set. Go to the [AWS Glue service page](https://console.aws.amazon.com/glue/) and select the `Crawlers` link from the left hand nav. For each crawler listed, click the check box one at a time and click the `Run Crawler` button. This will populate the Glue data catalog and it should look like below.
 
-![central-glue-catalog](images/glue-catalog.png)
+![central-glue-catalog](../../../assets/images/glue-catalog.png)
 
 ### Resource Tagging
 
@@ -398,7 +398,7 @@ You will see that the all the tables but `green` from the `central-lake` databas
 * 
 You should now have a row in the `Data Permissions` view like below:
 
-![data-permissions](images/consumer-cross-table-access.png)
+![data-permissions](../../../assets/images/consumer-cross-table-access.png)
 
 With the Resource Links created it's now time to assign the approriate `Data Permissions` to the `datalakeAnalyst` user.
 

@@ -24,6 +24,7 @@
     "eslint": "npx projen eslint",
     "compat": "npx projen compat",
     "publish:npm": "npx projen publish:npm",
+    "publish:pypi": "npx projen publish:pypi",
     "docgen": "npx projen docgen",
     "coverage": "npx projen coverage",
     "release": "npx projen release",
@@ -265,7 +266,12 @@
   "stability": "experimental",
   "jsii": {
     "outdir": "dist",
-    "targets": {},
+    "targets": {
+      "python": {
+        "distName": "cdk-7layer-constructs",
+        "module": "cdk_datalake_constructs"
+      }
+    },
     "tsc": {
       "outDir": "lib",
       "rootDir": "src"
