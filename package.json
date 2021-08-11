@@ -268,7 +268,7 @@
     "outdir": "dist",
     "targets": {
       "python": {
-        "distName": "cdk-7layer-constructs",
+        "distName": "cdk-datalake-constructs",
         "module": "cdk_datalake_constructs"
       }
     },

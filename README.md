@@ -2,9 +2,18 @@
 
 This is my attempt at simplifying deploying various datalake strategies in AWS with the CDK.
 
+[![Actions Status: auto-approve](https://github.com/randyridgley/cdk-datalake-constructs/workflows/auto-approve/badge.svg)](https://github.com/randyridgley/cdk-datalake-constructs/actions?query=workflow%3A"auto-approve")
+[![Actions Status: build](https://github.com/randyridgley/cdk-datalake-constructs/workflows/build/badge.svg)](https://github.com/randyridgley/cdk-datalake-constructs/actions?query=workflow%3A"build")
+[![Actions Status: release](https://github.com/randyridgley/cdk-datalake-constructs/workflows/release/badge.svg)](https://github.com/randyridgley/cdk-datalake-constructs/actions?query=workflow%3A"release")
+[![Actions Status: stale](https://github.com/randyridgley/cdk-datalake-constructs/workflows/stale/badge.svg)](https://github.com/randyridgley/cdk-datalake-constructs/actions?query=workflow%3A"stale")
+[![Actions Status: upgrade-projen](https://github.com/randyridgley/cdk-datalake-constructs/workflows/upgrade-projen/badge.svg)](https://github.com/randyridgley/cdk-datalake-constructs/actions?query=workflow%3A"upgrade-projen")
+[![Actions Status: upgrade](https://github.com/randyridgley/cdk-datalake-constructs/workflows/upgrade/badge.svg)](https://github.com/randyridgley/cdk-datalake-constructs/actions?query=workflow%3A"upgrade")
+
+
 [![License](https://img.shields.io/badge/License-MIT-green)](https://opensource.org/licenses/MIT)  
 [![Current cdk version](https://img.shields.io/github/package-json/dependency-version/randyridgley/cdk-datalake-constructs/@aws-cdk/core)](https://github.com/aws/aws-cdk)  
-[![Build](https://img.shields.io/github/package-json/dependency-version/randyridgley/cdk-datalake-constructs/actions/workflows/build.yml/badge.svg)](https://img.shields.io/github/package-json/dependency-version/randyridgley/cdk-datalake-constructs/actions/workflows/build.yml) [![Release](https://img.shields.io/github/package-json/dependency-version/randyridgley/cdk-datalake-constructs/actions/workflows/release.yml/badge.svg)](https://img.shields.io/github/package-json/dependency-version/randyridgley/cdk-datalake-constructs/actions/workflows/release.yml)   
+[![Build](https://img.shields.io/github/package-json/dependency-version/randyridgley/cdk-datalake-constructs/actions/workflows/build.yml/badge.svg)](https://img.shields.io/github/package-json/dependency-version/randyridgley/cdk-datalake-constructs/actions/workflows/build.yml) 
+[![Release](https://github.com/randyridgley/cdk-datalake-constructs/workflows/release/badge.svg)](https://img.shields.io/github/package-json/dependency-version/randyridgley/cdk-datalake-constructs/actions/workflows/release.yml)
 [![Python](https://img.shields.io/pypi/pyversions/cdk-datalake-constructs)](https://pypi.org) [![pip](https://img.shields.io/badge/pip%20install-cdk--datalake--constructs-blue)](https://pypi.org/project/cdk-datalake-constructs/)  
 [![npm version](https://img.shields.io/npm/v/cdk-datalake-constructs)](https://www.npmjs.com/package/cdk-datalake-constructs) [![pypi version](https://img.shields.io/pypi/v/cdk-datalake-constructs)](https://pypi.org/project/cdk-datalake-constructs/) [![Maven](https://img.shields.io/maven-central/v/io.github.randyridgley/cdk-datalake-constructs)](https://search.maven.org/search?q=a:cdk-comprehend-s3olap) [![nuget](https://img.shields.io/nuget/v/Cdk.Datalake.Constructs)](https://www.nuget.org/packages/Cdk.Datalake.Constructs/)
 

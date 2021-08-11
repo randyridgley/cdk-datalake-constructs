@@ -136,7 +136,7 @@ const project = new AwsCdkConstructLibrary({
   npmTokenSecret: 'NPM_TOKEN',
   releaseToNpm: true,
   publishToPypi: {
-    distName: 'cdk-7layer-constructs',
+    distName: 'cdk-datalake-constructs',
     module: 'cdk_datalake_constructs',
   },
   // publishToMaven: {
