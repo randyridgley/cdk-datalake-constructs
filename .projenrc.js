@@ -167,7 +167,7 @@ const project = new AwsCdkConstructLibrary({
     'lakeformation',
     'glue'],
   tsconfig: {
-  }
+  },
 });
 
 project.tasks.tryFind('package').prependExec('go env -w GOSUMDB=off');
