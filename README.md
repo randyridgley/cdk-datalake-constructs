@@ -2,16 +2,7 @@
 
 This is my attempt at simplifying deploying various datalake strategies in AWS with the CDK.
 
-[![Actions Status: auto-approve](https://github.com/randyridgley/cdk-datalake-constructs/workflows/auto-approve/badge.svg)](https://github.com/randyridgley/cdk-datalake-constructs/actions?query=workflow%3A"auto-approve")
-[![Actions Status: build](https://github.com/randyridgley/cdk-datalake-constructs/workflows/build/badge.svg)](https://github.com/randyridgley/cdk-datalake-constructs/actions?query=workflow%3A"build")
-[![Actions Status: release](https://github.com/randyridgley/cdk-datalake-constructs/workflows/release/badge.svg)](https://github.com/randyridgley/cdk-datalake-constructs/actions?query=workflow%3A"release")
-[![Actions Status: stale](https://github.com/randyridgley/cdk-datalake-constructs/workflows/stale/badge.svg)](https://github.com/randyridgley/cdk-datalake-constructs/actions?query=workflow%3A"stale")
-[![Actions Status: upgrade-projen](https://github.com/randyridgley/cdk-datalake-constructs/workflows/upgrade-projen/badge.svg)](https://github.com/randyridgley/cdk-datalake-constructs/actions?query=workflow%3A"upgrade-projen")
-[![Actions Status: upgrade](https://github.com/randyridgley/cdk-datalake-constructs/workflows/upgrade/badge.svg)](https://github.com/randyridgley/cdk-datalake-constructs/actions?query=workflow%3A"upgrade")
-
-
 [![License](https://img.shields.io/badge/License-MIT-green)](https://opensource.org/licenses/MIT)  
-[![Current cdk version](https://img.shields.io/github/package-json/dependency-version/randyridgley/cdk-datalake-constructs/@aws-cdk/core)](https://github.com/aws/aws-cdk)  
 [![Build](https://github.com/randyridgley/cdk-datalake-constructs/workflows/build/badge.svg)](https://github.com/randyridgley/cdk-datalake-constructs/workflows/build.yml) 
 [![Release](https://github.com/randyridgley/cdk-datalake-constructs/workflows/release/badge.svg)](https://github.com/randyridgley/cdk-datalake-constructs/workflows/release.yml)
 [![Python](https://img.shields.io/pypi/pyversions/cdk-datalake-constructs)](https://pypi.org) [![pip](https://img.shields.io/badge/pip%20install-cdk--datalake--constructs-blue)](https://pypi.org/project/cdk-datalake-constructs/)  
