@@ -27,6 +27,7 @@
     "publish:maven": "npx projen publish:maven",
     "publish:pypi": "npx projen publish:pypi",
     "publish:nuget": "npx projen publish:nuget",
+    "publish:golang": "npx projen publish:golang",
     "docgen": "npx projen docgen",
     "coverage": "npx projen coverage",
     "release": "npx projen release",
@@ -237,6 +238,9 @@
       "dotnet": {
         "namespace": "Cdk.Datalake.Constructs",
         "packageId": "Cdk.Datalake.Constructs"
+      },
+      "go": {
+        "moduleName": "github.com/randyridgley/cdk-datalake-constructs"
       }
     },
     "tsc": {
