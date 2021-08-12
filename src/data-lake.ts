@@ -306,9 +306,9 @@ export class DataLake extends cdk.Construct {
 
   public createDownloaderCustomResource(accountId: string, region: string, stageName: string) {
     // download the data sets with the custom resource after successfull creation of resource
-    const onEvent = new lambda.Function(this, 'DataloaderHandler', {
+    const onEvent = new PythonFunction(this, 'DataloaderHandler', {
       runtime: lambda.Runtime.PYTHON_3_7,
-      code: lambda.Code.fromAsset(path.join(__dirname, '../lambda/download-data')),
+      entry: path.join(__dirname, '../lambda/download-data'),
       handler: 'index.on_event',
       timeout: cdk.Duration.minutes(15),
       functionName: buildLambdaFunctionName({
