@@ -88,7 +88,8 @@ const project = new AwsCdkConstructLibrary({
     'src/etl/kda-studio.ts',
     'src/etl/glue-notebook.ts',
     'workflows/*',
-    '**/.DS_Store',
+    '*.DS_Store',
+    '*cdk.context.json',
   ],
   projenUpgradeSecret: 'PROJEN_GITHUB_TOKEN',
   depsUpgrade: DependenciesUpgradeMechanism.githubWorkflow({

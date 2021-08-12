@@ -36,7 +36,8 @@ export class DataCentralStack extends cdk.Stack {
       policyTags: props.policyTags,
       stageName: props.stageName,
       crossAccount: props.crossAccountAccess ? props.crossAccountAccess : undefined,
-      dataProducts: this.dataProducts
+      dataProducts: this.dataProducts,
+      createDefaultDatabase: true
     });
   }
 }

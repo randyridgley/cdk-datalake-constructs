@@ -32,7 +32,8 @@ export class DataConsumerStack extends cdk.Stack {
       region: region,
       stageName: props.stageName,
       policyTags: props.policyTags,
-      vpc: vpc
+      vpc: vpc,
+      createDefaultDatabase: true
     });
     
     // UDF defined in the Serverless Application Repository for the Athena Text Analysis UDF

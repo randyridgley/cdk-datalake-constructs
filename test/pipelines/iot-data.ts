@@ -33,7 +33,7 @@ export function IoTDataPipeline(accountId: string, dataCatalogOwnerAccountId: st
     streamProperties: {
       streamName: streamName,
       lambdaDataGenerator: {
-        code: lambda.Code.fromAsset(path.join(__dirname, '../../src/lambda/iot-data-generator')),
+        code: lambda.Code.fromAsset(path.join(__dirname, '../lambda/iot-data-generator')),
         handler: 'index.handler',
         timeout: cdk.Duration.seconds(300),
         runtime: lambda.Runtime.PYTHON_3_7,

@@ -32,13 +32,13 @@ This is my attempt at simplifying deploying various datalake strategies in AWS w
 TypeScript/JavaScript
 
 ```sh
-$ npm install @cdk-7layer-constructs/cdk-datalake-constructs
+$ npm install @randyridgley/cdk-datalake-constructs
 ```
 
 Python
 
 ```sh
-$ pip install cdk7layer-constructs.cdk-datalake-constructs
+$ pip install cdk-datalake-constructs.cdk-datalake-constructs
 ```
 
 .Net

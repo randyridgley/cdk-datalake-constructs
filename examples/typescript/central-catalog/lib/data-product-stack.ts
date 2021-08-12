@@ -27,7 +27,8 @@ export class DataProductStack extends cdk.Stack {
       stageName: props.stageName,
       crossAccount: props.crossAccountAccess ? props.crossAccountAccess : undefined,
       vpc: vpc,
-      dataProducts: props.dataProducts
+      dataProducts: props.dataProducts,
+      createDefaultDatabase: true
     });
   }
   

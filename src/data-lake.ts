@@ -308,7 +308,7 @@ export class DataLake extends cdk.Construct {
     // download the data sets with the custom resource after successfull creation of resource
     const onEvent = new lambda.Function(this, 'DataloaderHandler', {
       runtime: lambda.Runtime.PYTHON_3_7,
-      code: lambda.Code.fromAsset(path.join(__dirname, 'lambda/download-data')),
+      code: lambda.Code.fromAsset(path.join(__dirname, '../lambda/download-data')),
       handler: 'index.on_event',
       timeout: cdk.Duration.minutes(15),
       functionName: buildLambdaFunctionName({
@@ -585,7 +585,7 @@ export class DataLake extends cdk.Construct {
   private createPolicyTagsCustomResource(policyTags: { [name: string]: string }, datalakeAdminRole: iam.IRole) {
     const onEvent = new PythonFunction(this, 'create-policy-tags-handler', {
       runtime: lambda.Runtime.PYTHON_3_7,
-      entry: path.join(__dirname, 'lambda/create-tags-handler'),
+      entry: path.join(__dirname, '../lambda/create-tags-handler'),
       handler: 'index.on_event',
       role: this.datalakeAdminRole,
       functionName: buildLambdaFunctionName({
@@ -618,7 +618,7 @@ export class DataLake extends cdk.Construct {
     if (this.crossAccountAccess) {
       const onCatalogEvent = new PythonFunction(this, 'enable-hybrid-catalog-handler', {
         runtime: lambda.Runtime.PYTHON_3_7,
-        entry: path.join(__dirname, 'lambda/enable-hybrid-catalog'),
+        entry: path.join(__dirname, '../lambda/enable-hybrid-catalog'),
         handler: 'index.on_event',
         role: this.datalakeAdminRole,
         functionName: buildLambdaFunctionName({
