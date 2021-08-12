@@ -21,8 +21,7 @@ const taxiPipes: Array<dl.Pipeline> = [
   pipelines.GreenPipeline(lakeAccountId, centralAccountId, region, stage),
 ]
 
-const dataProducts: Array<dl.DataProduct> = [
-{
+const dataProducts: Array<dl.DataProduct> = [{
   pipelines: taxiPipes,
   accountId: lakeAccountId,
   databaseName: 'taxi-product'

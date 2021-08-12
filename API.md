@@ -32,36 +32,6 @@ new DataLake(scope: Construct, id: string, props: DataLakeProperties)
 
 #### Methods <a name="Methods"></a>
 
-##### `addPipeline` <a name="@randyridgley/cdk-datalake-constructs.DataLake.addPipeline"></a>
-
-```typescript
-public addPipeline(pipeline: Pipeline, databaseName: string)
-```
-
-###### `pipeline`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataLake.parameter.pipeline"></a>
-
-- *Type:* [`@randyridgley/cdk-datalake-constructs.Pipeline`](#@randyridgley/cdk-datalake-constructs.Pipeline)
-
----
-
-###### `databaseName`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataLake.parameter.databaseName"></a>
-
-- *Type:* `string`
-
----
-
-##### `createDatabase` <a name="@randyridgley/cdk-datalake-constructs.DataLake.createDatabase"></a>
-
-```typescript
-public createDatabase(databaseName: string)
-```
-
-###### `databaseName`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataLake.parameter.databaseName"></a>
-
-- *Type:* `string`
-
----
-
 ##### `createDownloaderCustomResource` <a name="@randyridgley/cdk-datalake-constructs.DataLake.createDownloaderCustomResource"></a>
 
 ```typescript
@@ -83,18 +53,6 @@ public createDownloaderCustomResource(accountId: string, region: string, stageNa
 ###### `stageName`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataLake.parameter.stageName"></a>
 
 - *Type:* `string`
-
----
-
-##### `registerDataSetWithLakeFormation` <a name="@randyridgley/cdk-datalake-constructs.DataLake.registerDataSetWithLakeFormation"></a>
-
-```typescript
-public registerDataSetWithLakeFormation(setting: DataLocationProperties)
-```
-
-###### `setting`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataLake.parameter.setting"></a>
-
-- *Type:* [`@randyridgley/cdk-datalake-constructs.DataLocationProperties`](#@randyridgley/cdk-datalake-constructs.DataLocationProperties)
 
 ---
 
@@ -1656,6 +1614,12 @@ const dataLakeProperties: DataLakeProperties = { ... }
 
 ---
 
+##### `createDefaultDatabase`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataLakeProperties.property.createDefaultDatabase"></a>
+
+- *Type:* `boolean`
+
+---
+
 ##### `name`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataLakeProperties.property.name"></a>
 
 - *Type:* `string`
@@ -1677,6 +1641,18 @@ const dataLakeProperties: DataLakeProperties = { ... }
 ##### `crossAccount`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.DataLakeProperties.property.crossAccount"></a>
 
 - *Type:* [`@randyridgley/cdk-datalake-constructs.CrossAccountProperties`](#@randyridgley/cdk-datalake-constructs.CrossAccountProperties)
+
+---
+
+##### `datalakeAdminRole`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.DataLakeProperties.property.datalakeAdminRole"></a>
+
+- *Type:* [`@aws-cdk/aws-iam.Role`](#@aws-cdk/aws-iam.Role)
+
+---
+
+##### `datalakeCreatorRole`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.DataLakeProperties.property.datalakeCreatorRole"></a>
+
+- *Type:* [`@aws-cdk/aws-iam.Role`](#@aws-cdk/aws-iam.Role)
 
 ---
 
@@ -2139,6 +2115,46 @@ const lambdaDataGeneratorProperties: LambdaDataGeneratorProperties = { ... }
 ##### `timeout`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.LambdaDataGeneratorProperties.property.timeout"></a>
 
 - *Type:* [`@aws-cdk/core.Duration`](#@aws-cdk/core.Duration)
+
+---
+
+### NameBuilderParameters <a name="@randyridgley/cdk-datalake-constructs.NameBuilderParameters"></a>
+
+#### Initializer <a name="[object Object].Initializer"></a>
+
+```typescript
+import { NameBuilderParameters } from '@randyridgley/cdk-datalake-constructs'
+
+const nameBuilderParameters: NameBuilderParameters = { ... }
+```
+
+##### `name`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.NameBuilderParameters.property.name"></a>
+
+- *Type:* `string`
+
+---
+
+##### `accountId`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.NameBuilderParameters.property.accountId"></a>
+
+- *Type:* `string`
+
+---
+
+##### `region`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.NameBuilderParameters.property.region"></a>
+
+- *Type:* `string`
+
+---
+
+##### `resourceUse`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.NameBuilderParameters.property.resourceUse"></a>
+
+- *Type:* `string`
+
+---
+
+##### `stage`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.NameBuilderParameters.property.stage"></a>
+
+- *Type:* `string`
 
 ---
 

@@ -17,7 +17,7 @@ export class DataProductStack extends cdk.Stack {
   
     const region = cdk.Stack.of(this).region;
     const accountId = cdk.Stack.of(this).account;
-    const vpc = this.create_vpc()
+    const vpc = this.createVpc()
 
     // create the local data lake with their own Glue Data catalog and IAM Role to act as data lake administrator 
     const datalake = new dl.DataLake(this, 'LocalDataLake', {
@@ -31,7 +31,7 @@ export class DataProductStack extends cdk.Stack {
     });
   }
   
-  private create_vpc() : ec2.Vpc {
+  private createVpc() : ec2.Vpc {
     const vpc = new ec2.Vpc(this, 'lake-vpc', {
       maxAzs: 3,
       subnetConfiguration: [

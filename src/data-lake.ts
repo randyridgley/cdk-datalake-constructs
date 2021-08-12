@@ -43,6 +43,9 @@ export interface DataLakeProperties {
   readonly policyTags?: { [name: string]: string };
   readonly crossAccount?: CrossAccountProperties;
   readonly glueSecurityGroup?: ec2.SecurityGroup;
+  readonly datalakeAdminRole?: iam.Role;
+  readonly datalakeCreatorRole?: iam.Role;
+  readonly createDefaultDatabase: Boolean;
 }
 
 export interface JDBCProperties {
@@ -214,31 +217,40 @@ export class DataLake extends cdk.Construct {
     });
     new cdk.CfnOutput(this, 'DataLakeLogBucket', { value: this.logBucket.bucketName });
 
-    const datalakeAdmin = new DataLakeAdministrator(this, `${props.name}-datalake-admin-role`, {
-      name: buildUniqueName({
-        name: props.name,
-        accountId: props.accountId,
-        region: props.region,
-        resourceUse: 'datalake-admin',
-        stage: this.stageName,
-      }, 60),
-    });
-    this.datalakeAdminRole = datalakeAdmin.role;
+    if (props.datalakeAdminRole) {
+      this.datalakeAdminRole = props.datalakeAdminRole;
+    } else {
+      this.datalakeAdminRole = new DataLakeAdministrator(this, `${props.name}-datalake-admin-role`, {
+        name: buildUniqueName({
+          name: props.name,
+          accountId: props.accountId,
+          region: props.region,
+          resourceUse: 'datalake-admin',
+          stage: this.stageName,
+        }, 60),
+      }).role;
+    }
 
-    const datalakeDbCreator = new DataLakeCreator(this, `${props.name}-datalake-creator-role`, {
-      name: buildUniqueName({
-        name: props.name,
-        accountId: props.accountId,
-        region: props.region,
-        resourceUse: 'datalake-creator',
-        stage: this.stageName,
-      }, 60),
-    });
+    if (props.datalakeCreatorRole) {
+      this.datalakeDbCreatorRole = props.datalakeCreatorRole;
+    } else {
+      this.datalakeDbCreatorRole = new DataLakeCreator(this, `${props.name}-datalake-creator-role`, {
+        name: buildUniqueName({
+          name: props.name,
+          accountId: props.accountId,
+          region: props.region,
+          resourceUse: 'datalake-creator',
+          stage: this.stageName,
+        }, 60),
+      }).role;
+    }
 
-    this.datalakeDbCreatorRole = datalakeDbCreator.role;
+    if (props.createDefaultDatabase) {
+      this.createDatabase(props.name);
+      new cdk.CfnOutput(this, 'DataLakeDefaultDatabase', { value: props.name });
+    }
 
-    this.createDatabase(props.name);
-    new cdk.CfnOutput(this, 'DataLakeDefaultDatabase', { value: props.name });
+    this.createCrossAccountGlueCatalogResourcePolicy();
 
     this.athenaWorkgroup = new athena.CfnWorkGroup(this, 'workgroup', {
       name: buildUniqueName({
@@ -268,10 +280,6 @@ export class DataLake extends cdk.Construct {
       this.createPolicyTagsCustomResource(props.policyTags, this.datalakeAdminRole);
     }
 
-    if (this.crossAccountAccess) {
-      this.createCrossAccountGlueCatalog();
-    }
-
     if (props.dataProducts && props.dataProducts.length > 0) {
       props.dataProducts.forEach((product: DataProduct) => {
         this.createDatabase(product.databaseName);
@@ -281,16 +289,59 @@ export class DataLake extends cdk.Construct {
 
           // if the pipeline data set has the same accountId and the lake consider it the owner and register
           if (this.accountId === pipe.dataCatalogOwner.accountId) {
-            this.registerDataSetWithLakeFormation({
+            new LFRegisteredDataSet(this, pipe.name, {
               destinationPrefix: pipe.destinationPrefix,
               destinationBucketName: pipe.destinationBucketName,
               name: pipe.name,
+              stage: this.stageName,
+              dataLakeAdminRoleArn: this.datalakeAdminRole.roleArn,
+              dataLakeDbCreatorRoleArn: this.datalakeDbCreatorRole.roleArn,
               databaseName: product.databaseName,
             });
           }
         });
       });
     }
+  }
+
+  public createDownloaderCustomResource(accountId: string, region: string, stageName: string) {
+    // download the data sets with the custom resource after successfull creation of resource
+    const onEvent = new lambda.Function(this, 'DataloaderHandler', {
+      runtime: lambda.Runtime.PYTHON_3_7,
+      code: lambda.Code.fromAsset(path.join(__dirname, 'lambda/download-data')),
+      handler: 'index.on_event',
+      timeout: cdk.Duration.minutes(15),
+      functionName: buildLambdaFunctionName({
+        name: 'load-data',
+        accountId: accountId,
+        region: region,
+        resourceUse: 'cr',
+        stage: stageName,
+      }),
+    });
+
+    // create readable and writable buckets for the datasets and set the appropriate S3 access
+    onEvent.addToRolePolicy(
+      new iam.PolicyStatement({
+        actions: ['s3:*'],
+        resources: ['*'], // trim down to only the S3 buckets needed
+      }),
+    );
+
+    const dataLoadProvider = new cr.Provider(this, 'DataloaderProvider', {
+      onEventHandler: onEvent,
+      logRetention: logs.RetentionDays.ONE_DAY,
+    });
+
+    // CR to download the static datasets form the dataSets var passed in.
+    new cdk.CustomResource(this, 'LoadDatalakeCustomResource', {
+      serviceToken: dataLoadProvider.serviceToken,
+      properties: {
+        dataSets: this.dataLocations,
+        stackName: cdk.Stack.name,
+        regionName: region,
+      },
+    });
   }
 
   private addDataSet(setting: Pipeline): DataSet {
@@ -312,19 +363,7 @@ export class DataLake extends cdk.Construct {
     return this.dataSets[schemaName];
   }
 
-  public registerDataSetWithLakeFormation(setting: DataLocationProperties) {
-    new LFRegisteredDataSet(this, setting.name, {
-      destinationPrefix: setting.destinationPrefix,
-      destinationBucketName: setting.destinationBucketName,
-      name: setting.name,
-      stage: this.stageName,
-      dataLakeAdminRoleArn: this.datalakeAdminRole.roleArn,
-      dataLakeDbCreatorRoleArn: this.datalakeDbCreatorRole.roleArn,
-      databaseName: setting.databaseName,
-    });
-  }
-
-  public createDatabase(databaseName: string) {
+  private createDatabase(databaseName: string) {
     const db = new glue.Database(this, `${databaseName}-database`, {
       databaseName: `${databaseName}`,
     });
@@ -409,7 +448,7 @@ export class DataLake extends cdk.Construct {
     }
   }
 
-  public addPipeline(pipeline:Pipeline, databaseName: string) {
+  private addPipeline(pipeline:Pipeline, databaseName: string) {
     let job = undefined;
 
     switch (pipeline.type) {
@@ -575,27 +614,27 @@ export class DataLake extends cdk.Construct {
     outputs.node.addDependency(datalakeAdminRole);
   }
 
-  private createCrossAccountGlueCatalog() {
-    const onCatalogEvent = new PythonFunction(this, 'enable-hybrid-catalog-handler', {
-      runtime: lambda.Runtime.PYTHON_3_7,
-      entry: path.join(__dirname, 'lambda/enable-hybrid-catalog'),
-      handler: 'index.on_event',
-      role: this.datalakeAdminRole,
-      functionName: buildLambdaFunctionName({
-        name: 'create-catalog',
-        accountId: this.accountId,
-        region: this.region,
-        resourceUse: 'cr',
-        stage: this.stageName,
-      }),
-    });
-
-    const catalogProvider = new cr.Provider(this, 'hybrid-catalog-provider', {
-      onEventHandler: onCatalogEvent,
-      logRetention: logs.RetentionDays.ONE_DAY,
-    });
-
+  private createCrossAccountGlueCatalogResourcePolicy() {
     if (this.crossAccountAccess) {
+      const onCatalogEvent = new PythonFunction(this, 'enable-hybrid-catalog-handler', {
+        runtime: lambda.Runtime.PYTHON_3_7,
+        entry: path.join(__dirname, 'lambda/enable-hybrid-catalog'),
+        handler: 'index.on_event',
+        role: this.datalakeAdminRole,
+        functionName: buildLambdaFunctionName({
+          name: 'create-catalog',
+          accountId: this.accountId,
+          region: this.region,
+          resourceUse: 'cr',
+          stage: this.stageName,
+        }),
+      });
+
+      const catalogProvider = new cr.Provider(this, 'hybrid-catalog-provider', {
+        onEventHandler: onCatalogEvent,
+        logRetention: logs.RetentionDays.ONE_DAY,
+      });
+
       new cdk.CustomResource(this, 'hybrid-catalog-custom-resource', {
         serviceToken: catalogProvider.serviceToken,
         properties: {
@@ -606,46 +645,6 @@ export class DataLake extends cdk.Construct {
         },
       });
     }
-  }
-
-  public createDownloaderCustomResource(accountId: string, region: string, stageName: string) {
-    // download the data sets with the custom resource after successfull creation of resource
-    const onEvent = new lambda.Function(this, 'DataloaderHandler', {
-      runtime: lambda.Runtime.PYTHON_3_7,
-      code: lambda.Code.fromAsset(path.join(__dirname, 'lambda/download-data')),
-      handler: 'index.on_event',
-      timeout: cdk.Duration.minutes(15),
-      functionName: buildLambdaFunctionName({
-        name: 'load-data',
-        accountId: accountId,
-        region: region,
-        resourceUse: 'cr',
-        stage: stageName,
-      }),
-    });
-
-    // create readable and writable buckets for the datasets and set the appropriate S3 access
-    onEvent.addToRolePolicy(
-      new iam.PolicyStatement({
-        actions: ['s3:*'],
-        resources: ['*'], // trim down to only the S3 buckets needed
-      }),
-    );
-
-    const dataLoadProvider = new cr.Provider(this, 'DataloaderProvider', {
-      onEventHandler: onEvent,
-      logRetention: logs.RetentionDays.ONE_DAY,
-    });
-
-    // CR to download the static datasets form the dataSets var passed in.
-    new cdk.CustomResource(this, 'LoadDatalakeCustomResource', {
-      serviceToken: dataLoadProvider.serviceToken,
-      properties: {
-        dataSets: this.dataLocations,
-        stackName: cdk.Stack.name,
-        regionName: region,
-      },
-    });
   }
 }
 

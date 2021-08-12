@@ -20,7 +20,7 @@ export class DataLakeAdministrator extends cdk.Construct {
         new iam.ServicePrincipal('lakeformation.amazonaws.com'),
         new iam.ServicePrincipal('lambda.amazonaws.com'),
         new iam.ServicePrincipal('sagemaker.amazonaws.com'),
-      ), // hack to allow Lambda function provide LF fuctionality to add tags
+      ),
       managedPolicies: [
         iam.ManagedPolicy.fromAwsManagedPolicyName('AWSLakeFormationDataAdmin'),
         iam.ManagedPolicy.fromAwsManagedPolicyName('AWSGlueConsoleFullAccess'),

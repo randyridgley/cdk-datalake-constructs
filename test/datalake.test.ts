@@ -37,6 +37,7 @@ test('Check Resources', () => {
     region: region,
     stageName: stage,
     dataProducts: dataProducts,
+    createDefaultDatabase: true,
   });
 
   expect(datalake.accountId).toMatch(centralCatalogAccount);

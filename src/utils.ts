@@ -6,11 +6,11 @@ export function notUndefined<T>(obj: T | undefined): obj is T {
 }
 
 export interface NameBuilderParameters {
-  name: string;
-  resourceUse?: string;
-  stage?: string;
-  region?: string;
-  accountId?: string;
+  readonly name: string;
+  readonly resourceUse?: string;
+  readonly stage?: string;
+  readonly region?: string;
+  readonly accountId?: string;
 }
 
 export function buildUniqueName(props: NameBuilderParameters, maxLength: number): string {

@@ -2,6 +2,7 @@ export * from './data-lake';
 export * from './data-product';
 export * from './pipeline';
 export * from './data-lake-bucket';
+export * from './utils';
 export * from './data-sets/data-set';
 export * from './data-sets/registered-data-set';
 export * from './data-streams/s3-delivery-stream';
