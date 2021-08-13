@@ -226,7 +226,7 @@
       "java": {
         "package": "io.github.randyridgley.cdk.datalake.constructs",
         "maven": {
-          "groupId": "io.github.randyridgley.cdk.datalake.constructs",
+          "groupId": "io.github.randyridgley",
           "artifactId": "cdk-datalake-constructs"
         }
       },

@@ -54,7 +54,7 @@ $ nuget install CDK.Datalake.Constructs
 ### Basic
 
 ```ts
-import { DataLake } from '@cdk-7layer-constructs/cdk-datalake-constructs';
+import { DataLake } from '@randyridgley/cdk-datalake-constructs';
 
 new DataLake(this, 'datalake', {
   name: 'demo-lake'
