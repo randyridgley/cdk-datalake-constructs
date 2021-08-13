@@ -30,6 +30,8 @@ export class DataProductStack extends cdk.Stack {
       dataProducts: props.dataProducts,
       createDefaultDatabase: true
     });
+
+    datalake.createDownloaderCustomResource(accountId, region, props.stageName)
   }
   
   private createVpc() : ec2.Vpc {
