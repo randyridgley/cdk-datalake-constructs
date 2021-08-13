@@ -6,6 +6,7 @@ import * as cdk from '@aws-cdk/core';
 
 import { S3NotificationProperties, Stage } from '../data-lake';
 import { DataLakeBucket } from '../data-lake-bucket';
+import { buildS3BucketName } from '../utils';
 
 export interface DataSetProperties {
   readonly dataCatalogAccountId: string;
@@ -39,22 +40,43 @@ export class DataSet extends cdk.Construct {
   constructor(scope: cdk.Construct, id: string, props: DataSetProperties) {
     super(scope, id);
 
+    const account = cdk.Stack.of(this).account;
+    const region = cdk.Stack.of(this).region;
+
     this.rawBucket = new DataLakeBucket(this, `s3-raw-bucket-${props.name}`, {
-      bucketName: props.destinationBucketName,
+      bucketName: buildS3BucketName({
+        name: props.destinationBucketName,
+        accountId: account,
+        region: region,
+        resourceUse: 'datalake-raw',
+        stage: props.stage
+      }),
       dataCatalogAccountId: props.dataCatalogAccountId,
       logBucket: props.logBucket,
       crossAccount: props.registerCrossAccount,
     }).bucket;
 
     this.trustedBucket = new DataLakeBucket(this, `s3-trusted-bucket-${props.name}`, {
-      bucketName: props.destinationBucketName,
+      bucketName: buildS3BucketName({
+        name: props.destinationBucketName,
+        accountId: account,
+        region: region,
+        resourceUse: 'datalake-trusted',
+        stage: props.stage
+      }),
       dataCatalogAccountId: props.dataCatalogAccountId,
       logBucket: props.logBucket,
       crossAccount: props.registerCrossAccount,
     }).bucket;
 
     this.refinedBucket = new DataLakeBucket(this, `s3-refined-bucket-${props.name}`, {
-      bucketName: props.destinationBucketName,
+      bucketName: buildS3BucketName({
+        name: props.destinationBucketName,
+        accountId: account,
+        region: region,
+        resourceUse: 'datalake-refined',
+        stage: props.stage
+      }),
       dataCatalogAccountId: props.dataCatalogAccountId,
       logBucket: props.logBucket,
       crossAccount: props.registerCrossAccount,

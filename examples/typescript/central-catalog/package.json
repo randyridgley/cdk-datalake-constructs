@@ -22,6 +22,6 @@
   },
   "dependencies": {
     "@aws-cdk/core": "1.118.0",
-    "@randyridgley/cdk-datalake-constructs": "^0.0.14"
+    "@randyridgley/cdk-datalake-constructs": "^0.0.15"
   }
 }

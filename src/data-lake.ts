@@ -369,7 +369,7 @@ export class DataLake extends cdk.Construct {
     });
     this.databases[databaseName] = db;
 
-    new lf.CfnPermissions(this, `${databaseName}-lf-db-creator-permission`, {
+    const dbPerm = new lf.CfnPermissions(this, `${databaseName}-lf-db-creator-permission`, {
       dataLakePrincipal: {
         dataLakePrincipalIdentifier: this.datalakeDbCreatorRole.roleArn,
       },
@@ -384,6 +384,7 @@ export class DataLake extends cdk.Construct {
         Permissions.DROP,
       ],
     });
+    dbPerm.node.addDependency(db)
   }
 
   private addDataStream(setting: Pipeline) : KinesisStream {
