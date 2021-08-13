@@ -1,11 +1,12 @@
 import * as dl from '@randyridgley/cdk-datalake-constructs'
+import { DataSetLocation } from '@randyridgley/cdk-datalake-constructs';
 
 export function GreenPipeline(accountId: string, dataCatalogOwnerAccountId: string, region: string, stage: string) {
   return new dl.Pipeline({
     type: dl.DataPipelineType.S3,
     name: 'taxi-green',
-    destinationPrefix: 'raw/green/',
-    destinationBucketName: 'taxi-green',
+    destinationPrefix: 'green/',
+    dataSetDropLocation: DataSetLocation.RAW,
     s3Properties: {
       sourceBucketName: 'nyc-tlc',
       sourceKeys: [

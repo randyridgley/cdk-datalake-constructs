@@ -303,7 +303,6 @@ export class DataLake extends cdk.Construct {
     const onEvent = new PythonFunction(this, 'DataloaderHandler', {
       runtime: lambda.Runtime.PYTHON_3_7,
       entry: path.join(__dirname, '../lambda/download-data'),
-      handler: 'index.on_event',
       timeout: cdk.Duration.minutes(15),
       functionName: buildLambdaFunctionName({
         name: 'load-data',
@@ -584,7 +583,6 @@ export class DataLake extends cdk.Construct {
     const onEvent = new PythonFunction(this, 'create-policy-tags-handler', {
       runtime: lambda.Runtime.PYTHON_3_7,
       entry: path.join(__dirname, '../lambda/create-tags-handler'),
-      handler: 'index.on_event',
       role: this.datalakeAdminRole,
       functionName: buildLambdaFunctionName({
         name: 'create-tags',
@@ -617,7 +615,6 @@ export class DataLake extends cdk.Construct {
       const onCatalogEvent = new PythonFunction(this, 'enable-hybrid-catalog-handler', {
         runtime: lambda.Runtime.PYTHON_3_7,
         entry: path.join(__dirname, '../lambda/enable-hybrid-catalog'),
-        handler: 'index.on_event',
         role: this.datalakeAdminRole,
         functionName: buildLambdaFunctionName({
           name: 'create-catalog',

@@ -1,7 +1,7 @@
 import boto3, json
 from botocore.exceptions import ClientError
 
-def on_event(event, context):
+def handler(event, context):
     print(event)
     request_type = event["RequestType"]
     if request_type == "Create":
