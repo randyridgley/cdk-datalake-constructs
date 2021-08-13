@@ -24,14 +24,14 @@ export enum CompressionType {
 
 export interface DeliveryStreamProperties {
   readonly kinesisStream: kinesis.Stream;
-  readonly s3Bucket: s3.Bucket;
+  readonly s3Bucket: s3.IBucket;
   readonly s3Prefix?: string;
   readonly compression?: CompressionType;
   readonly transformFunction?: lambda.Function;
 }
 
 export class S3DeliveryStream extends cdk.Resource {
-  public s3Bucket: s3.Bucket;
+  public s3Bucket: s3.IBucket;
   protected cloudWatchLogsRole?: iam.Role;
   public readonly deliveryStreamArn: string;
   public readonly deliveryStreamName: string;

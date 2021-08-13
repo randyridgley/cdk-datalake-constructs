@@ -1,7 +1,7 @@
 import { DataPipelineType, DataSetLocation } from '../../src/data-lake';
 import { Pipeline } from '../../src/pipeline';
 
-export function YellowPipeline(dataCatalogOwnerAccountId: string) {
+export function YellowPipeline() {
   return new Pipeline({
     type: DataPipelineType.S3,
     name: 'taxi-yellow',
@@ -13,9 +13,6 @@ export function YellowPipeline(dataCatalogOwnerAccountId: string) {
         'trip data/yellow_tripdata_2020-11.csv',
         'trip data/yellow_tripdata_2020-12.csv',
       ],
-    },
-    dataCatalogOwner: {
-      accountId: dataCatalogOwnerAccountId,
     },
   });
 }

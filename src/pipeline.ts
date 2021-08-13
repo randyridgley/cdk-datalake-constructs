@@ -1,11 +1,10 @@
-import { DataCatalogOwner, DataPipelineType, JDBCProperties, S3Properties, S3NotificationProperties, StreamProperties, TableProps, JobProperties, DataSetLocation } from './data-lake';
+import { DataPipelineType, JDBCProperties, S3Properties, S3NotificationProperties, StreamProperties, TableProps, JobProperties, DataSetLocation } from './data-lake';
 
 export interface IPipelineProperties {
   type: DataPipelineType;
   name: string;
   destinationPrefix: string;
   dataSetDropLocation: DataSetLocation;
-  dataCatalogOwner: DataCatalogOwner;
   s3Properties?: S3Properties;
   streamProperties?: StreamProperties;
   jdbcProperties?: JDBCProperties;
@@ -19,7 +18,6 @@ export class Pipeline {
   public readonly name: string
   public readonly destinationPrefix: string
   public readonly dataSetDropLocation: DataSetLocation
-  public readonly dataCatalogOwner: DataCatalogOwner
   public readonly s3Properties?: S3Properties
   public readonly streamProperties?: StreamProperties
   public readonly jdbcProperties?: JDBCProperties
@@ -32,7 +30,6 @@ export class Pipeline {
     this.name = props.name;
     this.dataSetDropLocation = props.dataSetDropLocation;
     this.destinationPrefix = props.destinationPrefix;
-    this.dataCatalogOwner = props.dataCatalogOwner;
     this.jdbcProperties = props.jdbcProperties ? props.jdbcProperties : undefined;
     this.job = props.job ? props.job : undefined;
     this.s3NotificationProps = props.s3NotificationProps ? props.s3NotificationProps : undefined;

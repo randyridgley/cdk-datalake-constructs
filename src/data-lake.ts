@@ -15,21 +15,21 @@ import * as cr from '@aws-cdk/custom-resources';
 
 import { DataProduct } from './data-product';
 import { DataSet, DataSetResult } from './data-sets/data-set';
-import { LFRegisteredDataSet } from './data-sets/registered-data-set';
 import { KinesisOps } from './data-streams/kinesis-ops';
 import { KinesisStream } from './data-streams/kinesis-stream';
 import { CompressionType, S3DeliveryStream } from './data-streams/s3-delivery-stream';
+import { GlueCrawler } from './etl/glue-crawler';
 import { GlueJob, GlueJobType, GlueVersion, GlueWorkerType } from './etl/glue-job';
 import { GlueJobOps } from './etl/glue-job-ops';
 import { GlueTable } from './etl/glue-table';
 import { DataLakeAdministrator } from './personas/data-lake-admin';
 import { DataLakeCreator } from './personas/data-lake-creator';
 import { Pipeline } from './pipeline';
-import { buildLambdaFunctionName, buildS3BucketName, buildUniqueName, getDataSetBucket, packageAsset, toS3Path } from './utils';
+import { buildGlueCrawlerName, buildRoleName, buildLambdaFunctionName, buildS3BucketName, buildUniqueName, getDataSetBucketName, packageAsset, toS3Path } from './utils';
 
 export interface CrossAccountProperties {
   readonly consumerAccountIds: string[];
-  readonly producerAccountId: string;
+  readonly dataCatalogOwnerAccountId: string;
   readonly region: string;
 }
 
@@ -289,10 +289,15 @@ export class DataLake extends cdk.Construct {
 
     if (props.dataProducts && props.dataProducts.length > 0) {
       props.dataProducts.forEach((product: DataProduct) => {
-        this.createDatabase(product.databaseName);
+        // create the database only if the account is the catalog owner when cross account
+        if (product.dataCatalogAccountId && product.dataCatalogAccountId == this.accountId) {
+          this.createDatabase(product.databaseName);
+        } else if (product.dataCatalogAccountId == undefined) { // single account data lake
+          this.createDatabase(product.databaseName);
+        }
 
         product.pipelines.forEach((pipe: Pipeline) => {
-          this.addPipeline(pipe, product.databaseName);
+          this.addPipeline(pipe, product);
         });
       });
     }
@@ -337,20 +342,6 @@ export class DataLake extends cdk.Construct {
     });
   }
 
-  private addDataSet(pipeline: Pipeline): DataSet {
-    const schemaName = pipeline.name;
-    const dataSetStack = new cdk.NestedStack(cdk.Stack.of(this), `${schemaName}-dataset-stack`);
-
-    this.dataSets[schemaName] = new DataSet(dataSetStack, schemaName, {
-      pipeline: pipeline,
-      logBucket: this.logBucket,
-      stage: this.stageName,
-      accountId: this.accountId,
-      region: this.region,
-    });
-    return this.dataSets[schemaName];
-  }
-
   private createDatabase(databaseName: string) {
     const db = new glue.Database(this, `${databaseName}-database`, {
       databaseName: `${databaseName}`,
@@ -388,7 +379,7 @@ export class DataLake extends cdk.Construct {
       const deliveryStream = new S3DeliveryStream(dataStreamStack, 'deliveryStream', {
         compression: CompressionType.UNCOMPRESSED,
         kinesisStream: this.dataStreams[schemaName].stream,
-        s3Bucket: getDataSetBucket(pipeline.dataSetDropLocation, dataSet),
+        s3Bucket: s3.Bucket.fromBucketName(this, 'get-bucket-for-kinesis', getDataSetBucketName(pipeline.dataSetDropLocation, dataSet)),
         s3Prefix: pipeline.destinationPrefix,
       });
 
@@ -424,21 +415,74 @@ export class DataLake extends cdk.Construct {
     }
   }
 
-  private addPipeline(pipeline:Pipeline, databaseName: string) {
-    const ds = this.addDataSet(pipeline);
+  private addPipeline(pipeline:Pipeline, dataProduct: DataProduct) {
+    const schemaName = pipeline.name;
+    const dataSetStack = dataProduct.accountId == this.accountId ? new cdk.NestedStack(cdk.Stack.of(this), `${schemaName}-dataset-stack`) : this;
 
+    // create the dataSet
+    this.dataSets[schemaName] = new DataSet(dataSetStack, schemaName, {
+      pipeline: pipeline,
+      dataProduct: dataProduct,
+      logBucket: this.logBucket,
+      stage: this.stageName,
+      accountId: this.accountId,
+      region: this.region,
+    });
+    const ds = this.dataSets[schemaName];
+    const sameAccount = dataProduct.accountId == this.accountId;
+    const centralAccountId = dataProduct.dataCatalogAccountId ? dataProduct.dataCatalogAccountId : this.accountId;
+
+    if (sameAccount) {
+      this.createPipelineResources(pipeline, dataProduct, ds);
+    }
+
+    if (centralAccountId == this.accountId) {
+      const rawDlResource = this.registerDataLakeLocation(
+        this.datalakeAdminRole.roleArn, this.datalakeDbCreatorRole.roleArn, ds.rawBucketName);
+      const trustedDlResource = this.registerDataLakeLocation(
+        this.datalakeAdminRole.roleArn, this.datalakeDbCreatorRole.roleArn, ds.trustedBucketName);
+      const refinedDlResource = this.registerDataLakeLocation(
+        this.datalakeAdminRole.roleArn, this.datalakeDbCreatorRole.roleArn, ds.refinedBucketName);
+
+      const bucketName = getDataSetBucketName(pipeline.dataSetDropLocation, ds);
+      const name = bucketName.replace(/\W/g, '');
+
+      // only create a crawler for the drop location of the data in the data product of the pipeline
+      const crawler = new GlueCrawler(this, `data-lake-crawler-${name}`, {
+        name: buildGlueCrawlerName({
+          accountId: this.accountId,
+          stage: this.stageName,
+          resourceUse: 'crawler',
+          name: pipeline.name,
+          region: this.region,
+        }),
+        databaseName: dataProduct.databaseName,
+        bucketName: bucketName,
+        bucketPrefix: pipeline.destinationPrefix,
+        roleName: buildRoleName({
+          accountId: this.accountId,
+          stage: this.stageName,
+          resourceUse: 'crawler-role',
+          name: pipeline.name,
+          region: this.region,
+        }),
+      });
+      crawler.node.addDependency(rawDlResource);
+      crawler.node.addDependency(trustedDlResource);
+      crawler.node.addDependency(refinedDlResource);
+    }
+  }
+
+  // this is a jumbled mess clean up once refecto
+  private createPipelineResources(pipeline: Pipeline, dataProduct: DataProduct, ds: DataSet) {
     switch (pipeline.type) {
       case DataPipelineType.S3: {
-        this.downloadLocations[pipeline.name] = ds.dataSetFiles;
+        if (ds.downloadLocations) {
+          this.downloadLocations[pipeline.name] = ds.downloadLocations;
+        }
         break;
       }
       case DataPipelineType.STREAM: {
-        if (!pipeline.streamProperties!.lambdaDataGenerator) {
-          throw new Error(
-            'LambdaDataGenerator required to create a data stream.',
-          );
-        }
-
         this.addDataStream(pipeline, ds);
         break;
       }
@@ -470,13 +514,13 @@ export class DataLake extends cdk.Construct {
       new GlueTable(this, `${pipeline.name}-table`, {
         catalogId: pipeline.table.catalogId,
         columns: pipeline.table.columns,
-        database: this.databases[databaseName],
+        database: this.databases[dataProduct.databaseName],
         description: pipeline.table.description,
         inputFormat: pipeline.table.inputFormat,
         outputFormat: pipeline.table.outputFormat,
         parameters: pipeline.table.parameters,
         partitionKeys: pipeline.table.partitionKeys,
-        s3Location: `s3://${getDataSetBucket(pipeline.dataSetDropLocation, ds)}/${pipeline.destinationPrefix}`,
+        s3Location: `s3://${getDataSetBucketName(pipeline.dataSetDropLocation, ds)}/${pipeline.destinationPrefix}`,
         serdeParameters: pipeline.table.serdeParameters,
         serializationLibrary: pipeline.table.serializationLibrary,
         tableName: pipeline.table.tableName,
@@ -490,7 +534,7 @@ export class DataLake extends cdk.Construct {
       pipeline.job.jobArgs!['--spark-event-logs-path'] = `s3://${this.logBucket.bucketName}/logs/`;
       // rethink how this works not all jobs write to S3
       if (pipeline.job.destinationLocation) {
-        pipeline.job.jobArgs!['--DESTINATION_BUCKET'] = getDataSetBucket(pipeline.job.destinationLocation, ds).bucketName;
+        pipeline.job.jobArgs!['--DESTINATION_BUCKET'] = getDataSetBucketName(pipeline.job.destinationLocation, ds);
       }
 
       const job = new GlueJob(this, `${pipeline.name}-etl-job`, {
@@ -513,9 +557,9 @@ export class DataLake extends cdk.Construct {
         ],
         writeAccessBuckets: [
           this.logBucket,
-          ds.rawBucket,
-          ds.refinedBucket,
-          ds.trustedBucket,
+          s3.Bucket.fromBucketName(this, 'raw-bucket-role', ds.rawBucketName),
+          s3.Bucket.fromBucketName(this, 'refined-bucket-role', ds.refinedBucketName),
+          s3.Bucket.fromBucketName(this, 'trusted-bucket-role', ds.trustedBucketName),
         ],
       });
 
@@ -533,7 +577,7 @@ export class DataLake extends cdk.Construct {
         },
         resource: {
           databaseResource: {
-            name: databaseName,
+            name: dataProduct.databaseName,
           },
         },
         permissions: [
@@ -550,7 +594,7 @@ export class DataLake extends cdk.Construct {
           },
           resource: {
             tableResource: {
-              databaseName: databaseName,
+              databaseName: dataProduct.databaseName,
               name: pipeline.table.tableName,
             },
           },
@@ -560,22 +604,6 @@ export class DataLake extends cdk.Construct {
           ],
         });
       }
-    }
-    this.registerDataSetWithLakeFormation(pipeline, databaseName, ds);
-  }
-
-  private registerDataSetWithLakeFormation(pipeline:Pipeline, databaseName: string, dataSet: DataSet) {
-    // if the pipeline data set has the same accountId and the lake consider it the owner and register
-    if (this.accountId === pipeline.dataCatalogOwner.accountId) {
-      new LFRegisteredDataSet(this, pipeline.name, {
-        destinationPrefix: pipeline.destinationPrefix,
-        pipeline: pipeline,
-        dataSet: dataSet,
-        stage: this.stageName,
-        dataLakeAdminRoleArn: this.datalakeAdminRole.roleArn,
-        dataLakeDbCreatorRoleArn: this.datalakeDbCreatorRole.roleArn,
-        databaseName: databaseName,
-      });
     }
   }
 
@@ -636,10 +664,50 @@ export class DataLake extends cdk.Construct {
           stackName: cdk.Stack.name,
           regionName: this.crossAccountAccess.region,
           consumerAccountIds: this.crossAccountAccess.consumerAccountIds,
-          producerAccountId: this.crossAccountAccess.producerAccountId,
+          producerAccountId: this.crossAccountAccess.dataCatalogOwnerAccountId,
         },
       });
     }
+  }
+
+  private registerDataLakeLocation(dataLakeAdminRoleArn: string, dataLakeDbCreatorRoleArn: string, bucketName: string) : lf.CfnResource {
+    const name = bucketName.replace(/\W/g, '');
+    const dlResource = new lf.CfnResource(this, `lf-resource-${name}`, {
+      resourceArn: `arn:aws:s3:::${bucketName}`,
+      useServiceLinkedRole: false,
+      roleArn: dataLakeDbCreatorRoleArn,
+    });
+
+    const dlPermission = new lf.CfnPermissions(this, `datalake-location-perm-${name}`, {
+      dataLakePrincipal: {
+        dataLakePrincipalIdentifier: dataLakeAdminRoleArn,
+      },
+      resource: {
+        dataLocationResource: {
+          s3Resource: `arn:aws:s3:::${bucketName}`,
+        },
+      },
+      permissions: [
+        Permissions.DATA_LOCATION_ACCESS,
+      ],
+    });
+    dlPermission.node.addDependency(dlResource);
+
+    const datalakeCreatorBucketPermission = new lf.CfnPermissions(this, `datalake-creator-perm-${name}`, {
+      dataLakePrincipal: {
+        dataLakePrincipalIdentifier: dataLakeDbCreatorRoleArn,
+      },
+      resource: {
+        dataLocationResource: {
+          s3Resource: `arn:aws:s3:::${bucketName}`,
+        },
+      },
+      permissions: [
+        Permissions.DATA_LOCATION_ACCESS,
+      ],
+    });
+    datalakeCreatorBucketPermission.node.addDependency(dlResource);
+    return dlResource;
   }
 }
 

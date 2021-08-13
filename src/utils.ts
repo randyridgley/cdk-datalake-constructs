@@ -1,4 +1,3 @@
-import * as s3 from '@aws-cdk/aws-s3';
 import { Asset } from '@aws-cdk/aws-s3-assets';
 import * as cdk from '@aws-cdk/core';
 import { DataSetLocation } from './data-lake';
@@ -99,8 +98,8 @@ export function packageAsset (scope: cdk.Construct, id: string, projectRelativeP
   return new Asset(scope, id, { path: projectRelativePath });
 };
 
-export function getDataSetBucket(dataSetLocation: DataSetLocation, dataSet: DataSet) : s3.Bucket {
-  return dataSetLocation == DataSetLocation.RAW ? dataSet.rawBucket :
-    dataSetLocation == DataSetLocation.REFINED ? dataSet.refinedBucket :
-      dataSet.trustedBucket;
+export function getDataSetBucketName(dataSetLocation: DataSetLocation, dataSet: DataSet) : string {
+  return dataSetLocation == DataSetLocation.RAW ? dataSet.rawBucketName :
+    dataSetLocation == DataSetLocation.REFINED ? dataSet.refinedBucketName :
+      dataSet.trustedBucketName;
 }

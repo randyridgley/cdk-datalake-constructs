@@ -5,27 +5,26 @@ import '@aws-cdk/assert/jest';
 
 const region = 'us-east-1';
 const stage = Stage.ALPHA;
-const dataProductAccount = '123456789012';
-const centralCatalogAccount = '098765432109';
+const dataProductAccountId = '123456789012';
 
 const pipes: Array<Pipeline> = [
-  pipelines.ReviewsPipeline(centralCatalogAccount),
-  pipelines.IoTDataPipeline(dataProductAccount, centralCatalogAccount, region, stage),
+  pipelines.ReviewsPipeline(),
+  pipelines.IoTDataPipeline(dataProductAccountId, region, stage),
 ];
 
 const taxiPipes: Array<Pipeline> = [
-  pipelines.YellowPipeline(centralCatalogAccount),
-  pipelines.GreenPipeline(centralCatalogAccount),
+  pipelines.YellowPipeline(),
+  pipelines.GreenPipeline(),
 ];
 
 const dataProducts: Array<DataProduct> = [{
   pipelines: pipes,
-  accountId: dataProductAccount,
+  accountId: dataProductAccountId,
   databaseName: 'data-product',
 },
 {
   pipelines: taxiPipes,
-  accountId: dataProductAccount,
+  accountId: dataProductAccountId,
   databaseName: 'taxi-product',
 }];
 
@@ -34,7 +33,7 @@ test('Check Resources', () => {
   const stack = new Stack(app, 'testStack');
 
   const datalake = new DataLake(stack, 'datalake', {
-    accountId: centralCatalogAccount,
+    accountId: dataProductAccountId,
     name: 'test-lake',
     region: region,
     stageName: stage,
@@ -42,7 +41,7 @@ test('Check Resources', () => {
     createDefaultDatabase: true,
   });
 
-  expect(datalake.accountId).toMatch(centralCatalogAccount);
+  expect(datalake.accountId).toMatch(dataProductAccountId);
   expect(datalake.stageName).toMatch(Stage.ALPHA);
   expect(datalake.region).toMatch(region);
   expect(Object.keys(datalake.dataSets).length).toEqual(4);

@@ -24,6 +24,7 @@ const taxiPipes: Array<dl.Pipeline> = [
 const dataProducts: Array<dl.DataProduct> = [{
   pipelines: taxiPipes,
   accountId: lakeAccountId,
+  catalogAccountId: centralAccountId,
   databaseName: 'taxi-product'
 }]
 

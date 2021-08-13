@@ -6,8 +6,9 @@ import * as cdk from '@aws-cdk/core';
 
 import { DataSetLocation, S3NotificationProperties, Stage } from '../data-lake';
 import { DataLakeBucket } from '../data-lake-bucket';
+import { DataProduct } from '../data-product';
 import { Pipeline } from '../pipeline';
-import { buildS3BucketName, getDataSetBucket } from '../utils';
+import { buildS3BucketName, getDataSetBucketName } from '../utils';
 
 export interface DataSetProperties {
   readonly encryptionKey?: kms.Key;
@@ -16,6 +17,7 @@ export interface DataSetProperties {
   readonly region: string;
   readonly accountId: string;
   readonly pipeline: Pipeline;
+  readonly dataProduct: DataProduct;
 }
 
 export interface DataSetResult {
@@ -27,14 +29,15 @@ export interface DataSetResult {
 
 export class DataSet extends cdk.Construct {
   public readonly name: string
-  public readonly dropLocation: DataSetLocation;
-  public readonly rawBucket: s3.Bucket;
-  public readonly trustedBucket: s3.Bucket;
-  public readonly refinedBucket: s3.Bucket;
+  public readonly dropLocation?: DataSetLocation;
+  public readonly rawBucketName: string;
+  public readonly trustedBucketName: string;
+  public readonly refinedBucketName: string;
   public readonly encryptionKey?: kms.Key;
-  public readonly dataSetFiles: DataSetResult;
+  public readonly downloadLocations?: DataSetResult;
   public s3NotificationTopic?: sns.Topic;
-  public readonly pipeline: Pipeline
+  public readonly pipeline: Pipeline;
+  public readonly dataProduct: DataProduct;
 
   constructor(scope: cdk.Construct, id: string, props: DataSetProperties) {
     super(scope, id);
@@ -42,60 +45,74 @@ export class DataSet extends cdk.Construct {
     this.name = props.pipeline.name;
     this.dropLocation = props.pipeline.dataSetDropLocation;
     this.pipeline = props.pipeline;
+    this.dataProduct = props.dataProduct;
 
-    const dataCatalogAccountId = props.pipeline.dataCatalogOwner ? props.pipeline.dataCatalogOwner.accountId : props.accountId;
-    const registerCrossAccount = props.pipeline.dataCatalogOwner.accountId != props.accountId;
+    this.rawBucketName = buildS3BucketName({
+      name: props.pipeline.name,
+      accountId: this.dataProduct.accountId,
+      region: props.region,
+      resourceUse: 'raw',
+      stage: props.stage,
+    });
 
-    this.rawBucket = new DataLakeBucket(this, `s3-raw-bucket-${props.pipeline.name}`, {
-      bucketName: buildS3BucketName({
-        name: props.pipeline.name,
-        accountId: props.accountId,
-        region: props.region,
-        resourceUse: 'raw',
-        stage: props.stage,
-      }),
-      dataCatalogAccountId: dataCatalogAccountId,
-      logBucket: props.logBucket,
-      crossAccount: registerCrossAccount,
-    }).bucket;
+    this.trustedBucketName = buildS3BucketName({
+      name: props.pipeline.name,
+      accountId: this.dataProduct.accountId,
+      region: props.region,
+      resourceUse: 'trusted',
+      stage: props.stage,
+    });
 
-    this.trustedBucket = new DataLakeBucket(this, `s3-trusted-bucket-${props.pipeline.name}`, {
-      bucketName: buildS3BucketName({
-        name: props.pipeline.name,
-        accountId: props.accountId,
-        region: props.region,
-        resourceUse: 'trusted',
-        stage: props.stage,
-      }),
-      dataCatalogAccountId: dataCatalogAccountId,
-      logBucket: props.logBucket,
-      crossAccount: registerCrossAccount,
-    }).bucket;
+    this.refinedBucketName = buildS3BucketName({
+      name: props.pipeline.name,
+      accountId: this.dataProduct.accountId,
+      region: props.region,
+      resourceUse: 'refined',
+      stage: props.stage,
+    });
 
-    this.refinedBucket = new DataLakeBucket(this, `s3-refined-bucket-${props.pipeline.name}`, {
-      bucketName: buildS3BucketName({
-        name: props.pipeline.name,
-        accountId: props.accountId,
-        region: props.region,
-        resourceUse: 'refined',
-        stage: props.stage,
-      }),
-      dataCatalogAccountId: dataCatalogAccountId,
-      logBucket: props.logBucket,
-      crossAccount: registerCrossAccount,
-    }).bucket;
+    const dataCatalogAccountId = props.dataProduct.dataCatalogAccountId ?
+      props.dataProduct.dataCatalogAccountId : props.dataProduct.accountId;
+    const crossAccount = props.dataProduct.dataCatalogAccountId ?
+      props.dataProduct.dataCatalogAccountId != props.dataProduct.accountId ? true : false : false;
 
-    this.dataSetFiles = {
-      destinationPrefix: props.pipeline.destinationPrefix,
-      destinationBucketName: getDataSetBucket(this.dropLocation, this).bucketName,
-      sourceBucketName: props.pipeline.s3Properties? props.pipeline.s3Properties.sourceBucketName! : undefined,
-      sourceKeys: props.pipeline.s3Properties ? props.pipeline.s3Properties.sourceKeys! : undefined,
-    };
+    // only create the buckets in the data owner account if using in multi account scenario
+    if (props.accountId == props.dataProduct.accountId) {
+      const rawBucket = new DataLakeBucket(this, `s3-raw-bucket-${props.pipeline.name}`, {
+        bucketName: this.rawBucketName,
+        dataCatalogAccountId: dataCatalogAccountId,
+        logBucket: props.logBucket,
+        crossAccount: crossAccount,
+      }).bucket;
 
-    if (props.pipeline.s3NotificationProps) {
-      this.createS3NotificationTopic(props.pipeline.s3NotificationProps, this.rawBucket);
-      this.createS3NotificationTopic(props.pipeline.s3NotificationProps, this.trustedBucket);
-      this.createS3NotificationTopic(props.pipeline.s3NotificationProps, this.refinedBucket);
+      const trustedBucket = new DataLakeBucket(this, `s3-trusted-bucket-${props.pipeline.name}`, {
+        bucketName: this.trustedBucketName,
+        dataCatalogAccountId: dataCatalogAccountId,
+        logBucket: props.logBucket,
+        crossAccount: crossAccount,
+      }).bucket;
+
+      const refinedBucket = new DataLakeBucket(this, `s3-refined-bucket-${props.pipeline.name}`, {
+        bucketName: this.refinedBucketName,
+        dataCatalogAccountId: dataCatalogAccountId,
+        logBucket: props.logBucket,
+        crossAccount: crossAccount,
+      }).bucket;
+
+      if (props.pipeline.s3NotificationProps) {
+        this.createS3NotificationTopic(props.pipeline.s3NotificationProps, rawBucket);
+        this.createS3NotificationTopic(props.pipeline.s3NotificationProps, trustedBucket);
+        this.createS3NotificationTopic(props.pipeline.s3NotificationProps, refinedBucket);
+      }
+
+      if (this.dropLocation) {
+        this.downloadLocations = {
+          destinationPrefix: props.pipeline.destinationPrefix,
+          destinationBucketName: getDataSetBucketName(this.dropLocation, this),
+          sourceBucketName: props.pipeline.s3Properties? props.pipeline.s3Properties.sourceBucketName! : undefined,
+          sourceKeys: props.pipeline.s3Properties ? props.pipeline.s3Properties.sourceKeys! : undefined,
+        };
+      }
     }
   }
 

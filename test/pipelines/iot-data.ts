@@ -8,7 +8,7 @@ import { GlueJobType, GlueVersion, GlueWorkerType } from '../../src/etl/glue-job
 import { Pipeline } from '../../src/pipeline';
 import { buildEventRuleName, buildGlueJobName, buildKinesisStreamName, buildLambdaFunctionName, buildRoleName } from '../../src/utils';
 
-export function IoTDataPipeline(accountId: string, dataCatalogOwnerAccountId: string, region: string, stage: string) {
+export function IoTDataPipeline(accountId: string, region: string, stage: string) {
   const databaseName: string = 'source-lake';
   const streamName: string = buildKinesisStreamName({
     name: 'iot-data',
@@ -46,9 +46,6 @@ export function IoTDataPipeline(accountId: string, dataCatalogOwnerAccountId: st
           stage: stage,
         }),
       },
-    },
-    dataCatalogOwner: {
-      accountId: dataCatalogOwnerAccountId,
     },
     job: {
       jobScript: './test/code/iot_data/streaming_convert_to_parquet.py',

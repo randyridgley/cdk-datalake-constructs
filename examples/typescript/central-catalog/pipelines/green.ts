@@ -13,9 +13,6 @@ export function GreenPipeline(accountId: string, dataCatalogOwnerAccountId: stri
         'trip data/green_tripdata_2020-11.csv',
         'trip data/green_tripdata_2020-12.csv',
       ],
-    },
-    dataCatalogOwner: {
-      accountId: dataCatalogOwnerAccountId,
-    },
+    }
   });
 }

@@ -2,12 +2,11 @@ import { Pipeline, DataProduct } from '../src';
 import * as pipelines from '../test/pipelines';
 
 const dataProductAccount = '123456789012';
-const centralCatalogAccount = '098765432109';
 const databaseName = 'data-product';
 
 const taxiPipes: Array<Pipeline> = [
-  pipelines.YellowPipeline(centralCatalogAccount),
-  pipelines.GreenPipeline(centralCatalogAccount),
+  pipelines.YellowPipeline(),
+  pipelines.GreenPipeline(),
 ];
 
 test('Check Resources', () => {
