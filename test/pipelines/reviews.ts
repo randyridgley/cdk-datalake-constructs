@@ -1,19 +1,12 @@
-import { DataPipelineType } from '../../src/data-lake';
+import { DataPipelineType, DataSetLocation } from '../../src/data-lake';
 import { Pipeline } from '../../src/pipeline';
-import { buildS3BucketName } from '../../src/utils';
 
-export function ReviewsPipeline(accountId: string, dataCatalogOwnerAccountId: string, region: string, stage: string) {
+export function ReviewsPipeline(dataCatalogOwnerAccountId: string) {
   return new Pipeline({
     type: DataPipelineType.S3,
     name: 'reviews',
-    destinationPrefix: 'raw/reviews/',
-    destinationBucketName: buildS3BucketName({
-      name: 'reviews',
-      accountId: accountId,
-      region: region,
-      resourceUse: 'data',
-      stage: stage,
-    }),
+    destinationPrefix: 'reviews/',
+    dataSetDropLocation: DataSetLocation.REFINED,
     s3Properties: {
       sourceBucketName: 'amazon-reviews-pds',
       sourceKeys: [

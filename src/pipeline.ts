@@ -1,10 +1,10 @@
-import { DataCatalogOwner, DataPipelineType, JDBCProperties, S3Properties, S3NotificationProperties, StreamProperties, TableProps, JobProperties } from './data-lake';
+import { DataCatalogOwner, DataPipelineType, JDBCProperties, S3Properties, S3NotificationProperties, StreamProperties, TableProps, JobProperties, DataSetLocation } from './data-lake';
 
 export interface IPipelineProperties {
   type: DataPipelineType;
   name: string;
   destinationPrefix: string;
-  destinationBucketName: string;
+  dataSetDropLocation: DataSetLocation;
   dataCatalogOwner: DataCatalogOwner;
   s3Properties?: S3Properties;
   streamProperties?: StreamProperties;
@@ -18,7 +18,7 @@ export class Pipeline {
   public readonly type: DataPipelineType
   public readonly name: string
   public readonly destinationPrefix: string
-  public readonly destinationBucketName: string
+  public readonly dataSetDropLocation: DataSetLocation
   public readonly dataCatalogOwner: DataCatalogOwner
   public readonly s3Properties?: S3Properties
   public readonly streamProperties?: StreamProperties
@@ -30,7 +30,7 @@ export class Pipeline {
   constructor(props: IPipelineProperties) {
     this.type = props.type;
     this.name = props.name;
-    this.destinationBucketName = props.destinationBucketName;
+    this.dataSetDropLocation = props.dataSetDropLocation;
     this.destinationPrefix = props.destinationPrefix;
     this.dataCatalogOwner = props.dataCatalogOwner;
     this.jdbcProperties = props.jdbcProperties ? props.jdbcProperties : undefined;

@@ -1,19 +1,12 @@
-import { DataPipelineType } from '../../src/data-lake';
+import { DataPipelineType, DataSetLocation } from '../../src/data-lake';
 import { Pipeline } from '../../src/pipeline';
-import { buildS3BucketName } from '../../src/utils';
 
-export function YellowPipeline(accountId: string, dataCatalogOwnerAccountId: string, region: string, stage: string) {
+export function YellowPipeline(dataCatalogOwnerAccountId: string) {
   return new Pipeline({
     type: DataPipelineType.S3,
     name: 'taxi-yellow',
-    destinationPrefix: 'raw/yellow/',
-    destinationBucketName: buildS3BucketName({
-      name: 'taxi-yellow',
-      accountId: accountId,
-      region: region,
-      resourceUse: 'data',
-      stage: stage,
-    }),
+    destinationPrefix: 'yellow/',
+    dataSetDropLocation: DataSetLocation.RAW,
     s3Properties: {
       sourceBucketName: 'nyc-tlc',
       sourceKeys: [

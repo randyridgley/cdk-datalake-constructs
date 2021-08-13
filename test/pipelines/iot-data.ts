@@ -3,10 +3,10 @@ import * as events from '@aws-cdk/aws-events';
 import * as lambda from '@aws-cdk/aws-lambda';
 import * as cdk from '@aws-cdk/core';
 
-import { DataPipelineType } from '../../src/data-lake';
+import { DataPipelineType, DataSetLocation } from '../../src/data-lake';
 import { GlueJobType, GlueVersion, GlueWorkerType } from '../../src/etl/glue-job';
 import { Pipeline } from '../../src/pipeline';
-import { buildEventRuleName, buildGlueJobName, buildKinesisStreamName, buildLambdaFunctionName, buildRoleName, buildS3BucketName } from '../../src/utils';
+import { buildEventRuleName, buildGlueJobName, buildKinesisStreamName, buildLambdaFunctionName, buildRoleName } from '../../src/utils';
 
 export function IoTDataPipeline(accountId: string, dataCatalogOwnerAccountId: string, region: string, stage: string) {
   const databaseName: string = 'source-lake';
@@ -17,19 +17,12 @@ export function IoTDataPipeline(accountId: string, dataCatalogOwnerAccountId: st
     resourceUse: 'stream',
     stage: stage,
   });
-  const destinationBucketName: string = buildS3BucketName({
-    name: 'iot',
-    accountId: accountId,
-    region: region,
-    resourceUse: 'datalake',
-    stage: stage,
-  });
 
   return new Pipeline({
     type: DataPipelineType.STREAM,
     name: 'iot-data',
-    destinationPrefix: 'raw/iot-data/',
-    destinationBucketName: destinationBucketName,
+    destinationPrefix: 'iot-data/',
+    dataSetDropLocation: DataSetLocation.RAW,
     streamProperties: {
       streamName: streamName,
       lambdaDataGenerator: {
@@ -78,8 +71,8 @@ export function IoTDataPipeline(accountId: string, dataCatalogOwnerAccountId: st
         '--STREAM_BATCH_TIME_SECS': '100 seconds',
         '--DESTINATION_DATABASE': databaseName,
         '--DESTINATION_TABLE': 'p_iot_data',
-        '--DESTINATION_BUCKET': destinationBucketName,
       },
+      destinationLocation: DataSetLocation.RAW,
       maxCapacity: 2,
       maxConcurrentRuns: 1,
       maxRetries: 3,

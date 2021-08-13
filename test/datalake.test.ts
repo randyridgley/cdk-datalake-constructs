@@ -1,4 +1,4 @@
-import { Stack } from '@aws-cdk/core';
+import { App, Stack } from '@aws-cdk/core';
 import { DataLake, Stage, Pipeline, DataProduct } from '../src';
 import * as pipelines from '../test/pipelines';
 import '@aws-cdk/assert/jest';
@@ -9,13 +9,13 @@ const dataProductAccount = '123456789012';
 const centralCatalogAccount = '098765432109';
 
 const pipes: Array<Pipeline> = [
-  pipelines.ReviewsPipeline(dataProductAccount, centralCatalogAccount, region, stage),
+  pipelines.ReviewsPipeline(centralCatalogAccount),
   pipelines.IoTDataPipeline(dataProductAccount, centralCatalogAccount, region, stage),
 ];
 
 const taxiPipes: Array<Pipeline> = [
-  pipelines.YellowPipeline(dataProductAccount, centralCatalogAccount, region, stage),
-  pipelines.GreenPipeline(dataProductAccount, centralCatalogAccount, region, stage),
+  pipelines.YellowPipeline(centralCatalogAccount),
+  pipelines.GreenPipeline(centralCatalogAccount),
 ];
 
 const dataProducts: Array<DataProduct> = [{
@@ -30,7 +30,9 @@ const dataProducts: Array<DataProduct> = [{
 }];
 
 test('Check Resources', () => {
-  const stack = new Stack();
+  const app = new App();
+  const stack = new Stack(app, 'testStack');
+
   const datalake = new DataLake(stack, 'datalake', {
     accountId: centralCatalogAccount,
     name: 'test-lake',
@@ -43,7 +45,7 @@ test('Check Resources', () => {
   expect(datalake.accountId).toMatch(centralCatalogAccount);
   expect(datalake.stageName).toMatch(Stage.ALPHA);
   expect(datalake.region).toMatch(region);
-  expect(Object.keys(datalake.dataSets).length).toEqual(3);
+  expect(Object.keys(datalake.dataSets).length).toEqual(4);
   expect(Object.keys(datalake.dataStreams).length).toEqual(1);
 
   expect(stack).toHaveResource('AWS::S3::Bucket');

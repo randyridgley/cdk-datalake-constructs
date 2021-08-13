@@ -5,7 +5,7 @@ export function GreenPipeline(accountId: string, dataCatalogOwnerAccountId: stri
     type: dl.DataPipelineType.S3,
     name: 'taxi-green',
     destinationPrefix: 'raw/green/',
-    destinationBucketName: 'taxi-green-cdk-constructs-bucket',
+    destinationBucketName: 'taxi-green',
     s3Properties: {
       sourceBucketName: 'nyc-tlc',
       sourceKeys: [

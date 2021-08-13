@@ -119,7 +119,7 @@ const project = new AwsCdkConstructLibrary({
   publishToMaven: {
     mavenEndpoint: 'https://s01.oss.sonatype.org',
     javaPackage: 'io.github.randyridgley.cdk.datalake.constructs',
-    mavenGroupId: 'io.github.randyridgley.cdk.datalake.constructs',
+    mavenGroupId: 'io.github.randyridgley',
     mavenArtifactId: 'cdk-datalake-constructs',
   },
   // publishToGo: {

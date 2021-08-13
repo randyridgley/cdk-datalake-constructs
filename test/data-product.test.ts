@@ -1,15 +1,13 @@
-import { Pipeline, DataProduct, Stage } from '../src';
+import { Pipeline, DataProduct } from '../src';
 import * as pipelines from '../test/pipelines';
 
-const region = 'us-east-1';
-const stage = Stage.ALPHA;
 const dataProductAccount = '123456789012';
 const centralCatalogAccount = '098765432109';
 const databaseName = 'data-product';
 
 const taxiPipes: Array<Pipeline> = [
-  pipelines.YellowPipeline(dataProductAccount, centralCatalogAccount, region, stage),
-  pipelines.GreenPipeline(dataProductAccount, centralCatalogAccount, region, stage),
+  pipelines.YellowPipeline(centralCatalogAccount),
+  pipelines.GreenPipeline(centralCatalogAccount),
 ];
 
 test('Check Resources', () => {

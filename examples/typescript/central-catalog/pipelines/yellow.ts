@@ -5,7 +5,7 @@ export function YellowPipeline(accountId: string, dataCatalogOwnerAccountId: str
     type: dl.DataPipelineType.S3,
     name: 'taxi-yellow',
     destinationPrefix: 'raw/yellow/',
-    destinationBucketName: 'taxi-yellow-cdk-constructs-bucket',
+    destinationBucketName: 'taxi-yellow',
     s3Properties: {
       sourceBucketName: 'nyc-tlc',
       sourceKeys: [

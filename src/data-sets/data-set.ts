@@ -4,95 +4,98 @@ import * as s3sns from '@aws-cdk/aws-s3-notifications';
 import * as sns from '@aws-cdk/aws-sns';
 import * as cdk from '@aws-cdk/core';
 
-import { S3NotificationProperties, Stage } from '../data-lake';
+import { DataSetLocation, S3NotificationProperties, Stage } from '../data-lake';
 import { DataLakeBucket } from '../data-lake-bucket';
-import { buildS3BucketName } from '../utils';
+import { Pipeline } from '../pipeline';
+import { buildS3BucketName, getDataSetBucket } from '../utils';
 
 export interface DataSetProperties {
-  readonly dataCatalogAccountId: string;
-  readonly destinationBucketName: string;
-  readonly destinationPrefix: string;
   readonly encryptionKey?: kms.Key;
   readonly logBucket: s3.Bucket;
-  readonly name: string;
-  readonly s3NotificationProps?: S3NotificationProperties;
-  readonly sourceBucketName?: string;
-  readonly sourceKeys?: string[];
   readonly stage: Stage;
-  readonly registerCrossAccount: boolean;
+  readonly region: string;
+  readonly accountId: string;
+  readonly pipeline: Pipeline;
 }
 
 export interface DataSetResult {
   readonly destinationBucketName?: string;
   readonly destinationPrefix: string;
-  readonly sourceBucketName: string;
-  readonly sourceKeys: string[];
+  readonly sourceBucketName: string | undefined;
+  readonly sourceKeys: string[] | undefined;
 }
 
 export class DataSet extends cdk.Construct {
+  public readonly name: string
+  public readonly dropLocation: DataSetLocation;
   public readonly rawBucket: s3.Bucket;
   public readonly trustedBucket: s3.Bucket;
   public readonly refinedBucket: s3.Bucket;
   public readonly encryptionKey?: kms.Key;
   public readonly dataSetFiles: DataSetResult;
   public s3NotificationTopic?: sns.Topic;
+  public readonly pipeline: Pipeline
 
   constructor(scope: cdk.Construct, id: string, props: DataSetProperties) {
     super(scope, id);
 
-    const account = cdk.Stack.of(this).account;
-    const region = cdk.Stack.of(this).region;
+    this.name = props.pipeline.name;
+    this.dropLocation = props.pipeline.dataSetDropLocation;
+    this.pipeline = props.pipeline;
 
-    this.rawBucket = new DataLakeBucket(this, `s3-raw-bucket-${props.name}`, {
+    const dataCatalogAccountId = props.pipeline.dataCatalogOwner ? props.pipeline.dataCatalogOwner.accountId : props.accountId;
+    const registerCrossAccount = props.pipeline.dataCatalogOwner.accountId != props.accountId;
+
+    this.rawBucket = new DataLakeBucket(this, `s3-raw-bucket-${props.pipeline.name}`, {
       bucketName: buildS3BucketName({
-        name: props.destinationBucketName,
-        accountId: account,
-        region: region,
-        resourceUse: 'datalake-raw',
-        stage: props.stage
+        name: props.pipeline.name,
+        accountId: props.accountId,
+        region: props.region,
+        resourceUse: 'raw',
+        stage: props.stage,
       }),
-      dataCatalogAccountId: props.dataCatalogAccountId,
+      dataCatalogAccountId: dataCatalogAccountId,
       logBucket: props.logBucket,
-      crossAccount: props.registerCrossAccount,
+      crossAccount: registerCrossAccount,
     }).bucket;
 
-    this.trustedBucket = new DataLakeBucket(this, `s3-trusted-bucket-${props.name}`, {
+    this.trustedBucket = new DataLakeBucket(this, `s3-trusted-bucket-${props.pipeline.name}`, {
       bucketName: buildS3BucketName({
-        name: props.destinationBucketName,
-        accountId: account,
-        region: region,
-        resourceUse: 'datalake-trusted',
-        stage: props.stage
+        name: props.pipeline.name,
+        accountId: props.accountId,
+        region: props.region,
+        resourceUse: 'trusted',
+        stage: props.stage,
       }),
-      dataCatalogAccountId: props.dataCatalogAccountId,
+      dataCatalogAccountId: dataCatalogAccountId,
       logBucket: props.logBucket,
-      crossAccount: props.registerCrossAccount,
+      crossAccount: registerCrossAccount,
     }).bucket;
 
-    this.refinedBucket = new DataLakeBucket(this, `s3-refined-bucket-${props.name}`, {
+    this.refinedBucket = new DataLakeBucket(this, `s3-refined-bucket-${props.pipeline.name}`, {
       bucketName: buildS3BucketName({
-        name: props.destinationBucketName,
-        accountId: account,
-        region: region,
-        resourceUse: 'datalake-refined',
-        stage: props.stage
+        name: props.pipeline.name,
+        accountId: props.accountId,
+        region: props.region,
+        resourceUse: 'refined',
+        stage: props.stage,
       }),
-      dataCatalogAccountId: props.dataCatalogAccountId,
+      dataCatalogAccountId: dataCatalogAccountId,
       logBucket: props.logBucket,
-      crossAccount: props.registerCrossAccount,
+      crossAccount: registerCrossAccount,
     }).bucket;
 
     this.dataSetFiles = {
-      destinationPrefix: props.destinationPrefix,
-      destinationBucketName: this.rawBucket.bucketName,
-      sourceBucketName: props.sourceBucketName!,
-      sourceKeys: props.sourceKeys!,
+      destinationPrefix: props.pipeline.destinationPrefix,
+      destinationBucketName: getDataSetBucket(this.dropLocation, this).bucketName,
+      sourceBucketName: props.pipeline.s3Properties? props.pipeline.s3Properties.sourceBucketName! : undefined,
+      sourceKeys: props.pipeline.s3Properties ? props.pipeline.s3Properties.sourceKeys! : undefined,
     };
 
-    if (props.s3NotificationProps) {
-      this.createS3NotificationTopic(props.s3NotificationProps, this.rawBucket);
-      this.createS3NotificationTopic(props.s3NotificationProps, this.trustedBucket);
-      this.createS3NotificationTopic(props.s3NotificationProps, this.refinedBucket);
+    if (props.pipeline.s3NotificationProps) {
+      this.createS3NotificationTopic(props.pipeline.s3NotificationProps, this.rawBucket);
+      this.createS3NotificationTopic(props.pipeline.s3NotificationProps, this.trustedBucket);
+      this.createS3NotificationTopic(props.pipeline.s3NotificationProps, this.refinedBucket);
     }
   }
 

@@ -25,7 +25,7 @@ import { GlueTable } from './etl/glue-table';
 import { DataLakeAdministrator } from './personas/data-lake-admin';
 import { DataLakeCreator } from './personas/data-lake-creator';
 import { Pipeline } from './pipeline';
-import { buildLambdaFunctionName, buildS3BucketName, buildUniqueName, packageAsset, toS3Path } from './utils';
+import { buildLambdaFunctionName, buildS3BucketName, buildUniqueName, getDataSetBucket, packageAsset, toS3Path } from './utils';
 
 export interface CrossAccountProperties {
   readonly consumerAccountIds: string[];
@@ -93,6 +93,7 @@ export interface JobProperties {
   readonly jobArgs?: { [key: string]: string };
   readonly timeout?: number;
   readonly jobType: GlueJobType;
+  readonly destinationLocation?: DataSetLocation;
 }
 
 export interface DataLocationProperties {
@@ -157,6 +158,12 @@ export enum Permissions {
   ASSOCIATE = 'ASSOCIATE'
 }
 
+export enum DataSetLocation {
+  RAW = 'raw',
+  TRUSTED = 'trusted',
+  REFINED = 'refined'
+}
+
 export class DataLake extends cdk.Construct {
   public readonly dataSets: { [schemaName: string]: DataSet } = {};
   public readonly dataStreams: { [schemaName: string]: KinesisStream } = {};
@@ -172,7 +179,7 @@ export class DataLake extends cdk.Construct {
 
   private readonly glueSecurityGroup?: ec2.SecurityGroup
   private readonly crossAccountAccess?: CrossAccountProperties
-  private readonly dataLocations: { [schema: string]: DataSetResult } = {} //used for the Custom Resource to allow downloading of existing datasets into datalake
+  private readonly downloadLocations: { [schema: string]: DataSetResult } = {} //used for the Custom Resource to allow downloading of existing datasets into datalake
 
   constructor(scope: cdk.Construct, id: string, props: DataLakeProperties) {
     super(scope, id);
@@ -286,19 +293,6 @@ export class DataLake extends cdk.Construct {
 
         product.pipelines.forEach((pipe: Pipeline) => {
           this.addPipeline(pipe, product.databaseName);
-
-          // if the pipeline data set has the same accountId and the lake consider it the owner and register
-          if (this.accountId === pipe.dataCatalogOwner.accountId) {
-            new LFRegisteredDataSet(this, pipe.name, {
-              destinationPrefix: pipe.destinationPrefix,
-              destinationBucketName: pipe.destinationBucketName,
-              name: pipe.name,
-              stage: this.stageName,
-              dataLakeAdminRoleArn: this.datalakeAdminRole.roleArn,
-              dataLakeDbCreatorRoleArn: this.datalakeDbCreatorRole.roleArn,
-              databaseName: product.databaseName,
-            });
-          }
         });
       });
     }
@@ -337,28 +331,23 @@ export class DataLake extends cdk.Construct {
     new cdk.CustomResource(this, 'LoadDatalakeCustomResource', {
       serviceToken: dataLoadProvider.serviceToken,
       properties: {
-        dataSets: this.dataLocations,
+        dataSets: this.downloadLocations,
         stackName: cdk.Stack.name,
         regionName: region,
       },
     });
   }
 
-  private addDataSet(setting: Pipeline): DataSet {
-    const schemaName = setting.name;
+  private addDataSet(pipeline: Pipeline): DataSet {
+    const schemaName = pipeline.name;
     const dataSetStack = new cdk.NestedStack(cdk.Stack.of(this), `${schemaName}-dataset-stack`);
 
     this.dataSets[schemaName] = new DataSet(dataSetStack, schemaName, {
-      destinationPrefix: setting.destinationPrefix,
-      destinationBucketName: setting.destinationBucketName,
-      sourceBucketName: setting.s3Properties!.sourceBucketName!,
-      sourceKeys: setting.s3Properties!.sourceKeys!,
-      s3NotificationProps: setting.s3NotificationProps,
+      pipeline: pipeline,
       logBucket: this.logBucket,
       stage: this.stageName,
-      name: setting.name,
-      dataCatalogAccountId: setting.dataCatalogOwner ? setting.dataCatalogOwner.accountId : this.accountId,
-      registerCrossAccount: setting.dataCatalogOwner.accountId != this.accountId,
+      accountId: this.accountId,
+      region: this.region,
     });
     return this.dataSets[schemaName];
   }
@@ -384,51 +373,38 @@ export class DataLake extends cdk.Construct {
         Permissions.DROP,
       ],
     });
-    dbPerm.node.addDependency(db)
+    dbPerm.node.addDependency(db);
   }
 
-  private addDataStream(setting: Pipeline) : KinesisStream {
-    const schemaName = setting.name;
-    const dataStreamStack = new cdk.NestedStack(cdk.Stack.of(this), `${schemaName}-dataset-stack`);
+  private addDataStream(pipeline: Pipeline, dataSet: DataSet) : KinesisStream {
+    const schemaName = pipeline.name;
+    const dataStreamStack = new cdk.NestedStack(cdk.Stack.of(this), `${schemaName}-datastream-stack`);
 
-    if (setting.streamProperties != undefined) {
+    if (pipeline.streamProperties != undefined) {
       this.dataStreams[schemaName] = new KinesisStream(dataStreamStack, 'DataStream', {
         shardCount: 1,
-        streamName: setting.streamProperties.streamName,
+        streamName: pipeline.streamProperties.streamName,
       });
 
-      const dataset = new DataSet(dataStreamStack, schemaName, {
-        destinationPrefix: setting.destinationPrefix,
-        destinationBucketName: setting.destinationBucketName,
-        sourceBucketName: setting.s3Properties ? setting.s3Properties.sourceBucketName : undefined,
-        sourceKeys: setting.s3Properties ? setting.s3Properties.sourceKeys : undefined,
-        s3NotificationProps: setting.s3NotificationProps,
-        logBucket: this.logBucket,
-        stage: this.stageName,
-        name: setting.name,
-        dataCatalogAccountId: setting.dataCatalogOwner ? setting.dataCatalogOwner.accountId : this.accountId,
-        registerCrossAccount: setting.dataCatalogOwner.accountId != this.accountId,
-      });
-
-      const iotDeliveryStream = new S3DeliveryStream(dataStreamStack, 'deliveryStream', {
+      const deliveryStream = new S3DeliveryStream(dataStreamStack, 'deliveryStream', {
         compression: CompressionType.UNCOMPRESSED,
         kinesisStream: this.dataStreams[schemaName].stream,
-        s3Bucket: dataset.rawBucket,
-        s3Prefix: setting.destinationPrefix,
+        s3Bucket: getDataSetBucket(pipeline.dataSetDropLocation, dataSet),
+        s3Prefix: pipeline.destinationPrefix,
       });
 
       new KinesisOps(dataStreamStack, 'kinesis-ops', {
         stream: this.dataStreams[schemaName],
-        deliveryStream: iotDeliveryStream,
+        deliveryStream: deliveryStream,
       });
 
-      if (setting.streamProperties.lambdaDataGenerator) {
+      if (pipeline.streamProperties.lambdaDataGenerator) {
         const dataGeneratorFunction = new lambda.Function(dataStreamStack, 'data-generator-function', {
-          code: setting.streamProperties.lambdaDataGenerator.code,
-          handler: setting.streamProperties.lambdaDataGenerator.handler,
-          timeout: setting.streamProperties.lambdaDataGenerator.timeout,
-          runtime: setting.streamProperties.lambdaDataGenerator.runtime,
-          functionName: setting.streamProperties.lambdaDataGenerator.functionName,
+          code: pipeline.streamProperties.lambdaDataGenerator.code,
+          handler: pipeline.streamProperties.lambdaDataGenerator.handler,
+          timeout: pipeline.streamProperties.lambdaDataGenerator.timeout,
+          runtime: pipeline.streamProperties.lambdaDataGenerator.runtime,
+          functionName: pipeline.streamProperties.lambdaDataGenerator.functionName,
           environment: {
             KINESIS_STREAM: this.dataStreams[schemaName].stream.streamName,
           },
@@ -436,8 +412,8 @@ export class DataLake extends cdk.Construct {
 
         this.dataStreams[schemaName].stream.grantWrite(dataGeneratorFunction);
         const rule = new events.Rule(this, 'Rule', {
-          schedule: setting.streamProperties.lambdaDataGenerator.schedule,
-          ruleName: setting.streamProperties.lambdaDataGenerator.ruleName,
+          schedule: pipeline.streamProperties.lambdaDataGenerator.schedule,
+          ruleName: pipeline.streamProperties.lambdaDataGenerator.ruleName,
         });
         rule.addTarget(new targets.LambdaFunction(dataGeneratorFunction));
       }
@@ -450,12 +426,11 @@ export class DataLake extends cdk.Construct {
   }
 
   private addPipeline(pipeline:Pipeline, databaseName: string) {
-    let job = undefined;
+    const ds = this.addDataSet(pipeline);
 
     switch (pipeline.type) {
       case DataPipelineType.S3: {
-        const ds = this.addDataSet(pipeline);
-        this.dataLocations[pipeline.name] = ds.dataSetFiles;
+        this.downloadLocations[pipeline.name] = ds.dataSetFiles;
         break;
       }
       case DataPipelineType.STREAM: {
@@ -465,7 +440,7 @@ export class DataLake extends cdk.Construct {
           );
         }
 
-        this.addDataStream(pipeline);
+        this.addDataStream(pipeline, ds);
         break;
       }
       case DataPipelineType.JDBC: {
@@ -502,7 +477,7 @@ export class DataLake extends cdk.Construct {
         outputFormat: pipeline.table.outputFormat,
         parameters: pipeline.table.parameters,
         partitionKeys: pipeline.table.partitionKeys,
-        s3Location: `s3://${pipeline.destinationBucketName}/${pipeline.destinationPrefix}`,
+        s3Location: `s3://${getDataSetBucket(pipeline.dataSetDropLocation, ds)}/${pipeline.destinationPrefix}`,
         serdeParameters: pipeline.table.serdeParameters,
         serializationLibrary: pipeline.table.serializationLibrary,
         tableName: pipeline.table.tableName,
@@ -514,8 +489,12 @@ export class DataLake extends cdk.Construct {
 
       pipeline.job.jobArgs!['--TempDir'] = `s3://${this.logBucket.bucketName}/temp/`;
       pipeline.job.jobArgs!['--spark-event-logs-path'] = `s3://${this.logBucket.bucketName}/logs/`;
+      // rethink how this works not all jobs write to S3
+      if (pipeline.job.destinationLocation) {
+        pipeline.job.jobArgs!['--DESTINATION_BUCKET'] = getDataSetBucket(pipeline.job.destinationLocation, ds).bucketName;
+      }
 
-      job = new GlueJob(this, `${pipeline.name}-etl-job`, {
+      const job = new GlueJob(this, `${pipeline.name}-etl-job`, {
         deploymentBucket: jobScript.bucket,
         jobScript: toS3Path(jobScript),
         name: pipeline.job.name,
@@ -535,7 +514,9 @@ export class DataLake extends cdk.Construct {
         ],
         writeAccessBuckets: [
           this.logBucket,
-          s3.Bucket.fromBucketName(this, `${pipeline.name}-dest-bucket`, pipeline.destinationBucketName),
+          ds.rawBucket,
+          ds.refinedBucket,
+          ds.trustedBucket,
         ],
       });
 
@@ -580,6 +561,22 @@ export class DataLake extends cdk.Construct {
           ],
         });
       }
+    }
+    this.registerDataSetWithLakeFormation(pipeline, databaseName, ds);
+  }
+
+  private registerDataSetWithLakeFormation(pipeline:Pipeline, databaseName: string, dataSet: DataSet) {
+    // if the pipeline data set has the same accountId and the lake consider it the owner and register
+    if (this.accountId === pipeline.dataCatalogOwner.accountId) {
+      new LFRegisteredDataSet(this, pipeline.name, {
+        destinationPrefix: pipeline.destinationPrefix,
+        pipeline: pipeline,
+        dataSet: dataSet,
+        stage: this.stageName,
+        dataLakeAdminRoleArn: this.datalakeAdminRole.roleArn,
+        dataLakeDbCreatorRoleArn: this.datalakeDbCreatorRole.roleArn,
+        databaseName: databaseName,
+      });
     }
   }
 
