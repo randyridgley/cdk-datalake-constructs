@@ -320,6 +320,24 @@ new DataSet(scope: Construct, id: string, props: DataSetProperties)
 
 ---
 
+##### `dropLocation`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataSet.property.dropLocation"></a>
+
+- *Type:* [`@randyridgley/cdk-datalake-constructs.DataSetLocation`](#@randyridgley/cdk-datalake-constructs.DataSetLocation)
+
+---
+
+##### `name`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataSet.property.name"></a>
+
+- *Type:* `string`
+
+---
+
+##### `pipeline`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataSet.property.pipeline"></a>
+
+- *Type:* [`@randyridgley/cdk-datalake-constructs.Pipeline`](#@randyridgley/cdk-datalake-constructs.Pipeline)
+
+---
+
 ##### `rawBucket`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataSet.property.rawBucket"></a>
 
 - *Type:* [`@aws-cdk/aws-s3.Bucket`](#@aws-cdk/aws-s3.Bucket)
@@ -1752,19 +1770,7 @@ import { DataSetProperties } from '@randyridgley/cdk-datalake-constructs'
 const dataSetProperties: DataSetProperties = { ... }
 ```
 
-##### `dataCatalogAccountId`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataSetProperties.property.dataCatalogAccountId"></a>
-
-- *Type:* `string`
-
----
-
-##### `destinationBucketName`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataSetProperties.property.destinationBucketName"></a>
-
-- *Type:* `string`
-
----
-
-##### `destinationPrefix`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataSetProperties.property.destinationPrefix"></a>
+##### `accountId`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataSetProperties.property.accountId"></a>
 
 - *Type:* `string`
 
@@ -1776,15 +1782,15 @@ const dataSetProperties: DataSetProperties = { ... }
 
 ---
 
-##### `name`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataSetProperties.property.name"></a>
+##### `pipeline`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataSetProperties.property.pipeline"></a>
 
-- *Type:* `string`
+- *Type:* [`@randyridgley/cdk-datalake-constructs.Pipeline`](#@randyridgley/cdk-datalake-constructs.Pipeline)
 
 ---
 
-##### `registerCrossAccount`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataSetProperties.property.registerCrossAccount"></a>
+##### `region`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataSetProperties.property.region"></a>
 
-- *Type:* `boolean`
+- *Type:* `string`
 
 ---
 
@@ -1797,24 +1803,6 @@ const dataSetProperties: DataSetProperties = { ... }
 ##### `encryptionKey`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.DataSetProperties.property.encryptionKey"></a>
 
 - *Type:* [`@aws-cdk/aws-kms.Key`](#@aws-cdk/aws-kms.Key)
-
----
-
-##### `s3NotificationProps`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.DataSetProperties.property.s3NotificationProps"></a>
-
-- *Type:* [`@randyridgley/cdk-datalake-constructs.S3NotificationProperties`](#@randyridgley/cdk-datalake-constructs.S3NotificationProperties)
-
----
-
-##### `sourceBucketName`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.DataSetProperties.property.sourceBucketName"></a>
-
-- *Type:* `string`
-
----
-
-##### `sourceKeys`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.DataSetProperties.property.sourceKeys"></a>
-
-- *Type:* `string`[]
 
 ---
 
@@ -1834,21 +1822,21 @@ const dataSetResult: DataSetResult = { ... }
 
 ---
 
-##### `sourceBucketName`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataSetResult.property.sourceBucketName"></a>
-
-- *Type:* `string`
-
----
-
-##### `sourceKeys`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataSetResult.property.sourceKeys"></a>
-
-- *Type:* `string`[]
-
----
-
 ##### `destinationBucketName`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.DataSetResult.property.destinationBucketName"></a>
 
 - *Type:* `string`
+
+---
+
+##### `sourceBucketName`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.DataSetResult.property.sourceBucketName"></a>
+
+- *Type:* `string`
+
+---
+
+##### `sourceKeys`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.DataSetResult.property.sourceKeys"></a>
+
+- *Type:* `string`[]
 
 ---
 
@@ -2003,6 +1991,12 @@ const jobProperties: JobProperties = { ... }
 ##### `description`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.JobProperties.property.description"></a>
 
 - *Type:* `string`
+
+---
+
+##### `destinationLocation`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.JobProperties.property.destinationLocation"></a>
+
+- *Type:* [`@randyridgley/cdk-datalake-constructs.DataSetLocation`](#@randyridgley/cdk-datalake-constructs.DataSetLocation)
 
 ---
 
@@ -2186,9 +2180,9 @@ const registeredDataSetProperties: RegisteredDataSetProperties = { ... }
 
 ---
 
-##### `destinationBucketName`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.RegisteredDataSetProperties.property.destinationBucketName"></a>
+##### `dataSet`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.RegisteredDataSetProperties.property.dataSet"></a>
 
-- *Type:* `string`
+- *Type:* [`@randyridgley/cdk-datalake-constructs.DataSet`](#@randyridgley/cdk-datalake-constructs.DataSet)
 
 ---
 
@@ -2198,9 +2192,9 @@ const registeredDataSetProperties: RegisteredDataSetProperties = { ... }
 
 ---
 
-##### `name`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.RegisteredDataSetProperties.property.name"></a>
+##### `pipeline`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.RegisteredDataSetProperties.property.pipeline"></a>
 
-- *Type:* `string`
+- *Type:* [`@randyridgley/cdk-datalake-constructs.Pipeline`](#@randyridgley/cdk-datalake-constructs.Pipeline)
 
 ---
 
@@ -2419,9 +2413,9 @@ new Pipeline(props: IPipelineProperties)
 
 ---
 
-##### `destinationBucketName`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.Pipeline.property.destinationBucketName"></a>
+##### `dataSetDropLocation`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.Pipeline.property.dataSetDropLocation"></a>
 
-- *Type:* `string`
+- *Type:* [`@randyridgley/cdk-datalake-constructs.DataSetLocation`](#@randyridgley/cdk-datalake-constructs.DataSetLocation)
 
 ---
 
@@ -2824,9 +2818,9 @@ new Pipeline(props: IPipelineProperties)
 
 ---
 
-##### `destinationBucketName`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.IPipelineProperties.property.destinationBucketName"></a>
+##### `dataSetDropLocation`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.IPipelineProperties.property.dataSetDropLocation"></a>
 
-- *Type:* `string`
+- *Type:* [`@randyridgley/cdk-datalake-constructs.DataSetLocation`](#@randyridgley/cdk-datalake-constructs.DataSetLocation)
 
 ---
 
@@ -2921,6 +2915,23 @@ new Pipeline(props: IPipelineProperties)
 
 
 #### `S3` <a name="@randyridgley/cdk-datalake-constructs.DataPipelineType.S3"></a>
+
+---
+
+
+### DataSetLocation <a name="DataSetLocation"></a>
+
+#### `RAW` <a name="@randyridgley/cdk-datalake-constructs.DataSetLocation.RAW"></a>
+
+---
+
+
+#### `TRUSTED` <a name="@randyridgley/cdk-datalake-constructs.DataSetLocation.TRUSTED"></a>
+
+---
+
+
+#### `REFINED` <a name="@randyridgley/cdk-datalake-constructs.DataSetLocation.REFINED"></a>
 
 ---
 
