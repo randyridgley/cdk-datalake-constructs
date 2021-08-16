@@ -14,9 +14,14 @@ export class DataProductStack extends cdk.Stack {
 
   constructor(scope: cdk.Construct, id: string, props: DataProductStackProps) {
     super(scope, id, props);
-  
-    const region = cdk.Stack.of(this).region;
-    const accountId = cdk.Stack.of(this).account;
+    let region = cdk.Stack.of(this).region;
+    let accountId = cdk.Stack.of(this).account;
+
+    if(props.env) {
+      region = props.env.region!
+      accountId = props.env.account!
+    }
+    
     const vpc = this.createVpc()
 
     // create the local data lake with their own Glue Data catalog and IAM Role to act as data lake administrator 

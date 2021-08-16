@@ -21,7 +21,6 @@ cdk.out
 coverage
 dist
 examples
-images
 junit.xml
 maven_release*
 tsconfig.tsbuildinfo

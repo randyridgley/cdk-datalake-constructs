@@ -15,9 +15,13 @@ export interface DataConsumerStackProps extends cdk.StackProps {
 export class DataConsumerStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props: DataConsumerStackProps) {
     super(scope, id, props);
+    let region = cdk.Stack.of(this).region;
+    let accountId = cdk.Stack.of(this).account;
 
-    const region = cdk.Stack.of(this).region;
-    const accountId = cdk.Stack.of(this).account;
+    if(props.env) {
+      region = props.env.region!
+      accountId = props.env.account!
+    }
 
     const vpc = new ec2.Vpc(this, 'StudioVPC', {
       maxAzs: 3,

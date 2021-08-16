@@ -24,7 +24,7 @@ const taxiPipes: Array<dl.Pipeline> = [
 const dataProducts: Array<dl.DataProduct> = [{
   pipelines: taxiPipes,
   accountId: lakeAccountId,
-  catalogAccountId: centralAccountId,
+  dataCatalogAccountId: centralAccountId,
   databaseName: 'taxi-product'
 }]
 
@@ -43,7 +43,7 @@ new DataCentralStack(app, 'DataCentralStack', {
   },  
   crossAccountAccess: {
     consumerAccountIds: [consumerAccountId, lakeAccountId],
-    producerAccountId: centralAccountId,
+    dataCatalogOwnerAccountId: centralAccountId,
     region: region,    
   },
   dataProducts: dataProducts,

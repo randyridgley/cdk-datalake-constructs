@@ -25,9 +25,13 @@ export class DataCentralStack extends cdk.Stack {
 
   constructor(scope: cdk.Construct, id: string, props: DataCentralStackProps) {
     super(scope, id, props);
+    let region = cdk.Stack.of(this).region;
+    let accountId = cdk.Stack.of(this).account;
 
-    const region = cdk.Stack.of(this).region;
-    const accountId = cdk.Stack.of(this).account;
+    if(props.env) {
+      region = props.env.region!
+      accountId = props.env.account!
+    }
   
     new dl.DataLake(this, 'CentralDataLake', {
       name: props.lakeName,

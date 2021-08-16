@@ -151,7 +151,7 @@ const project = new AwsCdkConstructLibrary({
 project.tasks.tryFind('package').prependExec('go env -w GOSUMDB=off');
 
 const common_exclude = [
-  'cdk.out', 'cdk.context.json', 'images', 'yarn-error.log', '.DS_Store', 'coverage',
+  'cdk.out', 'cdk.context.json', 'yarn-error.log', '.DS_Store', 'coverage',
 ];
 project.npmignore.exclude(...common_exclude, 'maven_release*', 'examples');
 project.gitignore.exclude(...common_exclude);
@@ -164,6 +164,5 @@ project.gitpod.addTasks({
 
 const openCoverage = project.addTask('coverage');
 openCoverage.exec('npx projen test && open coverage/lcov-report/index.html');
-project.npmignore.exclude('examples');
 
 project.synth();
