@@ -1,5 +1,6 @@
 # cdk-datalake-constructs  <!-- omit in toc -->
 
+***Very experimental until version 1.0.***
 This is my attempt at simplifying deploying various datalake strategies in AWS with the CDK.
 
 [![License](https://img.shields.io/badge/License-MIT-green)](https://opensource.org/licenses/MIT)  
