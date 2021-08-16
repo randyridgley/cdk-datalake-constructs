@@ -69,10 +69,68 @@ new DataLake(this, 'datalake', {
 ```
 
 ### Data Mesh
+You can setup cross account access and pre-created policy tags for TBAC access in Lake Formation
 
 ```ts
+const lakeAccountId = app.node.tryGetContext('lakeAccountId')
+const centralAccountId = app.node.tryGetContext('centralAccountId')
+const consumerAccountId = app.node.tryGetContext('consumerAccountId')
 
+const taxiPipes: Array<dl.Pipeline> = [
+  pipelines.YellowPipeline(lakeAccountId, centralAccountId, region, stage),
+  pipelines.GreenPipeline(lakeAccountId, centralAccountId, region, stage),
+]
 
+const dataProducts: Array<dl.DataProduct> = [{
+  pipelines: taxiPipes,
+  accountId: lakeAccountId,
+  dataCatalogAccountId: centralAccountId,
+  databaseName: 'taxi-product'
+}]
+
+// deploy to the central account
+new dl.DataLake(this, 'CentralDataLake', {
+  name: 'central-lake,
+  accountId: centralAccountId,
+  region: 'us-east-1',
+  policyTags: {
+    "classification": "public,confidential,highlyconfidential,restricted,critical",
+    "owner": "product,central,consumer"
+  },
+  stageName: Stage.PROD,
+  crossAccount: {
+    consumerAccountIds: [consumerAccountId, lakeAccountId],
+    dataCatalogOwnerAccountId: centralAccountId,
+    region: 'us-east-1', // this is still only single region today    
+  },
+  dataProducts: dataProducts,
+  createDefaultDatabase: true
+});
+
+// deploy to the data product acocunt
+const datalake = new dl.DataLake(this, 'LocalDataLake', {
+  name: 'local-lake',
+  accountId: lakeAccountId,
+  region: 'us-east-1',
+  stageName: Stage.PROD,
+  dataProducts: dataProducts,
+  createDefaultDatabase: true
+});
+
+// Optionally add custom resource to download public data set products
+datalake.createDownloaderCustomResource(accountId, region, props.stageName)
+
+// deploy to consumer account
+const datalake = new dl.DataLake(this, 'ConsumerDataLake', {
+  name: 'consumer-lake',
+  accountId: consumerAccountId,
+  region: 'us-east-1',
+  stageName: Stage.PROD,
+  policyTags: {
+    "access": "analyst,engineer,marketing"
+  },
+  createDefaultDatabase: true
+});
 ```
 
 ## Documentation
