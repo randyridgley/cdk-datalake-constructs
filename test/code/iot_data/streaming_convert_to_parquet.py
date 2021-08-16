@@ -25,7 +25,7 @@ def processBatch(data_frame, batchId):
     if (data_frame.count() > 0):
         DataSource0 = DynamicFrame.fromDF(data_frame, glueContext, "from_data_frame")
         ## @type: DataSink
-        ## @args: [path = "s3://iot-datalake-prod-us-east-1-401774010729/parquet", connection_type = "s3", catalog_database_name = "local", updateBehavior = "UPDATE_IN_DATABASE", stream_batch_time = "100 seconds", format = "glueparquet", enableUpdateCatalog = true, catalog_table_name = "p_iot_data", transformation_ctx = "DataSink0"]
+        ## @args: [path = "s3://PATH/parquet", connection_type = "s3", catalog_database_name = "local", updateBehavior = "UPDATE_IN_DATABASE", stream_batch_time = "100 seconds", format = "glueparquet", enableUpdateCatalog = true, catalog_table_name = "p_iot_data", transformation_ctx = "DataSink0"]
         ## @return: DataSink0
         ## @inputs: [frame = Transform0]
         now = datetime.datetime.now()
