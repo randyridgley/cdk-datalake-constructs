@@ -98,7 +98,7 @@ const project = new AwsCdkConstructLibrary({
       secret: 'PROJEN_GITHUB_TOKEN',
     },
   }),
-  autoApproveUpgrades: true,  
+  autoApproveUpgrades: true,
   autoApproveOptions: {
     secret: 'GITHUB_TOKEN',
     allowedUsernames: ['randyridgley'],

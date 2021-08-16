@@ -4,6 +4,8 @@
 
 ### DataLake <a name="@randyridgley/cdk-datalake-constructs.DataLake"></a>
 
+A CDK construct to create a DataLake.
+
 #### Initializer <a name="@randyridgley/cdk-datalake-constructs.DataLake.Initializer"></a>
 
 ```typescript
@@ -1604,6 +1606,8 @@ const dataLakeProperties: DataLakeProperties = { ... }
 
 - *Type:* `string`
 
+The AWS Account Id of the Datalake.
+
 ---
 
 ##### `createDefaultDatabase`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataLakeProperties.property.createDefaultDatabase"></a>
@@ -1616,11 +1620,15 @@ const dataLakeProperties: DataLakeProperties = { ... }
 
 - *Type:* `string`
 
+The name of the DataLake.
+
 ---
 
 ##### `region`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataLakeProperties.property.region"></a>
 
 - *Type:* `string`
+
+The AWS Region the Datalake will be deployed.
 
 ---
 
@@ -1628,47 +1636,80 @@ const dataLakeProperties: DataLakeProperties = { ... }
 
 - *Type:* [`@randyridgley/cdk-datalake-constructs.Stage`](#@randyridgley/cdk-datalake-constructs.Stage)
 
+The Stage the DataLake will be deployed.
+
 ---
 
 ##### `crossAccount`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.DataLakeProperties.property.crossAccount"></a>
 
 - *Type:* [`@randyridgley/cdk-datalake-constructs.CrossAccountProperties`](#@randyridgley/cdk-datalake-constructs.CrossAccountProperties)
+- *Default:* No cross account ids
+
+Cross account AWS account IDs.
+
+> https://aws.amazon.com/premiumsupport/knowledge-center/glue-data-catalog-cross-account-access/
 
 ---
 
 ##### `datalakeAdminRole`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.DataLakeProperties.property.datalakeAdminRole"></a>
 
 - *Type:* [`@aws-cdk/aws-iam.Role`](#@aws-cdk/aws-iam.Role)
+- *Default:* Admin role created based on best practices
+
+Data Lake Admin role.
+
+> https://docs.aws.amazon.com/lake-formation/latest/dg/permissions-reference.html
 
 ---
 
 ##### `datalakeCreatorRole`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.DataLakeProperties.property.datalakeCreatorRole"></a>
 
 - *Type:* [`@aws-cdk/aws-iam.Role`](#@aws-cdk/aws-iam.Role)
+- *Default:* Database creator role created based on best practices
+
+Data Lake Database Creator role.
+
+> https://docs.aws.amazon.com/lake-formation/latest/dg/permissions-reference.html
 
 ---
 
 ##### `dataProducts`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.DataLakeProperties.property.dataProducts"></a>
 
 - *Type:* [`@randyridgley/cdk-datalake-constructs.DataProduct`](#@randyridgley/cdk-datalake-constructs.DataProduct)[]
+- *Default:* No data products
+
+The List of DataProducts for this account.
 
 ---
 
 ##### `glueSecurityGroup`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.DataLakeProperties.property.glueSecurityGroup"></a>
 
 - *Type:* [`@aws-cdk/aws-ec2.SecurityGroup`](#@aws-cdk/aws-ec2.SecurityGroup)
+- *Default:* No security group
+
+Security group to attach to Glue jobs.
+
+> https://docs.aws.amazon.com/glue/latest/dg/setup-vpc-for-glue-access.html
 
 ---
 
 ##### `policyTags`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.DataLakeProperties.property.policyTags"></a>
 
 - *Type:* {[ key: string ]: `string`}
+- *Default:* No tags
+
+List of Lake Formation TBAC policy tags.
+
+> https://docs.aws.amazon.com/lake-formation/latest/dg/TBAC-section.html
 
 ---
 
 ##### `vpc`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.DataLakeProperties.property.vpc"></a>
 
 - *Type:* [`@aws-cdk/aws-ec2.Vpc`](#@aws-cdk/aws-ec2.Vpc)
+- *Default:* No vpc
+
+VPC for Glue jobs.
 
 ---
 

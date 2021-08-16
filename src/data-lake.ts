@@ -34,17 +34,83 @@ export interface CrossAccountProperties {
 }
 
 export interface DataLakeProperties {
+  /**
+   * The name of the DataLake.
+   *
+   */
   readonly name: string;
+  /**
+   * The Stage the DataLake will be deployed.
+   *
+   */
   readonly stageName: Stage;
+  /**
+   * The AWS Account Id of the Datalake.
+   *
+   */
   readonly accountId: string;
+  /**
+   * The AWS Region the Datalake will be deployed.
+   *
+   */
   readonly region: string;
+  /**
+   * The List of DataProducts for this account
+   *
+   * @default - No data products
+   */
   readonly dataProducts?: DataProduct[];
+  /**
+   * VPC for Glue jobs
+   *
+   * @default - No vpc
+   * @description - The VPC that will be used if the Glue job needs access to resources within the account or internet access
+   */
   readonly vpc?: ec2.Vpc;
+  /**
+   * List of Lake Formation TBAC policy tags.
+   *
+   * @default - No tags
+   * @description - Define the tag taxonomy needed for the DataLake
+   * @see https://docs.aws.amazon.com/lake-formation/latest/dg/TBAC-section.html
+   */
   readonly policyTags?: { [name: string]: string };
+  /**
+   * Cross account AWS account IDs
+   *
+   * @default - No cross account ids
+   * @description - The cross account ids needed for setting up the Glue resource policy
+   * @see https://aws.amazon.com/premiumsupport/knowledge-center/glue-data-catalog-cross-account-access/
+   */
   readonly crossAccount?: CrossAccountProperties;
+  /**
+   * Security group to attach to Glue jobs
+   *
+   * @default - No security group
+   * @description - Security Group that will be used to allow port access in the VPC
+   * @see https://docs.aws.amazon.com/glue/latest/dg/setup-vpc-for-glue-access.html
+   */
   readonly glueSecurityGroup?: ec2.SecurityGroup;
+  /**
+   * Data Lake Admin role
+   *
+   * @default - Admin role created based on best practices
+   * @description - IAM Role for DataLake admin access
+   * @see https://docs.aws.amazon.com/lake-formation/latest/dg/permissions-reference.html
+   */
   readonly datalakeAdminRole?: iam.Role;
-  readonly datalakeCreatorRole?: iam.Role;
+  /**
+   * Data Lake Database Creator role
+   *
+   * @default - Database creator role created based on best practices
+   * @description - IAM Role for DataLake database creator access
+   * @see https://docs.aws.amazon.com/lake-formation/latest/dg/permissions-reference.html
+   */
+  readonly datalakeCreatorRole?: iam.Role; /**
+  * Create default Glue Database for DataLake
+  *
+  * @default - false
+  */
   readonly createDefaultDatabase: Boolean;
 }
 
@@ -164,6 +230,9 @@ export enum DataSetLocation {
   REFINED = 'refined'
 }
 
+/**
+ * A CDK construct to create a DataLake.
+ */
 export class DataLake extends cdk.Construct {
   public readonly dataSets: { [schemaName: string]: DataSet } = {};
   public readonly dataStreams: { [schemaName: string]: KinesisStream } = {};
