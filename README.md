@@ -107,7 +107,7 @@ new dl.DataLake(this, 'CentralDataLake', {
   createDefaultDatabase: true
 });
 
-// deploy to the data product acocunt
+// deploy to the data product account
 const datalake = new dl.DataLake(this, 'LocalDataLake', {
   name: 'local-lake',
   accountId: lakeAccountId,
