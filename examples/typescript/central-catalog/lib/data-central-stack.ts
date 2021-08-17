@@ -37,8 +37,8 @@ export class DataCentralStack extends cdk.Stack {
       name: props.lakeName,
       accountId: accountId,
       region: region,
-      policyTags: props.policyTags,
       stageName: props.stageName,
+      policyTags: props.policyTags,
       crossAccount: props.crossAccountAccess ? props.crossAccountAccess : undefined,
       dataProducts: props.dataProducts,
       createDefaultDatabase: true

@@ -4,10 +4,10 @@ import * as s3sns from '@aws-cdk/aws-s3-notifications';
 import * as sns from '@aws-cdk/aws-sns';
 import * as cdk from '@aws-cdk/core';
 
-import { DataSetLocation, S3NotificationProperties, Stage } from '../data-lake';
+import { Stage } from '../data-lake';
 import { DataLakeBucket } from '../data-lake-bucket';
 import { DataProduct } from '../data-product';
-import { Pipeline } from '../pipeline';
+import { Pipeline, DataSetLocation, S3NotificationProperties } from '../pipeline';
 import { buildS3BucketName, getDataSetBucketName } from '../utils';
 
 export interface DataSetProperties {
@@ -18,6 +18,7 @@ export interface DataSetProperties {
   readonly accountId: string;
   readonly pipeline: Pipeline;
   readonly dataProduct: DataProduct;
+  readonly s3BucketProps: s3.BucketProps | undefined;
 }
 
 export interface DataSetResult {
@@ -83,6 +84,7 @@ export class DataSet extends cdk.Construct {
         dataCatalogAccountId: dataCatalogAccountId,
         logBucket: props.logBucket,
         crossAccount: crossAccount,
+        s3Properties: props.s3BucketProps,
       }).bucket;
 
       const trustedBucket = new DataLakeBucket(this, `s3-trusted-bucket-${props.pipeline.name}`, {
@@ -90,6 +92,7 @@ export class DataSet extends cdk.Construct {
         dataCatalogAccountId: dataCatalogAccountId,
         logBucket: props.logBucket,
         crossAccount: crossAccount,
+        s3Properties: props.s3BucketProps,
       }).bucket;
 
       const refinedBucket = new DataLakeBucket(this, `s3-refined-bucket-${props.pipeline.name}`, {
@@ -97,6 +100,7 @@ export class DataSet extends cdk.Construct {
         dataCatalogAccountId: dataCatalogAccountId,
         logBucket: props.logBucket,
         crossAccount: crossAccount,
+        s3Properties: props.s3BucketProps,
       }).bucket;
 
       if (props.pipeline.s3NotificationProps) {

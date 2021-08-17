@@ -1,5 +1,4 @@
-import { DataPipelineType, DataSetLocation } from '../../src/data-lake';
-import { Pipeline } from '../../src/pipeline';
+import { Pipeline, DataPipelineType, DataSetLocation } from '../../src/pipeline';
 
 export function GreenPipeline() {
   return new Pipeline({

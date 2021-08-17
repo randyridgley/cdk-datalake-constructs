@@ -19,18 +19,18 @@ import { KinesisOps } from './data-streams/kinesis-ops';
 import { KinesisStream } from './data-streams/kinesis-stream';
 import { CompressionType, S3DeliveryStream } from './data-streams/s3-delivery-stream';
 import { GlueCrawler } from './etl/glue-crawler';
-import { GlueJob, GlueJobType, GlueVersion, GlueWorkerType } from './etl/glue-job';
+import { GlueJob } from './etl/glue-job';
 import { GlueJobOps } from './etl/glue-job-ops';
 import { GlueTable } from './etl/glue-table';
 import { DataLakeAdministrator } from './personas/data-lake-admin';
 import { DataLakeCreator } from './personas/data-lake-creator';
-import { Pipeline } from './pipeline';
+import { DataPipelineType, Pipeline } from './pipeline';
 import { buildGlueCrawlerName, buildRoleName, buildLambdaFunctionName, buildS3BucketName, buildUniqueName, getDataSetBucketName, packageAsset, toS3Path } from './utils';
+import { IDependable } from '@aws-cdk/core';
 
 export interface CrossAccountProperties {
   readonly consumerAccountIds: string[];
   readonly dataCatalogOwnerAccountId: string;
-  readonly region: string;
 }
 
 export interface DataLakeProperties {
@@ -82,7 +82,7 @@ export interface DataLakeProperties {
    * @description - The cross account ids needed for setting up the Glue resource policy
    * @see https://aws.amazon.com/premiumsupport/knowledge-center/glue-data-catalog-cross-account-access/
    */
-  readonly crossAccount?: CrossAccountProperties;
+  readonly crossAccountAccess?: CrossAccountProperties;
   /**
    * Security group to attach to Glue jobs
    *
@@ -112,96 +112,17 @@ export interface DataLakeProperties {
   * @default - false
   */
   readonly createDefaultDatabase: Boolean;
-}
-
-export interface JDBCProperties {
-  readonly jdbc: string;
-  readonly username: string;
-  readonly password: string;
-}
-
-export interface StreamProperties {
-  readonly streamName: string;
-  readonly lambdaDataGenerator?: LambdaDataGeneratorProperties;
-}
-
-export interface S3Properties {
-  readonly sourceBucketName: string;
-  readonly sourceKeys: string[];
-}
-
-export interface TableProps {
-  readonly tableName: string;
-  readonly description: string;
-  readonly partitionKeys: Array<glue.CfnTable.ColumnProperty | cdk.IResolvable> | cdk.IResolvable;
-  readonly columns: Array<glue.CfnTable.ColumnProperty | cdk.IResolvable> | cdk.IResolvable;
-  readonly parameters: {[param: string]: any};
-  readonly serializationLibrary: string;
-  readonly serdeParameters: {[param: string]: any};
-  readonly inputFormat: string;
-  readonly outputFormat: string;
-  readonly catalogId: string;
-}
-
-export interface JobProperties {
-  readonly name: string;
-  readonly roleName?: string;
-  readonly description?: string;
-  readonly readAccessBuckets?: s3.IBucket[];
-  readonly writeAccessBuckets?: s3.IBucket[];
-  readonly glueVersion?: GlueVersion;
-  readonly workerType: GlueWorkerType;
-  readonly numberOfWorkers?: number;
-  readonly maxCapacity?: number;
-  readonly maxRetries?: number;
-  readonly maxConcurrentRuns?: number;
-  readonly jobScript: string;
-  readonly jobArgs?: { [key: string]: string };
-  readonly timeout?: number;
-  readonly jobType: GlueJobType;
-  readonly destinationLocation?: DataSetLocation;
-}
-
-export interface DataLocationProperties {
-  readonly destinationPrefix: string;
-  readonly destinationBucketName: string;
-  readonly name: string;
-  readonly databaseName: string;
-}
-
-export interface DataStreamProperties {
-  readonly name: string;
-  readonly destinationBucketName: string;
-  readonly destinationPrefix: string;
-  readonly dataCatalogOwner: DataCatalogOwner;
-  readonly streamName: string;
-  readonly lambdaDataGenerator: LambdaDataGeneratorProperties;
-}
-
-export interface LambdaDataGeneratorProperties {
-  readonly code: lambda.Code;
-  readonly handler: string;
-  readonly timeout: cdk.Duration;
-  readonly runtime: lambda.Runtime;
-  readonly functionName: string;
-  readonly schedule: events.Schedule;
-  readonly ruleName: string;
-}
-
-export interface DataCatalogOwner {
-  readonly accountId: string;
-}
-
-export interface S3NotificationProperties {
-  readonly event: s3.EventType;
-  readonly prefix: string;
-  readonly suffix: string;
-}
-
-export enum DataPipelineType {
-  STREAM = 'stream',
-  JDBC = 'jdbc',
-  S3 = 's3'
+  /* Default S3 Bucket Properties for Log Bucket
+  *
+  * @default - lifecycleRules: [
+        {
+          expiration: cdk.Duration.days(30),
+        },
+      ],
+      removalPolicy: cdk.RemovalPolicy.DESTROY,
+      autoDeleteObjects: true,
+  */
+  readonly logBucketProps?: s3.BucketProps;
 }
 
 export enum Stage {
@@ -224,12 +145,6 @@ export enum Permissions {
   ASSOCIATE = 'ASSOCIATE'
 }
 
-export enum DataSetLocation {
-  RAW = 'raw',
-  TRUSTED = 'trusted',
-  REFINED = 'refined'
-}
-
 /**
  * A CDK construct to create a DataLake.
  */
@@ -249,14 +164,29 @@ export class DataLake extends cdk.Construct {
   private readonly glueSecurityGroup?: ec2.SecurityGroup
   private readonly crossAccountAccess?: CrossAccountProperties
   private readonly downloadLocations: { [schema: string]: DataSetResult } = {} //used for the Custom Resource to allow downloading of existing datasets into datalake
+  private readonly logBucketProps: s3.BucketProps;
 
   constructor(scope: cdk.Construct, id: string, props: DataLakeProperties) {
     super(scope, id);
     this.stageName = props.stageName;
     this.accountId = props.accountId,
     this.region = props.region;
-    this.crossAccountAccess = props.crossAccount ? props.crossAccount : undefined;
+    this.crossAccountAccess = props.crossAccountAccess ? props.crossAccountAccess : undefined;
     this.vpc = props.vpc ? props.vpc : undefined;
+
+    if (props.logBucketProps) {
+      this.logBucketProps = props.logBucketProps;
+    } else {
+      this.logBucketProps = {
+        lifecycleRules: [
+          {
+            expiration: cdk.Duration.days(30),
+          },
+        ],
+        removalPolicy: cdk.RemovalPolicy.DESTROY,
+        autoDeleteObjects: true,
+      };
+    }
 
     if (this.vpc) {
       this.glueSecurityGroup = new ec2.SecurityGroup(this, 'glue-sg', {
@@ -283,13 +213,7 @@ export class DataLake extends cdk.Construct {
         name: props.name,
         accountId: props.accountId,
       }),
-      lifecycleRules: [
-        {
-          expiration: cdk.Duration.days(30),
-        },
-      ],
-      removalPolicy: cdk.RemovalPolicy.DESTROY,
-      autoDeleteObjects: true,
+      ...this.logBucketProps,
     });
     new cdk.CfnOutput(this, 'DataLakeLogBucket', { value: this.logBucket.bucketName });
 
@@ -326,7 +250,10 @@ export class DataLake extends cdk.Construct {
       new cdk.CfnOutput(this, 'DataLakeDefaultDatabase', { value: props.name });
     }
 
-    this.createCrossAccountGlueCatalogResourcePolicy();
+    if (this.crossAccountAccess) {
+      this.createCrossAccountGlueCatalogResourcePolicy(
+        this.crossAccountAccess.consumerAccountIds, this.crossAccountAccess.dataCatalogOwnerAccountId);
+    }
 
     this.athenaWorkgroup = new athena.CfnWorkGroup(this, 'workgroup', {
       name: buildUniqueName({
@@ -439,7 +366,7 @@ export class DataLake extends cdk.Construct {
     const schemaName = pipeline.name;
     const dataStreamStack = new cdk.NestedStack(cdk.Stack.of(this), `${schemaName}-datastream-stack`);
 
-    if (pipeline.streamProperties != undefined) {
+    if (pipeline.streamProperties) {
       this.dataStreams[schemaName] = new KinesisStream(dataStreamStack, 'DataStream', {
         shardCount: 1,
         streamName: pipeline.streamProperties.streamName,
@@ -496,16 +423,19 @@ export class DataLake extends cdk.Construct {
       stage: this.stageName,
       accountId: this.accountId,
       region: this.region,
+      s3BucketProps: dataProduct.s3BucketProps,
     });
     const ds = this.dataSets[schemaName];
     const sameAccount = dataProduct.accountId == this.accountId;
-    const centralAccountId = dataProduct.dataCatalogAccountId ? dataProduct.dataCatalogAccountId : this.accountId;
+    const catelogAccountId = dataProduct.dataCatalogAccountId ? dataProduct.dataCatalogAccountId : this.accountId;
 
     if (sameAccount) {
       this.createPipelineResources(pipeline, dataProduct, ds);
     }
 
-    if (centralAccountId == this.accountId) {
+    // find the correct metadata catalog account
+    if (catelogAccountId == this.accountId) {
+      // refactor to only register the needed buckets from the data product account
       const rawDlResource = this.registerDataLakeLocation(
         this.datalakeAdminRole.roleArn, this.datalakeDbCreatorRole.roleArn, ds.rawBucketName);
       const trustedDlResource = this.registerDataLakeLocation(
@@ -556,26 +486,8 @@ export class DataLake extends cdk.Construct {
         break;
       }
       case DataPipelineType.JDBC: {
-        if (this.vpc && this.glueSecurityGroup) {
-          new glue.Connection(this, `${pipeline.name}-glue-connection`, {
-            type: glue.ConnectionType.JDBC,
-            connectionName: `${pipeline.name}-jdbc`,
-            description: `JDBC connection for glue to use on pipeline ${pipeline.name}`,
-            subnet: this.vpc.isolatedSubnets[0],
-            securityGroups: [this.glueSecurityGroup],
-            properties: {
-              JDBC_CONNECTION_URL:
-                pipeline.jdbcProperties!.jdbc!,
-              USERNAME: pipeline.jdbcProperties!.username!, //figure this out
-              PASSWORD: pipeline.jdbcProperties!.password!,
-            },
-          });
-          break;
-        } else {
-          throw new Error(
-            'VPC required to create a JDBC pipeline.',
-          );
-        }
+        this.createJDBCConnection(pipeline)
+        break;
       }
     }
 
@@ -675,6 +587,28 @@ export class DataLake extends cdk.Construct {
       }
     }
   }
+  
+  private createJDBCConnection(pipeline:Pipeline) {
+    if (this.vpc && this.glueSecurityGroup) {
+      new glue.Connection(this, `${pipeline.name}-glue-connection`, {
+        type: glue.ConnectionType.JDBC,
+        connectionName: `${pipeline.name}-jdbc`,
+        description: `JDBC connection for glue to use on pipeline ${pipeline.name}`,
+        subnet: this.vpc.isolatedSubnets[0],
+        securityGroups: [this.glueSecurityGroup],
+        properties: {
+          JDBC_CONNECTION_URL:
+            pipeline.jdbcProperties!.jdbc!,
+          USERNAME: pipeline.jdbcProperties!.username!, //figure this out
+          PASSWORD: pipeline.jdbcProperties!.password!,
+        },
+      });
+    } else {
+      throw new Error(
+        'VPC required to create a JDBC pipeline.',
+      );
+    }
+  }
 
   private createPolicyTagsCustomResource(policyTags: { [name: string]: string }, datalakeAdminRole: iam.IRole) {
     const onEvent = new PythonFunction(this, 'create-policy-tags-handler', {
@@ -707,36 +641,34 @@ export class DataLake extends cdk.Construct {
     outputs.node.addDependency(datalakeAdminRole);
   }
 
-  private createCrossAccountGlueCatalogResourcePolicy() {
-    if (this.crossAccountAccess) {
-      const onCatalogEvent = new PythonFunction(this, 'enable-hybrid-catalog-handler', {
-        runtime: lambda.Runtime.PYTHON_3_7,
-        entry: path.join(__dirname, '../lambda/enable-hybrid-catalog'),
-        role: this.datalakeAdminRole,
-        functionName: buildLambdaFunctionName({
-          name: 'create-catalog',
-          accountId: this.accountId,
-          region: this.region,
-          resourceUse: 'cr',
-          stage: this.stageName,
-        }),
-      });
+  private createCrossAccountGlueCatalogResourcePolicy(consumerAccountIds: string[], dataCatalogOwnerAccountId: string) {
+    const onCatalogEvent = new PythonFunction(this, 'enable-hybrid-catalog-handler', {
+      runtime: lambda.Runtime.PYTHON_3_7,
+      entry: path.join(__dirname, '../lambda/enable-hybrid-catalog'),
+      role: this.datalakeAdminRole,
+      functionName: buildLambdaFunctionName({
+        name: 'create-catalog',
+        accountId: this.accountId,
+        region: this.region,
+        resourceUse: 'cr',
+        stage: this.stageName,
+      }),
+    });
 
-      const catalogProvider = new cr.Provider(this, 'hybrid-catalog-provider', {
-        onEventHandler: onCatalogEvent,
-        logRetention: logs.RetentionDays.ONE_DAY,
-      });
+    const catalogProvider = new cr.Provider(this, 'hybrid-catalog-provider', {
+      onEventHandler: onCatalogEvent,
+      logRetention: logs.RetentionDays.ONE_DAY,
+    });
 
-      new cdk.CustomResource(this, 'hybrid-catalog-custom-resource', {
-        serviceToken: catalogProvider.serviceToken,
-        properties: {
-          stackName: cdk.Stack.name,
-          regionName: this.crossAccountAccess.region,
-          consumerAccountIds: this.crossAccountAccess.consumerAccountIds,
-          producerAccountId: this.crossAccountAccess.dataCatalogOwnerAccountId,
-        },
-      });
-    }
+    new cdk.CustomResource(this, 'hybrid-catalog-custom-resource', {
+      serviceToken: catalogProvider.serviceToken,
+      properties: {
+        stackName: cdk.Stack.name,
+        regionName: this.region,
+        consumerAccountIds: consumerAccountIds,
+        producerAccountId: dataCatalogOwnerAccountId,
+      },
+    });
   }
 
   private registerDataLakeLocation(dataLakeAdminRoleArn: string, dataLakeDbCreatorRoleArn: string, bucketName: string) : lf.CfnResource {
@@ -747,36 +679,27 @@ export class DataLake extends cdk.Construct {
       roleArn: dataLakeDbCreatorRoleArn,
     });
 
-    const dlPermission = new lf.CfnPermissions(this, `datalake-location-perm-${name}`, {
-      dataLakePrincipal: {
-        dataLakePrincipalIdentifier: dataLakeAdminRoleArn,
-      },
-      resource: {
-        dataLocationResource: {
-          s3Resource: `arn:aws:s3:::${bucketName}`,
-        },
-      },
-      permissions: [
-        Permissions.DATA_LOCATION_ACCESS,
-      ],
-    });
-    dlPermission.node.addDependency(dlResource);
-
-    const datalakeCreatorBucketPermission = new lf.CfnPermissions(this, `datalake-creator-perm-${name}`, {
-      dataLakePrincipal: {
-        dataLakePrincipalIdentifier: dataLakeDbCreatorRoleArn,
-      },
-      resource: {
-        dataLocationResource: {
-          s3Resource: `arn:aws:s3:::${bucketName}`,
-        },
-      },
-      permissions: [
-        Permissions.DATA_LOCATION_ACCESS,
-      ],
-    });
-    datalakeCreatorBucketPermission.node.addDependency(dlResource);
+    this.createDataLocationAccessPermission(name, dataLakeDbCreatorRoleArn, bucketName, dlResource);
+    this.createDataLocationAccessPermission(name, dataLakeAdminRoleArn, bucketName, dlResource);
     return dlResource;
+  }
+
+  private createDataLocationAccessPermission(name: string, roleArn: string, bucketName: string, resource: IDependable) : lf.CfnPermissions {
+    const perm = new lf.CfnPermissions(this, `datalake-creator-perm-${name}`, {
+      dataLakePrincipal: {
+        dataLakePrincipalIdentifier: roleArn,
+      },
+      resource: {
+        dataLocationResource: {
+          s3Resource: `arn:aws:s3:::${bucketName}`,
+        },
+      },
+      permissions: [
+        Permissions.DATA_LOCATION_ACCESS,
+      ],
+    });
+    perm.node.addDependency(resource);
+    return perm
   }
 }
 

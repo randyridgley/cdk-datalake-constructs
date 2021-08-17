@@ -7,6 +7,7 @@ export interface DataLakeBucketProps {
   readonly dataCatalogAccountId: string;
   readonly logBucket: s3.Bucket;
   readonly crossAccount: boolean;
+  readonly s3Properties: s3.BucketProps | undefined;
 }
 
 export class DataLakeBucket extends cdk.Construct {
@@ -17,13 +18,7 @@ export class DataLakeBucket extends cdk.Construct {
 
     this.bucket = new s3.Bucket(this, 'datalake-bucket', {
       bucketName: props.bucketName,
-      removalPolicy: cdk.RemovalPolicy.DESTROY,
-      autoDeleteObjects: true,
-      lifecycleRules: [
-        {
-          expiration: cdk.Duration.days(30),
-        },
-      ],
+      ...props.s3Properties,
       serverAccessLogsBucket: props.logBucket,
     });
 

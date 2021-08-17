@@ -1,4 +1,4 @@
-import { Pipeline, DataPipelineType, DataSetLocation } from '../../src/pipeline';
+import { DataPipelineType, DataSetLocation, Pipeline } from '@randyridgley/cdk-datalake-constructs';
 
 export function ReviewsPipeline() {
   return new Pipeline({

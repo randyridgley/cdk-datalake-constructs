@@ -3,9 +3,8 @@ import * as events from '@aws-cdk/aws-events';
 import * as lambda from '@aws-cdk/aws-lambda';
 import * as cdk from '@aws-cdk/core';
 
-import { DataPipelineType, DataSetLocation } from '../../src/data-lake';
 import { GlueJobType, GlueVersion, GlueWorkerType } from '../../src/etl/glue-job';
-import { Pipeline } from '../../src/pipeline';
+import { Pipeline, DataPipelineType, DataSetLocation } from '../../src/pipeline';
 import { buildEventRuleName, buildGlueJobName, buildKinesisStreamName, buildLambdaFunctionName, buildRoleName } from '../../src/utils';
 
 export function IoTDataPipeline(accountId: string, region: string, stage: string) {

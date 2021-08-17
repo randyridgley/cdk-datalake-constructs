@@ -18,7 +18,11 @@ const stage = dl.Stage.PROD // pass in a var
 
 const taxiPipes: Array<dl.Pipeline> = [
   pipelines.YellowPipeline(lakeAccountId, centralAccountId, region, stage),
-  pipelines.GreenPipeline(lakeAccountId, centralAccountId, region, stage),
+  pipelines.GreenPipeline(lakeAccountId, centralAccountId, region, stage)
+]
+
+const reviewPipes: Array<dl.Pipeline> = [
+  pipelines.ReviewsPipeline(lakeAccountId, centralAccountId, region, stage),
 ]
 
 const dataProducts: Array<dl.DataProduct> = [{
@@ -26,6 +30,12 @@ const dataProducts: Array<dl.DataProduct> = [{
   accountId: lakeAccountId,
   dataCatalogAccountId: centralAccountId,
   databaseName: 'taxi-product'
+},
+{
+  pipelines: reviewPipes,
+  accountId: lakeAccountId,
+  dataCatalogAccountId: centralAccountId,
+  databaseName: 'reviews-product'
 }]
 
 // Central catalog stack
@@ -44,7 +54,6 @@ new DataCentralStack(app, 'DataCentralStack', {
   crossAccountAccess: {
     consumerAccountIds: [consumerAccountId, lakeAccountId],
     dataCatalogOwnerAccountId: centralAccountId,
-    region: region,    
   },
   dataProducts: dataProducts,
 });

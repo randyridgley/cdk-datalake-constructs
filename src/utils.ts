@@ -1,7 +1,7 @@
 import { Asset } from '@aws-cdk/aws-s3-assets';
 import * as cdk from '@aws-cdk/core';
-import { DataSetLocation } from './data-lake';
 import { DataSet } from './data-sets/data-set';
+import { DataSetLocation } from './pipeline';
 
 export function notUndefined<T>(obj: T | undefined): obj is T {
   return obj !== undefined;
