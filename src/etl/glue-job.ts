@@ -24,23 +24,23 @@ export enum GlueJobType {
   GLUE_STREAMING = 'gluestreaming'
 }
 
-export interface IGlueJobProperties {
-  name: string;
-  roleName?: string;
-  description?: string;
-  deploymentBucket: s3.IBucket;
-  readAccessBuckets?: s3.IBucket[];
-  writeAccessBuckets?: s3.IBucket[];
-  glueVersion?: GlueVersion;
-  workerType: GlueWorkerType;
-  numberOfWorkers?: number;
-  maxCapacity?: number;
-  maxRetries?: number;
-  maxConcurrentRuns?: number;
-  jobScript: string;
-  jobArgs?: { [key: string]: string };
-  timeout?: number;
-  jobType: GlueJobType;
+export interface GlueJobProperties {
+  readonly name: string;
+  readonly roleName?: string;
+  readonly description?: string;
+  readonly deploymentBucket: s3.IBucket;
+  readonly readAccessBuckets?: s3.IBucket[];
+  readonly writeAccessBuckets?: s3.IBucket[];
+  readonly glueVersion?: GlueVersion;
+  readonly workerType: GlueWorkerType;
+  readonly numberOfWorkers?: number;
+  readonly maxCapacity?: number;
+  readonly maxRetries?: number;
+  readonly maxConcurrentRuns?: number;
+  readonly jobScript: string;
+  readonly jobArgs?: { [key: string]: string };
+  readonly timeout?: number;
+  readonly jobType: GlueJobType;
 }
 
 export class GlueJob extends cdk.Construct {
@@ -59,7 +59,7 @@ export class GlueJob extends cdk.Construct {
 
   private allExecutionAttemptsFailedRule: events.Rule;
 
-  constructor(scope: cdk.Construct, id: string, props: IGlueJobProperties) {
+  constructor(scope: cdk.Construct, id: string, props: GlueJobProperties) {
     super(scope, id);
 
     this.role = this.createGlueJobRole(props);
@@ -126,7 +126,7 @@ export class GlueJob extends cdk.Construct {
     });
   }
 
-  private createGlueJobRole(props: IGlueJobProperties): iam.Role {
+  private createGlueJobRole(props: GlueJobProperties): iam.Role {
     const role = new iam.Role(this, 'Role', {
       roleName: props.roleName || props.name + 'Role',
       assumedBy: new iam.ServicePrincipal('glue'),

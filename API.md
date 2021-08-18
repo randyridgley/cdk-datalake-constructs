@@ -466,7 +466,7 @@ public metricSuccess(props?: MetricOptions)
 ```typescript
 import { GlueJob } from '@randyridgley/cdk-datalake-constructs'
 
-new GlueJob(scope: Construct, id: string, props: IGlueJobProperties)
+new GlueJob(scope: Construct, id: string, props: GlueJobProperties)
 ```
 
 ##### `scope`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.GlueJob.parameter.scope"></a>
@@ -483,7 +483,7 @@ new GlueJob(scope: Construct, id: string, props: IGlueJobProperties)
 
 ##### `props`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.GlueJob.parameter.props"></a>
 
-- *Type:* [`@randyridgley/cdk-datalake-constructs.IGlueJobProperties`](#@randyridgley/cdk-datalake-constructs.IGlueJobProperties)
+- *Type:* [`@randyridgley/cdk-datalake-constructs.GlueJobProperties`](#@randyridgley/cdk-datalake-constructs.GlueJobProperties)
 
 ---
 
@@ -1937,6 +1937,112 @@ const deliveryStreamProperties: DeliveryStreamProperties = { ... }
 
 ---
 
+### GlueJobProperties <a name="@randyridgley/cdk-datalake-constructs.GlueJobProperties"></a>
+
+#### Initializer <a name="[object Object].Initializer"></a>
+
+```typescript
+import { GlueJobProperties } from '@randyridgley/cdk-datalake-constructs'
+
+const glueJobProperties: GlueJobProperties = { ... }
+```
+
+##### `deploymentBucket`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.GlueJobProperties.property.deploymentBucket"></a>
+
+- *Type:* [`@aws-cdk/aws-s3.IBucket`](#@aws-cdk/aws-s3.IBucket)
+
+---
+
+##### `jobScript`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.GlueJobProperties.property.jobScript"></a>
+
+- *Type:* `string`
+
+---
+
+##### `jobType`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.GlueJobProperties.property.jobType"></a>
+
+- *Type:* [`@randyridgley/cdk-datalake-constructs.GlueJobType`](#@randyridgley/cdk-datalake-constructs.GlueJobType)
+
+---
+
+##### `name`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.GlueJobProperties.property.name"></a>
+
+- *Type:* `string`
+
+---
+
+##### `workerType`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.GlueJobProperties.property.workerType"></a>
+
+- *Type:* [`@randyridgley/cdk-datalake-constructs.GlueWorkerType`](#@randyridgley/cdk-datalake-constructs.GlueWorkerType)
+
+---
+
+##### `description`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.GlueJobProperties.property.description"></a>
+
+- *Type:* `string`
+
+---
+
+##### `glueVersion`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.GlueJobProperties.property.glueVersion"></a>
+
+- *Type:* [`@randyridgley/cdk-datalake-constructs.GlueVersion`](#@randyridgley/cdk-datalake-constructs.GlueVersion)
+
+---
+
+##### `jobArgs`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.GlueJobProperties.property.jobArgs"></a>
+
+- *Type:* {[ key: string ]: `string`}
+
+---
+
+##### `maxCapacity`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.GlueJobProperties.property.maxCapacity"></a>
+
+- *Type:* `number`
+
+---
+
+##### `maxConcurrentRuns`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.GlueJobProperties.property.maxConcurrentRuns"></a>
+
+- *Type:* `number`
+
+---
+
+##### `maxRetries`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.GlueJobProperties.property.maxRetries"></a>
+
+- *Type:* `number`
+
+---
+
+##### `numberOfWorkers`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.GlueJobProperties.property.numberOfWorkers"></a>
+
+- *Type:* `number`
+
+---
+
+##### `readAccessBuckets`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.GlueJobProperties.property.readAccessBuckets"></a>
+
+- *Type:* [`@aws-cdk/aws-s3.IBucket`](#@aws-cdk/aws-s3.IBucket)[]
+
+---
+
+##### `roleName`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.GlueJobProperties.property.roleName"></a>
+
+- *Type:* `string`
+
+---
+
+##### `timeout`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.GlueJobProperties.property.timeout"></a>
+
+- *Type:* `number`
+
+---
+
+##### `writeAccessBuckets`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.GlueJobProperties.property.writeAccessBuckets"></a>
+
+- *Type:* [`@aws-cdk/aws-s3.IBucket`](#@aws-cdk/aws-s3.IBucket)[]
+
+---
+
 ### JDBCProperties <a name="@randyridgley/cdk-datalake-constructs.JDBCProperties"></a>
 
 #### Initializer <a name="[object Object].Initializer"></a>
@@ -2551,109 +2657,6 @@ new Pipeline(props: PipelineProperties)
 ##### `trigger`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.IGlueCrawlerProperties.property.trigger"></a>
 
 - *Type:* [`@aws-cdk/aws-glue.CfnTrigger`](#@aws-cdk/aws-glue.CfnTrigger)
-
----
-
-### IGlueJobProperties <a name="@randyridgley/cdk-datalake-constructs.IGlueJobProperties"></a>
-
-- *Implemented By:* [`@randyridgley/cdk-datalake-constructs.IGlueJobProperties`](#@randyridgley/cdk-datalake-constructs.IGlueJobProperties)
-
-
-#### Properties <a name="Properties"></a>
-
-##### `deploymentBucket`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.IGlueJobProperties.property.deploymentBucket"></a>
-
-- *Type:* [`@aws-cdk/aws-s3.IBucket`](#@aws-cdk/aws-s3.IBucket)
-
----
-
-##### `jobScript`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.IGlueJobProperties.property.jobScript"></a>
-
-- *Type:* `string`
-
----
-
-##### `jobType`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.IGlueJobProperties.property.jobType"></a>
-
-- *Type:* [`@randyridgley/cdk-datalake-constructs.GlueJobType`](#@randyridgley/cdk-datalake-constructs.GlueJobType)
-
----
-
-##### `name`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.IGlueJobProperties.property.name"></a>
-
-- *Type:* `string`
-
----
-
-##### `workerType`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.IGlueJobProperties.property.workerType"></a>
-
-- *Type:* [`@randyridgley/cdk-datalake-constructs.GlueWorkerType`](#@randyridgley/cdk-datalake-constructs.GlueWorkerType)
-
----
-
-##### `description`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.IGlueJobProperties.property.description"></a>
-
-- *Type:* `string`
-
----
-
-##### `glueVersion`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.IGlueJobProperties.property.glueVersion"></a>
-
-- *Type:* [`@randyridgley/cdk-datalake-constructs.GlueVersion`](#@randyridgley/cdk-datalake-constructs.GlueVersion)
-
----
-
-##### `jobArgs`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.IGlueJobProperties.property.jobArgs"></a>
-
-- *Type:* {[ key: string ]: `string`}
-
----
-
-##### `maxCapacity`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.IGlueJobProperties.property.maxCapacity"></a>
-
-- *Type:* `number`
-
----
-
-##### `maxConcurrentRuns`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.IGlueJobProperties.property.maxConcurrentRuns"></a>
-
-- *Type:* `number`
-
----
-
-##### `maxRetries`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.IGlueJobProperties.property.maxRetries"></a>
-
-- *Type:* `number`
-
----
-
-##### `numberOfWorkers`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.IGlueJobProperties.property.numberOfWorkers"></a>
-
-- *Type:* `number`
-
----
-
-##### `readAccessBuckets`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.IGlueJobProperties.property.readAccessBuckets"></a>
-
-- *Type:* [`@aws-cdk/aws-s3.IBucket`](#@aws-cdk/aws-s3.IBucket)[]
-
----
-
-##### `roleName`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.IGlueJobProperties.property.roleName"></a>
-
-- *Type:* `string`
-
----
-
-##### `timeout`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.IGlueJobProperties.property.timeout"></a>
-
-- *Type:* `number`
-
----
-
-##### `writeAccessBuckets`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.IGlueJobProperties.property.writeAccessBuckets"></a>
-
-- *Type:* [`@aws-cdk/aws-s3.IBucket`](#@aws-cdk/aws-s3.IBucket)[]
 
 ---
 

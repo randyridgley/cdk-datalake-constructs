@@ -7,22 +7,22 @@ import * as cdk from '@aws-cdk/core';
 import { buildGlueEndpointName, buildRoleName } from '../utils';
 import { GlueVersion, GlueWorkerType } from './glue-job';
 
-export interface IGlueNotebookProperties {
-  notebookName: string;
-  notebookInstanceType: string;
-  workerType: GlueWorkerType;
-  glueVersion: GlueVersion;
-  numberOfWorkers: number;
-  region: string;
-  accountId: string;
-  stage: string;
-  readAccessBuckets?: s3.IBucket[];
-  writeAccessBuckets?: s3.IBucket[];
-  database: string;
+export interface GlueNotebookProperties {
+  readonly notebookName: string;
+  readonly notebookInstanceType: string;
+  readonly workerType: GlueWorkerType;
+  readonly glueVersion: GlueVersion;
+  readonly numberOfWorkers: number;
+  readonly region: string;
+  readonly accountId: string;
+  readonly stage: string;
+  readonly readAccessBuckets?: s3.IBucket[];
+  readonly writeAccessBuckets?: s3.IBucket[];
+  readonly database: string;
 }
 
 export class GlueNotebook extends cdk.Construct {
-  constructor(scope: cdk.Construct, id: string, props: IGlueNotebookProperties) {
+  constructor(scope: cdk.Construct, id: string, props: GlueNotebookProperties) {
     super(scope, id);
 
     const glueRole = new iam.Role(this, 'AWSGlueServiceRole', {

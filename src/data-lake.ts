@@ -11,6 +11,7 @@ import { PythonFunction } from '@aws-cdk/aws-lambda-python';
 import * as logs from '@aws-cdk/aws-logs';
 import * as s3 from '@aws-cdk/aws-s3';
 import * as cdk from '@aws-cdk/core';
+import { IDependable } from '@aws-cdk/core';
 import * as cr from '@aws-cdk/custom-resources';
 
 import { DataProduct } from './data-product';
@@ -26,7 +27,6 @@ import { DataLakeAdministrator } from './personas/data-lake-admin';
 import { DataLakeCreator } from './personas/data-lake-creator';
 import { DataPipelineType, Pipeline } from './pipeline';
 import { buildGlueCrawlerName, buildRoleName, buildLambdaFunctionName, buildS3BucketName, buildUniqueName, getDataSetBucketName, packageAsset, toS3Path } from './utils';
-import { IDependable } from '@aws-cdk/core';
 
 export interface CrossAccountProperties {
   readonly consumerAccountIds: string[];
@@ -486,7 +486,7 @@ export class DataLake extends cdk.Construct {
         break;
       }
       case DataPipelineType.JDBC: {
-        this.createJDBCConnection(pipeline)
+        this.createJDBCConnection(pipeline);
         break;
       }
     }
@@ -587,7 +587,7 @@ export class DataLake extends cdk.Construct {
       }
     }
   }
-  
+
   private createJDBCConnection(pipeline:Pipeline) {
     if (this.vpc && this.glueSecurityGroup) {
       new glue.Connection(this, `${pipeline.name}-glue-connection`, {
@@ -679,8 +679,8 @@ export class DataLake extends cdk.Construct {
       roleArn: dataLakeDbCreatorRoleArn,
     });
 
-    this.createDataLocationAccessPermission(name, dataLakeDbCreatorRoleArn, bucketName, dlResource);
-    this.createDataLocationAccessPermission(name, dataLakeAdminRoleArn, bucketName, dlResource);
+    this.createDataLocationAccessPermission(`${name}-creator`, dataLakeDbCreatorRoleArn, bucketName, dlResource);
+    this.createDataLocationAccessPermission(`${name}-admin`, dataLakeAdminRoleArn, bucketName, dlResource);
     return dlResource;
   }
 
@@ -699,7 +699,7 @@ export class DataLake extends cdk.Construct {
       ],
     });
     perm.node.addDependency(resource);
-    return perm
+    return perm;
   }
 }
 
