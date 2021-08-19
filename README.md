@@ -68,8 +68,8 @@ const dataProducts: Array<dl.DataProduct> = [{
   databaseName: 'taxi-product'
 }]
 
-// deploy to the central account
-new dl.DataLake(this, 'CentralDataLake', {
+// deploy to local account
+new dl.DataLake(this, 'LocalDataLake', {
   name: 'data-lake,
   accountId: centralAccountId,
   region: 'us-east-1',
@@ -79,7 +79,7 @@ new dl.DataLake(this, 'CentralDataLake', {
   },
   stageName: Stage.PROD,
   dataProducts: dataProducts,
-  createDefaultDatabase: true
+  createDefaultDatabase: false
 });
 ```
 
