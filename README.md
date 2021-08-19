@@ -15,7 +15,6 @@ This is my attempt at simplifying deploying various datalake strategies in AWS w
 - [Installation](#installation)
 - [Usage](#usage)
   - [Basic](#basic)
-  - [Multi Account](#multi-account)
   - [Data Mesh](#data-mesh)
 - [Documentation](#documentation)
   - [Construct API Reference](#construct-api-reference)
@@ -54,31 +53,47 @@ $ nuget install CDK.Datalake.Constructs
 
 ### Basic
 
-```ts
+```typescript
 import { DataLake } from '@randyridgley/cdk-datalake-constructs';
 
-new DataLake(this, 'datalake', {
-  name: 'demo-lake'
+const taxiPipes: Array<dl.Pipeline> = [
+  pipelines.YellowPipeline(),
+  pipelines.GreenPipeline(),
+]
+
+const dataProducts: Array<dl.DataProduct> = [{
+  pipelines: taxiPipes,
+  accountId: lakeAccountId,
+  dataCatalogAccountId: '123456789012',
+  databaseName: 'taxi-product'
+}]
+
+// deploy to the central account
+new dl.DataLake(this, 'CentralDataLake', {
+  name: 'data-lake,
+  accountId: centralAccountId,
+  region: 'us-east-1',
+  policyTags: {
+    "classification": "public,confidential,highlyconfidential,restricted,critical",
+    "owner": "product,central,consumer"
+  },
+  stageName: Stage.PROD,
+  dataProducts: dataProducts,
+  createDefaultDatabase: true
 });
-```
-
-### Multi Account
-
-```ts
-
 ```
 
 ### Data Mesh
 You can setup cross account access and pre-created policy tags for TBAC access in Lake Formation
 
-```ts
+```typescript
 const lakeAccountId = app.node.tryGetContext('lakeAccountId')
 const centralAccountId = app.node.tryGetContext('centralAccountId')
 const consumerAccountId = app.node.tryGetContext('consumerAccountId')
 
 const taxiPipes: Array<dl.Pipeline> = [
-  pipelines.YellowPipeline(lakeAccountId, centralAccountId, region, stage),
-  pipelines.GreenPipeline(lakeAccountId, centralAccountId, region, stage),
+  pipelines.YellowPipeline(),
+  pipelines.GreenPipeline(),
 ]
 
 const dataProducts: Array<dl.DataProduct> = [{

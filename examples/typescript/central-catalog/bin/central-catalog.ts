@@ -17,12 +17,12 @@ const consumerAccountId = app.node.tryGetContext('consumerAccountId')
 const stage = dl.Stage.PROD // pass in a var
 
 const taxiPipes: Array<dl.Pipeline> = [
-  pipelines.YellowPipeline(lakeAccountId, centralAccountId, region, stage),
-  pipelines.GreenPipeline(lakeAccountId, centralAccountId, region, stage)
+  pipelines.YellowPipeline(),
+  pipelines.GreenPipeline()
 ]
 
 const reviewPipes: Array<dl.Pipeline> = [
-  pipelines.ReviewsPipeline(lakeAccountId, centralAccountId, region, stage),
+  pipelines.ReviewsPipeline(),
 ]
 
 const dataProducts: Array<dl.DataProduct> = [{
@@ -54,6 +54,7 @@ new DataCentralStack(app, 'DataCentralStack', {
   crossAccountAccess: {
     consumerAccountIds: [consumerAccountId, lakeAccountId],
     dataCatalogOwnerAccountId: centralAccountId,
+    region: 'us-east-1'
   },
   dataProducts: dataProducts,
 });

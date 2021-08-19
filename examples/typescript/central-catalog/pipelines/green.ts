@@ -1,7 +1,7 @@
 import * as dl from '@randyridgley/cdk-datalake-constructs'
 import { DataSetLocation } from '@randyridgley/cdk-datalake-constructs';
 
-export function GreenPipeline(accountId: string, dataCatalogOwnerAccountId: string, region: string, stage: string) {
+export function GreenPipeline() {
   return new dl.Pipeline({
     type: dl.DataPipelineType.S3,
     name: 'taxi-green',
