@@ -23,7 +23,6 @@ dist
 examples
 junit.xml
 maven_release*
-src/etl/glue-notebook.ts
 tsconfig.tsbuildinfo
 yarn-error.log
 !.jsii
