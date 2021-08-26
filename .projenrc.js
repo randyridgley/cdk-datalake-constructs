@@ -133,7 +133,7 @@ const project = new AwsCdkConstructLibrary({
     packageId: 'Cdk.Datalake.Constructs',
   },
   catalog: {
-    announce: false,
+    announce: true,
     twitter: 'randyridgley',
   },
   keywords: ['aws',
