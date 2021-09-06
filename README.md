@@ -38,7 +38,7 @@ $ npm install @randyridgley/cdk-datalake-constructs
 Python
 
 ```sh
-$ pip install cdk-datalake-constructs.cdk-datalake-constructs
+$ pip install cdk-datalake-constructs
 ```
 
 .Net
