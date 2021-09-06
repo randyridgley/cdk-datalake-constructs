@@ -49,8 +49,8 @@ junit.xml
 !/.github/workflows/upgrade-projen.yml
 !/.github/pull_request_template.md
 !/test/
-/lib
 !/src/
+/lib
 /dist/
 !/tsconfig.jest.json
 !/.eslintrc.json
