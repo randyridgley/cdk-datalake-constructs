@@ -90,7 +90,7 @@ const project = new AwsCdkConstructLibrary({
     'workflows/*',
     '*.DS_Store',
     '*cdk.context.json',
-  ],
+  ],  
   projenUpgradeSecret: 'PROJEN_GITHUB_TOKEN',
   depsUpgrade: DependenciesUpgradeMechanism.githubWorkflow({
     workflowOptions: {
@@ -151,7 +151,7 @@ const project = new AwsCdkConstructLibrary({
 project.tasks.tryFind('package').prependExec('go env -w GOSUMDB=off');
 
 const common_exclude = [
-  'cdk.out', 'cdk.context.json', 'yarn-error.log', '.DS_Store', 'coverage', '.metals', 
+  'cdk.out', 'cdk.context.json', 'yarn-error.log', '.DS_Store', 'coverage', '.metals',
 ];
 project.npmignore.exclude(...common_exclude, 'maven_release*', 'examples');
 project.gitignore.exclude(...common_exclude);
