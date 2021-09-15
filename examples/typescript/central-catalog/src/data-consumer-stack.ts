@@ -145,7 +145,7 @@ limit 50;`
     });
 
     // todo: add the needed permissions for athena UDFs s3 location for workgroup, workgroup, and lambda invoke 
-    const daUser = new dl.DataLakeAnalyst(this, 'datalake-analyst-user', {
+    new dl.DataLakeAnalyst(this, 'datalake-analyst-user', {
       name: 'datalakeAnalyst',
       readAccessBuckets: [
         datalake.logBucket

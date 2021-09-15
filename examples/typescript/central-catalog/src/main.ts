@@ -1,15 +1,12 @@
-#!/usr/bin/env node
-import 'source-map-support/register';
-import * as cdk from '@aws-cdk/core';
+import { App } from '@aws-cdk/core';
+import { DataCentralStack } from './data-central-stack';
+import { DataProductStack } from './data-product-stack';
+import { DataConsumerStack } from './data-consumer-stack';
 
-import { DataCentralStack } from '../lib/data-central-stack';
-import { DataProductStack } from '../lib/data-product-stack';
-import { DataConsumerStack } from '../lib/data-consumer-stack';
-
-import * as pipelines from '../pipelines';
+import * as pipelines from './pipelines';
 import * as dl from '@randyridgley/cdk-datalake-constructs';
 
-const app = new cdk.App();
+const app = new App();
 const region = app.node.tryGetContext('region')
 const lakeAccountId = app.node.tryGetContext('lakeAccountId')
 const centralAccountId = app.node.tryGetContext('centralAccountId')
@@ -54,7 +51,6 @@ new DataCentralStack(app, 'DataCentralStack', {
   crossAccountAccess: {
     consumerAccountIds: [consumerAccountId, lakeAccountId],
     dataCatalogOwnerAccountId: centralAccountId,
-    region: 'us-east-1'
   },
   dataProducts: dataProducts,
 });
@@ -82,3 +78,5 @@ new DataConsumerStack(app, 'DataConsumerStack', {
     "access": "analyst,engineer,marketing"
   },    
 });
+
+app.synth();

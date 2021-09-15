@@ -1,7 +1,4 @@
 import * as cdk from '@aws-cdk/core';
-import * as glue from '@aws-cdk/aws-glue';
-import * as s3 from '@aws-cdk/aws-s3';
-
 import * as dl from '@randyridgley/cdk-datalake-constructs';
 
 export interface DataCentralStackProps extends cdk.StackProps {
@@ -19,10 +16,6 @@ export interface ManagedDataSet {
 }
 
 export class DataCentralStack extends cdk.Stack {
-  public readonly database: glue.Database;
-  public readonly blueprintBucket: s3.Bucket;
-  public readonly dataProducts: dl.DataProduct[]
-
   constructor(scope: cdk.Construct, id: string, props: DataCentralStackProps) {
     super(scope, id, props);
     let region = cdk.Stack.of(this).region;
@@ -38,8 +31,8 @@ export class DataCentralStack extends cdk.Stack {
       accountId: accountId,
       region: region,
       stageName: props.stageName,
-      policyTags: props.policyTags,
-      crossAccount: props.crossAccountAccess ? props.crossAccountAccess : undefined,
+      policyTags: props.policyTags,      
+      crossAccountAccess: props.crossAccountAccess ? props.crossAccountAccess : undefined,
       dataProducts: props.dataProducts,
       createDefaultDatabase: true
     });
