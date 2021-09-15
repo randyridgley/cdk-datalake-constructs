@@ -153,7 +153,7 @@ project.tasks.tryFind('package').prependExec('go env -w GOSUMDB=off');
 const common_exclude = [
   'cdk.out', 'cdk.context.json', 'yarn-error.log', '.DS_Store', 'coverage', '.metals',
 ];
-project.npmignore.exclude(...common_exclude, 'maven_release*', 'examples');
+project.npmignore.exclude(...common_exclude, 'maven_release*', 'examples*');
 project.gitignore.exclude(...common_exclude);
 
 project.gitpod.addTasks({

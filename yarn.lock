@@ -2989,9 +2989,9 @@ ecc-jsbn@~0.1.1:
     safer-buffer "^2.1.0"
 
 electron-to-chromium@^1.3.830:
-  version "1.3.838"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.838.tgz#d178b34a268c750c0444ba69e4c94d4c4fb3aa0d"
-  integrity sha512-65O6UJiyohFAdX/nc6KJ0xG/4zOn7XCO03kQNNbCeMRGxlWTLzc6Uyi0tFNQuuGWqySZJi8CD2KXPXySVYmzMA==
+  version "1.3.839"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.839.tgz#27a5b21468e9fefb0e328a029403617f20acec9c"
+  integrity sha512-0O7uPs9LJNjQ/U5mW78qW8gXv9H6Ba3DHZ5/yt8aBsvomOWDkV3MddT7enUYvLQEUVOURjWmgJJWVZ3K98tIwQ==
 
 emittery@^0.8.1:
   version "0.8.1"
@@ -4827,10 +4827,10 @@ jsii-diff@^1.34.0:
     typescript "~3.9.10"
     yargs "^16.2.0"
 
-jsii-docgen@^3.6.1:
-  version "3.6.1"
-  resolved "https://registry.yarnpkg.com/jsii-docgen/-/jsii-docgen-3.6.1.tgz#7e6045430cd942a5b2cc82a13e4d0bba3767b037"
-  integrity sha512-lBAtyGtqFIAOr/MAqK6sapz6Bl9SvyVxbCrmKhZVaz12j5nP3ShNG8cvPJcE8WC/dGM24KTEdywUiPJfn5zldw==
+jsii-docgen@^3.6.2:
+  version "3.6.2"
+  resolved "https://registry.yarnpkg.com/jsii-docgen/-/jsii-docgen-3.6.2.tgz#71d775708eda38b2d48b0f6f5e2ae6ac5e89bfa3"
+  integrity sha512-Q8io2Husi7uyPKQNEmdKhYsm3AJQfgcE7rINWsXpn0Nuggibh6NY17kDhb2VOC3w5DEZAVLfuZ2aLp61GVVSMQ==
   dependencies:
     "@jsii/spec" "^1.34.0"
     case "^1.6.3"
@@ -6421,9 +6421,9 @@ smart-buffer@^4.1.0:
   integrity sha512-94hK0Hh8rPqQl2xXc3HsaBoOXKV20MToPkcXvwbISWLEs+64sBq5kFgn2kJDHb1Pry9yrP0dxrCI9RRci7RXKg==
 
 socks-proxy-agent@^6.0.0:
-  version "6.0.0"
-  resolved "https://registry.yarnpkg.com/socks-proxy-agent/-/socks-proxy-agent-6.0.0.tgz#9f8749cdc05976505fa9f9a958b1818d0e60573b"
-  integrity sha512-FIgZbQWlnjVEQvMkylz64/rUggGtrKstPnx8OZyYFG0tAFR8CSBtpXxSwbFLHyeXFn/cunFL7MpuSOvDSOPo9g==
+  version "6.1.0"
+  resolved "https://registry.yarnpkg.com/socks-proxy-agent/-/socks-proxy-agent-6.1.0.tgz#869cf2d7bd10fea96c7ad3111e81726855e285c3"
+  integrity sha512-57e7lwCN4Tzt3mXz25VxOErJKXlPfXmkMLnk310v/jwW20jWRVcgsOit+xNkN3eIEdB47GwnfAEBLacZ/wVIKg==
   dependencies:
     agent-base "^6.0.2"
     debug "^4.3.1"
@@ -6446,7 +6446,7 @@ sort-json@^2.0.0:
     detect-newline "^2.1.0"
     minimist "^1.2.0"
 
-source-map-support@^0.5.19, source-map-support@^0.5.20, source-map-support@^0.5.6:
+source-map-support@^0.5.20, source-map-support@^0.5.6:
   version "0.5.20"
   resolved "https://registry.yarnpkg.com/source-map-support/-/source-map-support-0.5.20.tgz#12166089f8f5e5e8c56926b377633392dd2cb6c9"
   integrity sha512-n1lZZ8Ve4ksRqizaBQgxXDgKwttHDhyfQjA6YZZn8+AroHbsIz+JjwxQDxbp+7y5OYCI8t1Yk7etjD9CRd2hIw==
