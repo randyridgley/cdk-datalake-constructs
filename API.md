@@ -6,7 +6,7 @@
 
 A CDK construct to create a DataLake.
 
-#### Initializer <a name="@randyridgley/cdk-datalake-constructs.DataLake.Initializer"></a>
+#### Initializers <a name="@randyridgley/cdk-datalake-constructs.DataLake.Initializer"></a>
 
 ```typescript
 import { DataLake } from '@randyridgley/cdk-datalake-constructs'
@@ -130,7 +130,7 @@ public createDownloaderCustomResource(accountId: string, region: string, stageNa
 
 ### DataLakeAdministrator <a name="@randyridgley/cdk-datalake-constructs.DataLakeAdministrator"></a>
 
-#### Initializer <a name="@randyridgley/cdk-datalake-constructs.DataLakeAdministrator.Initializer"></a>
+#### Initializers <a name="@randyridgley/cdk-datalake-constructs.DataLakeAdministrator.Initializer"></a>
 
 ```typescript
 import { DataLakeAdministrator } from '@randyridgley/cdk-datalake-constructs'
@@ -169,7 +169,7 @@ new DataLakeAdministrator(scope: Construct, id: string, props: DataLakeAdministr
 
 ### DataLakeAnalyst <a name="@randyridgley/cdk-datalake-constructs.DataLakeAnalyst"></a>
 
-#### Initializer <a name="@randyridgley/cdk-datalake-constructs.DataLakeAnalyst.Initializer"></a>
+#### Initializers <a name="@randyridgley/cdk-datalake-constructs.DataLakeAnalyst.Initializer"></a>
 
 ```typescript
 import { DataLakeAnalyst } from '@randyridgley/cdk-datalake-constructs'
@@ -208,7 +208,7 @@ new DataLakeAnalyst(scope: Construct, id: string, props: DataLakeAnalystProps)
 
 ### DataLakeBucket <a name="@randyridgley/cdk-datalake-constructs.DataLakeBucket"></a>
 
-#### Initializer <a name="@randyridgley/cdk-datalake-constructs.DataLakeBucket.Initializer"></a>
+#### Initializers <a name="@randyridgley/cdk-datalake-constructs.DataLakeBucket.Initializer"></a>
 
 ```typescript
 import { DataLakeBucket } from '@randyridgley/cdk-datalake-constructs'
@@ -247,7 +247,7 @@ new DataLakeBucket(scope: Construct, id: string, props: DataLakeBucketProps)
 
 ### DataLakeCreator <a name="@randyridgley/cdk-datalake-constructs.DataLakeCreator"></a>
 
-#### Initializer <a name="@randyridgley/cdk-datalake-constructs.DataLakeCreator.Initializer"></a>
+#### Initializers <a name="@randyridgley/cdk-datalake-constructs.DataLakeCreator.Initializer"></a>
 
 ```typescript
 import { DataLakeCreator } from '@randyridgley/cdk-datalake-constructs'
@@ -286,7 +286,7 @@ new DataLakeCreator(scope: Construct, id: string, props: DataLakeCreatorProperti
 
 ### DataSet <a name="@randyridgley/cdk-datalake-constructs.DataSet"></a>
 
-#### Initializer <a name="@randyridgley/cdk-datalake-constructs.DataSet.Initializer"></a>
+#### Initializers <a name="@randyridgley/cdk-datalake-constructs.DataSet.Initializer"></a>
 
 ```typescript
 import { DataSet } from '@randyridgley/cdk-datalake-constructs'
@@ -379,7 +379,7 @@ new DataSet(scope: Construct, id: string, props: DataSetProperties)
 
 ### GlueCrawler <a name="@randyridgley/cdk-datalake-constructs.GlueCrawler"></a>
 
-#### Initializer <a name="@randyridgley/cdk-datalake-constructs.GlueCrawler.Initializer"></a>
+#### Initializers <a name="@randyridgley/cdk-datalake-constructs.GlueCrawler.Initializer"></a>
 
 ```typescript
 import { GlueCrawler } from '@randyridgley/cdk-datalake-constructs'
@@ -461,7 +461,7 @@ public metricSuccess(props?: MetricOptions)
 
 ### GlueJob <a name="@randyridgley/cdk-datalake-constructs.GlueJob"></a>
 
-#### Initializer <a name="@randyridgley/cdk-datalake-constructs.GlueJob.Initializer"></a>
+#### Initializers <a name="@randyridgley/cdk-datalake-constructs.GlueJob.Initializer"></a>
 
 ```typescript
 import { GlueJob } from '@randyridgley/cdk-datalake-constructs'
@@ -675,7 +675,7 @@ public runTimeInMiliseconds(props?: MetricOptions)
 
 ### GlueJobOps <a name="@randyridgley/cdk-datalake-constructs.GlueJobOps"></a>
 
-#### Initializer <a name="@randyridgley/cdk-datalake-constructs.GlueJobOps.Initializer"></a>
+#### Initializers <a name="@randyridgley/cdk-datalake-constructs.GlueJobOps.Initializer"></a>
 
 ```typescript
 import { GlueJobOps } from '@randyridgley/cdk-datalake-constructs'
@@ -756,7 +756,7 @@ new GlueJobOps(scope: Construct, id: string, props: IGlueOpsProperties)
 
 ### GlueTable <a name="@randyridgley/cdk-datalake-constructs.GlueTable"></a>
 
-#### Initializer <a name="@randyridgley/cdk-datalake-constructs.GlueTable.Initializer"></a>
+#### Initializers <a name="@randyridgley/cdk-datalake-constructs.GlueTable.Initializer"></a>
 
 ```typescript
 import { GlueTable } from '@randyridgley/cdk-datalake-constructs'
@@ -801,7 +801,7 @@ new GlueTable(scope: Construct, id: string, props: IGlueTableProperties)
 
 ### KinesisOps <a name="@randyridgley/cdk-datalake-constructs.KinesisOps"></a>
 
-#### Initializer <a name="@randyridgley/cdk-datalake-constructs.KinesisOps.Initializer"></a>
+#### Initializers <a name="@randyridgley/cdk-datalake-constructs.KinesisOps.Initializer"></a>
 
 ```typescript
 import { KinesisOps } from '@randyridgley/cdk-datalake-constructs'
@@ -918,7 +918,7 @@ new KinesisOps(scope: Construct, id: string, props: IKinesisOpsProperties)
 
 ### KinesisStream <a name="@randyridgley/cdk-datalake-constructs.KinesisStream"></a>
 
-#### Initializer <a name="@randyridgley/cdk-datalake-constructs.KinesisStream.Initializer"></a>
+#### Initializers <a name="@randyridgley/cdk-datalake-constructs.KinesisStream.Initializer"></a>
 
 ```typescript
 import { KinesisStream } from '@randyridgley/cdk-datalake-constructs'
@@ -1240,7 +1240,7 @@ public metricWriteProvisionedThroughputExceeded(props?: MetricOptions)
 
 ### S3DeliveryStream <a name="@randyridgley/cdk-datalake-constructs.S3DeliveryStream"></a>
 
-#### Initializer <a name="@randyridgley/cdk-datalake-constructs.S3DeliveryStream.Initializer"></a>
+#### Initializers <a name="@randyridgley/cdk-datalake-constructs.S3DeliveryStream.Initializer"></a>
 
 ```typescript
 import { S3DeliveryStream } from '@randyridgley/cdk-datalake-constructs'
@@ -2485,7 +2485,7 @@ const tableProps: TableProps = { ... }
 
 ### DataProduct <a name="@randyridgley/cdk-datalake-constructs.DataProduct"></a>
 
-#### Initializer <a name="@randyridgley/cdk-datalake-constructs.DataProduct.Initializer"></a>
+#### Initializers <a name="@randyridgley/cdk-datalake-constructs.DataProduct.Initializer"></a>
 
 ```typescript
 import { DataProduct } from '@randyridgley/cdk-datalake-constructs'
@@ -2536,7 +2536,7 @@ new DataProduct(props: DataProductProperties)
 
 ### Pipeline <a name="@randyridgley/cdk-datalake-constructs.Pipeline"></a>
 
-#### Initializer <a name="@randyridgley/cdk-datalake-constructs.Pipeline.Initializer"></a>
+#### Initializers <a name="@randyridgley/cdk-datalake-constructs.Pipeline.Initializer"></a>
 
 ```typescript
 import { Pipeline } from '@randyridgley/cdk-datalake-constructs'
