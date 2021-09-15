@@ -40,7 +40,7 @@ jobs:
           name: dist
           path: dist
     container:
-      image: jsii/superchain:node14
+      image: jsii/superchain
   release_github:
     name: Publish to GitHub Releases
     needs: release
@@ -55,14 +55,10 @@ jobs:
           name: dist
           path: dist
       - name: Release
-        run: errout=$(mktemp); gh release create v$(cat dist/version.txt) -R
-          $GITHUB_REPOSITORY -F dist/changelog.md -t v$(cat dist/version.txt) 2>
-          $errout && true; exitcode=$?; if [ $exitcode -ne 0 ] && ! grep -q
-          "Release.tag_name already exists" $errout; then cat $errout; exit
-          $exitcode; fi
+        run: gh release create v$(cat dist/version.txt) -R ${{ github.repository }} -F
+          dist/changelog.md -t v$(cat dist/version.txt)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_REPOSITORY: ${{ github.repository }}
   release_npm:
     name: Publish to npm
     needs: release
@@ -83,7 +79,7 @@ jobs:
           NPM_REGISTRY: registry.npmjs.org
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
     container:
-      image: jsii/superchain:node14
+      image: jsii/superchain
   release_maven:
     name: Publish to Maven Central
     needs: release
@@ -107,7 +103,7 @@ jobs:
           MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
           MAVEN_STAGING_PROFILE_ID: ${{ secrets.MAVEN_STAGING_PROFILE_ID }}
     container:
-      image: jsii/superchain:node14
+      image: jsii/superchain
   release_pypi:
     name: Publish to PyPI
     needs: release
@@ -127,7 +123,7 @@ jobs:
           TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
           TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
     container:
-      image: jsii/superchain:node14
+      image: jsii/superchain
   release_nuget:
     name: Publish to NuGet Gallery
     needs: release
@@ -146,4 +142,4 @@ jobs:
         env:
           NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
     container:
-      image: jsii/superchain:node14
+      image: jsii/superchain
