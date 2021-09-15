@@ -65,6 +65,18 @@ cdk bootstrap aws://CONSUMER_ACCOUNT_NUMBER/REGION --profile consumer
 
 One last one-time setup task is required before launching the CDK scripts. We need to preconfigure settings in AWS Lake Formation to take advantage of the governance capabilities to lock down the databases, tables, and columns in the central account.
 
+#### Install Projen
+
+[projen](https://github.com/projen/projen) synthesizes project configuration files such as package.json, tsconfig.json, .gitignore, GitHub Workflows, eslint, jest, etc from a well-typed definition written in JavaScript.
+
+```bash
+npm install projen
+
+projen
+```
+
+This will install the projen library and when running `projen` it will create the configuration files needed by editing the .projenrc file. Once you have run this it will install the required libraries and aid in getting the appropriate cdk versioned libraries.
+
 #### Change Data Catalog Settings
 
 Lake Formation starts with the "Use only IAM access control" settings enabled for compatibility with existing AWS Glue Data Catalog behavior. We want to use the Lake Formation capabilities in this demo so we will be disabling these settings to enable fine-grained access control with Lake Formation permissions. [Change default AWS Lake Formation settings.](https://docs.aws.amazon.com/lake-formation/latest/dg/change-settings.html) 

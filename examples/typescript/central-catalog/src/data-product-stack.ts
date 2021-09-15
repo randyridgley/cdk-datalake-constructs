@@ -30,7 +30,7 @@ export class DataProductStack extends cdk.Stack {
       accountId: accountId,
       region: region,
       stageName: props.stageName,
-      crossAccount: props.crossAccountAccess ? props.crossAccountAccess : undefined,
+      crossAccountAccess: props.crossAccountAccess ? props.crossAccountAccess : undefined,
       vpc: vpc,
       dataProducts: props.dataProducts,
       createDefaultDatabase: true

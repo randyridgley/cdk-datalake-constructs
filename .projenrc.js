@@ -138,7 +138,6 @@ const project = new AwsCdkConstructLibrary({
   },
   keywords: ['aws',
     'aws-cdk',
-    'aws-ses',
     'cdk-construct',
     'cdk',
     'datalake',
@@ -152,7 +151,7 @@ const project = new AwsCdkConstructLibrary({
 project.tasks.tryFind('package').prependExec('go env -w GOSUMDB=off');
 
 const common_exclude = [
-  'cdk.out', 'cdk.context.json', 'yarn-error.log', '.DS_Store', 'coverage',
+  'cdk.out', 'cdk.context.json', 'yarn-error.log', '.DS_Store', 'coverage', '.metals', 
 ];
 project.npmignore.exclude(...common_exclude, 'maven_release*', 'examples');
 project.gitignore.exclude(...common_exclude);

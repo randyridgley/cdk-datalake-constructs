@@ -49,8 +49,8 @@ junit.xml
 !/.github/workflows/upgrade-projen.yml
 !/.github/pull_request_template.md
 !/test/
-!/src/
 /lib
+!/src/
 /dist/
 !/tsconfig.jest.json
 !/.eslintrc.json
@@ -63,4 +63,5 @@ cdk.context.json
 yarn-error.log
 .DS_Store
 coverage
+.metals
 !/.github/workflows/release.yml

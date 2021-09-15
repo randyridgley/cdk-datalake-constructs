@@ -348,7 +348,7 @@ export class DataLake extends cdk.Construct {
       dataLakePrincipal: {
         dataLakePrincipalIdentifier: this.datalakeDbCreatorRole.roleArn,
       },
-      resource: {
+      resource: {        
         databaseResource: {
           name: databaseName,
         },
