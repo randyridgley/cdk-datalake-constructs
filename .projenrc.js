@@ -90,7 +90,7 @@ const project = new AwsCdkConstructLibrary({
     'workflows/*',
     '*.DS_Store',
     '*cdk.context.json',
-  ],  
+  ],
   projenUpgradeSecret: 'PROJEN_GITHUB_TOKEN',
   depsUpgrade: DependenciesUpgradeMechanism.githubWorkflow({
     workflowOptions: {
