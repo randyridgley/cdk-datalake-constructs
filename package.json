@@ -75,7 +75,7 @@
     "jsii-pacmak": "^1.35.0",
     "json-schema": "^0.3.0",
     "npm-check-updates": "^11",
-    "projen": "^0.28.28",
+    "projen": "^0.28.33",
     "source-map-support": "^0.5.20",
     "standard-version": "^9",
     "ts-jest": "^27.0.5",
