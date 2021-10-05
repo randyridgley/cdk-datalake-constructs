@@ -152,48 +152,6 @@
         }
       ]
     },
-    "upgrade": {
-      "name": "upgrade",
-      "description": "upgrade dependencies",
-      "env": {
-        "CI": "0"
-      },
-      "steps": [
-        {
-          "exec": "npm-check-updates --upgrade --target=minor --reject='projen'"
-        },
-        {
-          "exec": "yarn install --check-files"
-        },
-        {
-          "exec": "yarn upgrade @aws-cdk/assert @aws-cdk/aws-athena @aws-cdk/aws-cloudwatch @aws-cdk/aws-events-targets @aws-cdk/aws-events @aws-cdk/aws-glue @aws-cdk/aws-iam @aws-cdk/aws-kinesis @aws-cdk/aws-kinesisfirehose @aws-cdk/aws-kms @aws-cdk/aws-lakeformation @aws-cdk/aws-lambda @aws-cdk/aws-logs @aws-cdk/aws-s3-assets @aws-cdk/aws-s3-notifications @aws-cdk/aws-s3 @aws-cdk/aws-sns @aws-cdk/aws-stepfunctions-tasks @aws-cdk/aws-stepfunctions @aws-cdk/core @types/jest @types/node @typescript-eslint/eslint-plugin @typescript-eslint/parser esbuild eslint eslint-import-resolver-node eslint-import-resolver-typescript eslint-plugin-import jest jest-junit jsii jsii-diff jsii-docgen jsii-pacmak json-schema npm-check-updates source-map-support standard-version ts-jest typescript @aws-cdk/assets @aws-cdk/aws-athena @aws-cdk/aws-cloudformation @aws-cdk/aws-cloudwatch @aws-cdk/aws-ec2 @aws-cdk/aws-eks @aws-cdk/aws-emr @aws-cdk/aws-events-targets @aws-cdk/aws-events @aws-cdk/aws-glue @aws-cdk/aws-iam @aws-cdk/aws-kinesis @aws-cdk/aws-kinesisanalytics @aws-cdk/aws-kinesisfirehose @aws-cdk/aws-kms @aws-cdk/aws-lakeformation @aws-cdk/aws-lambda-nodejs @aws-cdk/aws-lambda-python @aws-cdk/aws-lambda @aws-cdk/aws-logs @aws-cdk/aws-s3-assets @aws-cdk/aws-s3-deployment @aws-cdk/aws-s3-notifications @aws-cdk/aws-s3 @aws-cdk/aws-sagemaker @aws-cdk/aws-sam @aws-cdk/aws-secretsmanager @aws-cdk/aws-servicecatalog @aws-cdk/aws-sns-subscriptions @aws-cdk/aws-sns @aws-cdk/aws-sqs @aws-cdk/aws-stepfunctions-tasks @aws-cdk/aws-stepfunctions @aws-cdk/core @aws-cdk/custom-resources @aws-cdk/region-info constructs @aws-cdk/assets @aws-cdk/aws-athena @aws-cdk/aws-cloudformation @aws-cdk/aws-cloudwatch @aws-cdk/aws-ec2 @aws-cdk/aws-eks @aws-cdk/aws-emr @aws-cdk/aws-events-targets @aws-cdk/aws-events @aws-cdk/aws-glue @aws-cdk/aws-iam @aws-cdk/aws-kinesis @aws-cdk/aws-kinesisanalytics @aws-cdk/aws-kinesisfirehose @aws-cdk/aws-kms @aws-cdk/aws-lakeformation @aws-cdk/aws-lambda-nodejs @aws-cdk/aws-lambda-python @aws-cdk/aws-lambda @aws-cdk/aws-logs @aws-cdk/aws-s3-assets @aws-cdk/aws-s3-deployment @aws-cdk/aws-s3-notifications @aws-cdk/aws-s3 @aws-cdk/aws-sagemaker @aws-cdk/aws-sam @aws-cdk/aws-secretsmanager @aws-cdk/aws-servicecatalog @aws-cdk/aws-sns-subscriptions @aws-cdk/aws-sns @aws-cdk/aws-sqs @aws-cdk/aws-stepfunctions-tasks @aws-cdk/aws-stepfunctions @aws-cdk/core @aws-cdk/custom-resources @aws-cdk/region-info"
-        },
-        {
-          "exec": "npx projen"
-        }
-      ]
-    },
-    "upgrade-projen": {
-      "name": "upgrade-projen",
-      "description": "upgrade projen",
-      "env": {
-        "CI": "0"
-      },
-      "steps": [
-        {
-          "exec": "npm-check-updates --upgrade --target=minor --filter='projen'"
-        },
-        {
-          "exec": "yarn install --check-files"
-        },
-        {
-          "exec": "yarn upgrade projen"
-        },
-        {
-          "exec": "npx projen"
-        }
-      ]
-    },
     "default": {
       "name": "default",
       "steps": [
@@ -338,7 +296,60 @@
           "spawn": "unbump"
         },
         {
+          "spawn": "publish:git"
+        },
+        {
           "exec": "git diff --ignore-space-at-eol --exit-code"
+        }
+      ]
+    },
+    "publish:git": {
+      "name": "publish:git",
+      "description": "Prepends the release changelog onto the project changelog, creates a release commit, and tags the release",
+      "env": {
+        "CHANGELOG": "dist/changelog.md",
+        "RELEASE_TAG_FILE": "dist/releasetag.txt",
+        "PROJECT_CHANGELOG_FILE": ""
+      },
+      "steps": [
+        {
+          "builtin": "release/tag-version"
+        },
+        {
+          "exec": "git push --follow-tags origin main"
+        }
+      ]
+    },
+    "upgrade": {
+      "name": "upgrade",
+      "description": "upgrade dependencies",
+      "env": {
+        "CI": "0"
+      },
+      "steps": [
+        {
+          "exec": "npm-check-updates --dep dev --upgrade --target=minor"
+        },
+        {
+          "exec": "npm-check-updates --dep optional --upgrade --target=minor"
+        },
+        {
+          "exec": "npm-check-updates --dep peer --upgrade --target=minor"
+        },
+        {
+          "exec": "npm-check-updates --dep prod --upgrade --target=minor"
+        },
+        {
+          "exec": "npm-check-updates --dep bundle --upgrade --target=minor"
+        },
+        {
+          "exec": "yarn install --check-files"
+        },
+        {
+          "exec": "yarn upgrade"
+        },
+        {
+          "exec": "npx projen"
         }
       ]
     }

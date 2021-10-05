@@ -641,7 +641,7 @@ export class DataLake extends cdk.Construct {
     outputs.node.addDependency(datalakeAdminRole);
   }
 
-  private createCrossAccountGlueCatalogResourcePolicy(consumerAccountIds: string[], dataCatalogOwnerAccountId: string) {
+  public createCrossAccountGlueCatalogResourcePolicy(consumerAccountIds: string[], dataCatalogOwnerAccountId: string) {
     const onCatalogEvent = new PythonFunction(this, 'enable-hybrid-catalog-handler', {
       runtime: lambda.Runtime.PYTHON_3_7,
       entry: path.join(__dirname, '../lambda/enable-hybrid-catalog'),

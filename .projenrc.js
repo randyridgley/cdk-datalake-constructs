@@ -92,12 +92,13 @@ const project = new AwsCdkConstructLibrary({
     '*cdk.context.json',
   ],
   projenUpgradeSecret: 'PROJEN_GITHUB_TOKEN',
-  depsUpgrade: DependenciesUpgradeMechanism.githubWorkflow({
+  depsUpgrade: true,
+  depsUpgradeOptions: {
     workflowOptions: {
       labels: ['auto-approve', 'auto-merge'],
       secret: 'PROJEN_GITHUB_TOKEN',
     },
-  }),
+  },
   autoApproveUpgrades: true,
   autoApproveOptions: {
     secret: 'GITHUB_TOKEN',
