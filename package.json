@@ -28,7 +28,6 @@
     "docgen": "npx projen docgen",
     "coverage": "npx projen coverage",
     "release": "npx projen release",
-    "publish:git": "npx projen publish:git",
     "upgrade": "npx projen upgrade",
     "projen": "npx projen"
   },

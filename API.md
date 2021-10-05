@@ -34,6 +34,24 @@ new DataLake(scope: Construct, id: string, props: DataLakeProperties)
 
 #### Methods <a name="Methods"></a>
 
+##### `createCrossAccountGlueCatalogResourcePolicy` <a name="@randyridgley/cdk-datalake-constructs.DataLake.createCrossAccountGlueCatalogResourcePolicy"></a>
+
+```typescript
+public createCrossAccountGlueCatalogResourcePolicy(consumerAccountIds: string[], dataCatalogOwnerAccountId: string)
+```
+
+###### `consumerAccountIds`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataLake.parameter.consumerAccountIds"></a>
+
+- *Type:* `string`[]
+
+---
+
+###### `dataCatalogOwnerAccountId`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataLake.parameter.dataCatalogOwnerAccountId"></a>
+
+- *Type:* `string`
+
+---
+
 ##### `createDownloaderCustomResource` <a name="@randyridgley/cdk-datalake-constructs.DataLake.createDownloaderCustomResource"></a>
 
 ```typescript

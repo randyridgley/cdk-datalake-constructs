@@ -62,4 +62,5 @@ yarn-error.log
 .DS_Store
 coverage
 .metals
+!/.github/workflows/release.yml
 !/.github/workflows/upgrade-main.yml
