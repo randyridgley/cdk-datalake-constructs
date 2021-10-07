@@ -113,7 +113,6 @@ const project = new AwsCdkConstructLibrary({
   mergify: true,
   antitamper: true,
   buildWorkflow: true,
-  minNodeVersion: '14.15.0',
   npmTokenSecret: 'NPM_TOKEN',
   releaseToNpm: true,
   publishToPypi: {

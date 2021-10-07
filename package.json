@@ -59,7 +59,7 @@
     "@aws-cdk/aws-stepfunctions-tasks": "^1.118.0",
     "@aws-cdk/core": "^1.118.0",
     "@types/jest": "^26.0.24",
-    "@types/node": "^14.15.0",
+    "@types/node": "^14.17.0",
     "@typescript-eslint/eslint-plugin": "^4.33.0",
     "@typescript-eslint/parser": "^4.33.0",
     "esbuild": "^0.13.4",
@@ -169,9 +169,6 @@
     "glue",
     "lakeformation"
   ],
-  "engines": {
-    "node": ">= 14.15.0"
-  },
   "main": "lib/index.js",
   "license": "MIT",
   "publishConfig": {
