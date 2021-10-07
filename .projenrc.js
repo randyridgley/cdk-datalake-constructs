@@ -16,7 +16,6 @@ const project = new AwsCdkConstructLibrary({
   cdkAssert: true,
   licensed: true,
   license: 'MIT',
-  gitpod: true,
   devenv: true,
   cdkDependencies: [
     '@aws-cdk/core',
@@ -112,7 +111,6 @@ const project = new AwsCdkConstructLibrary({
   docgen: true,
   eslint: true,
   mergify: true,
-  gitpod: true,
   antitamper: true,
   buildWorkflow: true,
   minNodeVersion: '14.15.0',

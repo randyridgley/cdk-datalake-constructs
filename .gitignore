@@ -2,7 +2,6 @@
 !/.gitattributes
 !/.projen/tasks.json
 !/.projen/deps.json
-!/.gitpod.yml
 !/.github/workflows/auto-approve.yml
 !/.github/workflows/stale.yml
 !/package.json
@@ -62,5 +61,6 @@ yarn-error.log
 .DS_Store
 coverage
 .metals
+!/.gitpod.yml
 !/.github/workflows/release.yml
 !/.github/workflows/upgrade-main.yml
