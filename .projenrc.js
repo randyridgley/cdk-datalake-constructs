@@ -1,4 +1,4 @@
-const { AwsCdkConstructLibrary, ProjectType, NpmAccess, DependenciesUpgradeMechanism, Stability } = require('projen');
+const { AwsCdkConstructLibrary, ProjectType, NpmAccess, DependenciesUpgradeMechanism, Stability, DevEnvironmentDockerImage, Gitpod } = require('projen');
 
 const CDK_VERSION = '1.118.0';
 
@@ -91,6 +91,13 @@ const project = new AwsCdkConstructLibrary({
     '*cdk.context.json',
   ],
   projenUpgradeSecret: 'PROJEN_GITHUB_TOKEN',
+  releaseEveryCommit: true,
+  release: true,
+  releaseWorkflowName: 'release',
+  autoApproveOptions: {
+    secret: 'GITHUB_TOKEN',
+    allowedUsernames: ['randyridgley'],
+  },
   depsUpgrade: true,
   depsUpgradeOptions: {
     workflowOptions: {
@@ -98,17 +105,14 @@ const project = new AwsCdkConstructLibrary({
       secret: 'PROJEN_GITHUB_TOKEN',
     },
   },
-  releaseEveryCommit: true,
-  release: true,
-  releaseWorkflowName: 'release',
-  autoApproveUpgrades: true,
-  autoApproveOptions: {
-    secret: 'GITHUB_TOKEN',
-    allowedUsernames: ['randyridgley'],
+  context: {
+    '@aws-cdk/core:newStyleStackSynthesis': 'true',
   },
+  autoApproveUpgrades: true,
   docgen: true,
   eslint: true,
   mergify: true,
+  gitpod: true,
   antitamper: true,
   buildWorkflow: true,
   minNodeVersion: '14.15.0',
@@ -157,11 +161,36 @@ const common_exclude = [
 project.npmignore.exclude(...common_exclude, 'maven_release*', 'examples*');
 project.gitignore.exclude(...common_exclude);
 
-project.gitpod.addTasks({
-  name: 'Setup',
-  init: 'yarn install',
-  command: 'npx projen build',
+const gitpodPrebuild = project.addTask('gitpod:prebuild', {
+  description: 'Prebuild setup for Gitpod',
 });
+// install and compile only, do not test or package.
+gitpodPrebuild.exec('yarn install --frozen-lockfile --check-files');
+gitpodPrebuild.exec('npx projen compile');
+
+let gitpod = new Gitpod(project, {
+  dockerImage: DevEnvironmentDockerImage.fromImage('public.ecr.aws/pahudnet/gitpod-workspace:latest'),
+  prebuilds: {
+    addCheck: true,
+    addBadge: true,
+    addLabel: true,
+    branches: true,
+    pullRequests: true,
+    pullRequestsFromForks: true,
+  },
+});
+
+gitpod.addCustomTask({
+  init: 'yarn gitpod:prebuild',
+  // always upgrade after init
+  command: 'npx projen upgrade',
+});
+
+gitpod.addVscodeExtensions(
+  'dbaeumer.vscode-eslint',
+  'ms-azuretools.vscode-docker',
+  'AmazonWebServices.aws-toolkit-vscode',
+);
 
 const openCoverage = project.addTask('coverage');
 openCoverage.exec('npx projen test && open coverage/lcov-report/index.html');
