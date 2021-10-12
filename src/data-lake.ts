@@ -253,7 +253,7 @@ export class DataLake extends cdk.Construct {
     }
 
     if (props.createDefaultDatabase) {
-      this.createDatabase(props.name);
+      this.databases[props.name] = this.createDatabase(props.name);
       new cdk.CfnOutput(this, 'DataLakeDefaultDatabase', { value: props.name });
     }
 
@@ -294,7 +294,7 @@ export class DataLake extends cdk.Construct {
 
     if (props.dataProducts && props.dataProducts.length > 0) {
       props.dataProducts.forEach((product: DataProduct) => {
-        this.createDatabase(product.databaseName);
+        this.databases[product.databaseName] = this.createDatabase(product.databaseName);
 
         product.pipelines.forEach((pipe: Pipeline) => {
           this.addPipeline(pipe, product);
@@ -342,11 +342,10 @@ export class DataLake extends cdk.Construct {
     });
   }
 
-  private createDatabase(databaseName: string) {
+  private createDatabase(databaseName: string) : glue.Database {
     const db = new glue.Database(this, `${databaseName}-database`, {
       databaseName: `${databaseName}`,
     });
-    this.databases[databaseName] = db;
 
     const dbPerm = new lf.CfnPermissions(this, `${databaseName}-lf-db-creator-permission`, {
       dataLakePrincipal: {
@@ -364,6 +363,7 @@ export class DataLake extends cdk.Construct {
       ],
     });
     dbPerm.node.addDependency(db);
+    return db;
   }
 
   private addDataStream(pipeline: Pipeline, dataSet: DataSet) : KinesisStream {
@@ -441,7 +441,7 @@ export class DataLake extends cdk.Construct {
       new GlueTable(this, `${pipeline.name}-table`, {
         catalogId: pipeline.table.catalogId,
         columns: pipeline.table.columns,
-        databaseName: dataProduct.databaseName,
+        databaseName: this.databases[dataProduct.databaseName].databaseName,
         description: pipeline.table.description,
         inputFormat: pipeline.table.inputFormat,
         outputFormat: pipeline.table.outputFormat,
