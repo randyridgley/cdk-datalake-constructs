@@ -3642,13 +3642,13 @@ public readonly columns: IResolvable | ColumnProperty | IResolvable[];
 
 ---
 
-##### `database`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.IGlueTableProperties.property.database"></a>
+##### `databaseName`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.IGlueTableProperties.property.databaseName"></a>
 
 ```typescript
-public readonly database: Database;
+public readonly databaseName: string;
 ```
 
-- *Type:* [`@aws-cdk/aws-glue.Database`](#@aws-cdk/aws-glue.Database)
+- *Type:* `string`
 
 ---
 

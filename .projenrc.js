@@ -1,6 +1,6 @@
 const { AwsCdkConstructLibrary, ProjectType, NpmAccess, DependenciesUpgradeMechanism, Stability, DevEnvironmentDockerImage, Gitpod } = require('projen');
 
-const CDK_VERSION = '1.118.0';
+const CDK_VERSION = '1.127.0';
 
 const project = new AwsCdkConstructLibrary({
   author: 'Randy Ridgley',
@@ -48,7 +48,6 @@ const project = new AwsCdkConstructLibrary({
     '@aws-cdk/aws-sns',
     '@aws-cdk/aws-sns-subscriptions',
     '@aws-cdk/aws-sqs',
-    '@aws-cdk/aws-servicecatalog',
     '@aws-cdk/aws-stepfunctions',
     '@aws-cdk/aws-stepfunctions-tasks',
     '@aws-cdk/custom-resources',
@@ -79,6 +78,7 @@ const project = new AwsCdkConstructLibrary({
   devDeps: [
     'esbuild',
     'source-map-support',
+    'constructs',
   ],
   gitignore: [
     'src/emr-studio.ts',

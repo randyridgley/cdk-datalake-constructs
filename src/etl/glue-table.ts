@@ -7,7 +7,7 @@ export interface IGlueTableProperties {
   partitionKeys: Array<glue.CfnTable.ColumnProperty | cdk.IResolvable> | cdk.IResolvable;
   columns: Array<glue.CfnTable.ColumnProperty | cdk.IResolvable> | cdk.IResolvable;
   parameters: {[param: string]: any};
-  database: glue.Database;
+  databaseName: string;
   s3Location: string;
   serializationLibrary: string;
   serdeParameters: {[param: string]: any};
@@ -27,7 +27,7 @@ export class GlueTable extends cdk.Construct {
 
     this.table = new glue.CfnTable(this, `${props.tableName}-glue-table`, {
       catalogId: props.catalogId,
-      databaseName: props.database.databaseName,
+      databaseName: props.databaseName,
       tableInput: {
         description: props.description,
         name: props.tableName,

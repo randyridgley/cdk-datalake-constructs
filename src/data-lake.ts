@@ -506,7 +506,7 @@ export class DataLake extends cdk.Construct {
       new GlueTable(this, `${pipeline.name}-table`, {
         catalogId: pipeline.table.catalogId,
         columns: pipeline.table.columns,
-        database: this.databases[dataProduct.databaseName],
+        databaseName: dataProduct.databaseName,
         description: pipeline.table.description,
         inputFormat: pipeline.table.inputFormat,
         outputFormat: pipeline.table.outputFormat,
