@@ -48,5 +48,4 @@ test('Check Resources', () => {
   expect(Object.keys(datalake.dataStreams).length).toEqual(1);
 
   expect(stack).toHaveResource('AWS::S3::Bucket');
-  expect(stack).toHaveResource('AWS::Athena::WorkGroup');
 });
