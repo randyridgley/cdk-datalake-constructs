@@ -294,12 +294,7 @@ export class DataLake extends cdk.Construct {
 
     if (props.dataProducts && props.dataProducts.length > 0) {
       props.dataProducts.forEach((product: DataProduct) => {
-        // create the database only if the account is the catalog owner when cross account
-        if (product.dataCatalogAccountId && product.dataCatalogAccountId == this.accountId) {
-          this.createDatabase(product.databaseName);
-        } else if (product.dataCatalogAccountId == undefined) { // single account data lake
-          this.createDatabase(product.databaseName);
-        }
+        this.createDatabase(product.databaseName);
 
         product.pipelines.forEach((pipe: Pipeline) => {
           this.addPipeline(pipe, product);
