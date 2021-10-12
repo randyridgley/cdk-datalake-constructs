@@ -442,6 +442,23 @@ export class DataLake extends cdk.Construct {
       this.createPipelineResources(pipeline, dataProduct, ds);
     }
 
+    if (pipeline.table) {
+      new GlueTable(this, `${pipeline.name}-table`, {
+        catalogId: pipeline.table.catalogId,
+        columns: pipeline.table.columns,
+        databaseName: dataProduct.databaseName,
+        description: pipeline.table.description,
+        inputFormat: pipeline.table.inputFormat,
+        outputFormat: pipeline.table.outputFormat,
+        parameters: pipeline.table.parameters,
+        partitionKeys: pipeline.table.partitionKeys,
+        s3Location: `s3://${getDataSetBucketName(pipeline.dataSetDropLocation, ds)}/${pipeline.destinationPrefix}`,
+        serdeParameters: pipeline.table.serdeParameters,
+        serializationLibrary: pipeline.table.serializationLibrary,
+        tableName: pipeline.table.tableName,
+      });
+    }
+
     // find the correct metadata catalog account
     if (catelogAccountId == this.accountId) {
       // refactor to only register the needed buckets from the data product account
@@ -500,23 +517,6 @@ export class DataLake extends cdk.Construct {
         this.createJDBCConnection(pipeline);
         break;
       }
-    }
-
-    if (pipeline.table) {
-      new GlueTable(this, `${pipeline.name}-table`, {
-        catalogId: pipeline.table.catalogId,
-        columns: pipeline.table.columns,
-        databaseName: dataProduct.databaseName,
-        description: pipeline.table.description,
-        inputFormat: pipeline.table.inputFormat,
-        outputFormat: pipeline.table.outputFormat,
-        parameters: pipeline.table.parameters,
-        partitionKeys: pipeline.table.partitionKeys,
-        s3Location: `s3://${getDataSetBucketName(pipeline.dataSetDropLocation, ds)}/${pipeline.destinationPrefix}`,
-        serdeParameters: pipeline.table.serdeParameters,
-        serializationLibrary: pipeline.table.serializationLibrary,
-        tableName: pipeline.table.tableName,
-      });
     }
 
     if (pipeline.job) {
