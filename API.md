@@ -89,16 +89,6 @@ public readonly accountId: string;
 
 ---
 
-##### `athenaWorkgroup`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataLake.property.athenaWorkgroup"></a>
-
-```typescript
-public readonly athenaWorkgroup: CfnWorkGroup;
-```
-
-- *Type:* [`@aws-cdk/aws-athena.CfnWorkGroup`](#@aws-cdk/aws-athena.CfnWorkGroup)
-
----
-
 ##### `databases`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataLake.property.databases"></a>
 
 ```typescript
@@ -176,6 +166,16 @@ public readonly stageName: Stage;
 ```
 
 - *Type:* [`@randyridgley/cdk-datalake-constructs.Stage`](#@randyridgley/cdk-datalake-constructs.Stage)
+
+---
+
+##### `athenaWorkgroup`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.DataLake.property.athenaWorkgroup"></a>
+
+```typescript
+public readonly athenaWorkgroup: CfnWorkGroup;
+```
+
+- *Type:* [`@aws-cdk/aws-athena.CfnWorkGroup`](#@aws-cdk/aws-athena.CfnWorkGroup)
 
 ---
 
@@ -1959,6 +1959,9 @@ public readonly createDefaultDatabase: boolean;
 ```
 
 - *Type:* `boolean`
+- *Default:* false
+
+Create default Glue Database for DataLake.
 
 ---
 
@@ -1995,6 +1998,19 @@ public readonly stageName: Stage;
 - *Type:* [`@randyridgley/cdk-datalake-constructs.Stage`](#@randyridgley/cdk-datalake-constructs.Stage)
 
 The Stage the DataLake will be deployed.
+
+---
+
+##### `createAthenaWorkgroup`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.DataLakeProperties.property.createAthenaWorkgroup"></a>
+
+```typescript
+public readonly createAthenaWorkgroup: boolean;
+```
+
+- *Type:* `boolean`
+- *Default:* false
+
+Create default Athena workgroup for querying data lake resources.
 
 ---
 
