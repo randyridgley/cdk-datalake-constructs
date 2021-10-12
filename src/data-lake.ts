@@ -438,7 +438,7 @@ export class DataLake extends cdk.Construct {
     }
 
     if (pipeline.table) {
-      new GlueTable(this, `${pipeline.name}-table`, {
+      const table = new GlueTable(this, `${pipeline.name}-table`, {
         catalogId: pipeline.table.catalogId,
         columns: pipeline.table.columns,
         databaseName: this.databases[dataProduct.databaseName].databaseName,
@@ -452,6 +452,8 @@ export class DataLake extends cdk.Construct {
         serializationLibrary: pipeline.table.serializationLibrary,
         tableName: pipeline.table.tableName,
       });
+
+      table.node.addDependency(this.databases[dataProduct.databaseName]);
     }
 
     // find the correct metadata catalog account
