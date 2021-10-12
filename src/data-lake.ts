@@ -106,7 +106,8 @@ export interface DataLakeProperties {
    * @description - IAM Role for DataLake database creator access
    * @see https://docs.aws.amazon.com/lake-formation/latest/dg/permissions-reference.html
    */
-  readonly datalakeCreatorRole?: iam.Role; /**
+  readonly datalakeCreatorRole?: iam.Role;
+  /**
   * Create default Glue Database for DataLake
   *
   * @default - false
@@ -123,6 +124,12 @@ export interface DataLakeProperties {
       autoDeleteObjects: true,
   */
   readonly logBucketProps?: s3.BucketProps;
+  /**
+  * Create default Athena workgroup for querying data lake resources
+  *
+  * @default - false
+  */
+  readonly createAthenaWorkgroup?: Boolean;
 }
 
 export enum Stage {
@@ -151,15 +158,15 @@ export enum Permissions {
 export class DataLake extends cdk.Construct {
   public readonly dataSets: { [schemaName: string]: DataSet } = {};
   public readonly dataStreams: { [schemaName: string]: KinesisStream } = {};
-  public readonly logBucket: s3.Bucket
-  public readonly databases: { [name: string]: glue.Database } = {}
-  public readonly datalakeAdminRole: iam.IRole
-  public readonly datalakeDbCreatorRole: iam.IRole
-  public readonly athenaWorkgroup: athena.CfnWorkGroup
-  public readonly region: string
-  public readonly accountId: string
-  public readonly stageName: Stage
-  public readonly vpc?: ec2.Vpc
+  public readonly databases: { [name: string]: glue.Database } = {};
+  public readonly datalakeAdminRole: iam.IRole;
+  public readonly datalakeDbCreatorRole: iam.IRole;
+  public readonly logBucket: s3.Bucket;
+  public readonly region: string;
+  public readonly accountId: string;
+  public readonly stageName: Stage;
+  public readonly vpc?: ec2.Vpc;
+  public readonly athenaWorkgroup?: athena.CfnWorkGroup;
 
   private readonly glueSecurityGroup?: ec2.SecurityGroup
   private readonly crossAccountAccess?: CrossAccountProperties
@@ -255,29 +262,31 @@ export class DataLake extends cdk.Construct {
         this.crossAccountAccess.consumerAccountIds, this.crossAccountAccess.dataCatalogOwnerAccountId);
     }
 
-    this.athenaWorkgroup = new athena.CfnWorkGroup(this, 'workgroup', {
-      name: buildUniqueName({
-        name: props.name,
-        accountId: props.accountId,
-        region: props.region,
-        resourceUse: 'workgroup',
-        stage: this.stageName,
-      }, 60),
-      description: 'Default Data Lake Workgroup',
-      state: 'ENABLED',
-      recursiveDeleteOption: true,
-      workGroupConfiguration: {
-        enforceWorkGroupConfiguration: true,
-        resultConfiguration: {
-          outputLocation: `s3://${this.logBucket.bucketName}/results/`,
+    if (props.createAthenaWorkgroup) {
+      this.athenaWorkgroup = new athena.CfnWorkGroup(this, 'workgroup', {
+        name: buildUniqueName({
+          name: props.name,
+          accountId: props.accountId,
+          region: props.region,
+          resourceUse: 'workgroup',
+          stage: this.stageName,
+        }, 60),
+        description: 'Default Data Lake Workgroup',
+        state: 'ENABLED',
+        recursiveDeleteOption: true,
+        workGroupConfiguration: {
+          enforceWorkGroupConfiguration: true,
+          resultConfiguration: {
+            outputLocation: `s3://${this.logBucket.bucketName}/results/`,
+          },
+          engineVersion: {
+            selectedEngineVersion: 'Athena engine version 2',
+            effectiveEngineVersion: 'Athena engine version 2',
+          },
         },
-        engineVersion: {
-          selectedEngineVersion: 'Athena engine version 2',
-          effectiveEngineVersion: 'Athena engine version 2',
-        },
-      },
-    });
-    new cdk.CfnOutput(this, 'DataLakeAthenaWorkgroup', { value: this.athenaWorkgroup.name });
+      });
+      new cdk.CfnOutput(this, 'DataLakeAthenaWorkgroup', { value: this.athenaWorkgroup.name });
+    }
 
     if (props.policyTags) {
       this.createPolicyTagsCustomResource(props.policyTags, this.datalakeAdminRole);
@@ -443,32 +452,34 @@ export class DataLake extends cdk.Construct {
       const refinedDlResource = this.registerDataLakeLocation(
         this.datalakeAdminRole.roleArn, this.datalakeDbCreatorRole.roleArn, ds.refinedBucketName);
 
-      const bucketName = getDataSetBucketName(pipeline.dataSetDropLocation, ds);
-      const name = bucketName.replace(/\W/g, '');
+      if (!pipeline.table) {
+        const bucketName = getDataSetBucketName(pipeline.dataSetDropLocation, ds);
+        const name = bucketName.replace(/\W/g, '');
 
-      // only create a crawler for the drop location of the data in the data product of the pipeline
-      const crawler = new GlueCrawler(this, `data-lake-crawler-${name}`, {
-        name: buildGlueCrawlerName({
-          accountId: this.accountId,
-          stage: this.stageName,
-          resourceUse: 'crawler',
-          name: pipeline.name,
-          region: this.region,
-        }),
-        databaseName: dataProduct.databaseName,
-        bucketName: bucketName,
-        bucketPrefix: pipeline.destinationPrefix,
-        roleName: buildRoleName({
-          accountId: this.accountId,
-          stage: this.stageName,
-          resourceUse: 'crawler-role',
-          name: pipeline.name,
-          region: this.region,
-        }),
-      });
-      crawler.node.addDependency(rawDlResource);
-      crawler.node.addDependency(trustedDlResource);
-      crawler.node.addDependency(refinedDlResource);
+        // only create a crawler for the drop location of the data in the data product of the pipeline
+        const crawler = new GlueCrawler(this, `data-lake-crawler-${name}`, {
+          name: buildGlueCrawlerName({
+            accountId: this.accountId,
+            stage: this.stageName,
+            resourceUse: 'crawler',
+            name: pipeline.name,
+            region: this.region,
+          }),
+          databaseName: dataProduct.databaseName,
+          bucketName: bucketName,
+          bucketPrefix: pipeline.destinationPrefix,
+          roleName: buildRoleName({
+            accountId: this.accountId,
+            stage: this.stageName,
+            resourceUse: 'crawler-role',
+            name: pipeline.name,
+            region: this.region,
+          }),
+        });
+        crawler.node.addDependency(rawDlResource);
+        crawler.node.addDependency(trustedDlResource);
+        crawler.node.addDependency(refinedDlResource);
+      }
     }
   }
 
