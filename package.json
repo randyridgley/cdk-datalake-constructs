@@ -67,15 +67,15 @@
     "eslint-import-resolver-node": "^0.3.6",
     "eslint-import-resolver-typescript": "^2.5.0",
     "eslint-plugin-import": "^2.24.2",
-    "jest": "^27.2.4",
+    "jest": "^27.2.5",
     "jest-junit": "^12",
     "jsii": "^1.38.0",
     "jsii-diff": "^1.38.0",
-    "jsii-docgen": "^3.6.4",
+    "jsii-docgen": "^3.7.2",
     "jsii-pacmak": "^1.38.0",
     "json-schema": "^0.3.0",
     "npm-check-updates": "^11",
-    "projen": "^0.29.11",
+    "projen": "^0.30.0",
     "source-map-support": "^0.5.20",
     "standard-version": "^9",
     "ts-jest": "^27.0.5",
@@ -210,7 +210,7 @@
     "preset": "ts-jest",
     "globals": {
       "ts-jest": {
-        "tsconfig": "tsconfig.jest.json"
+        "tsconfig": "tsconfig.dev.json"
       }
     }
   },
