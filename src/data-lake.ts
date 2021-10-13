@@ -211,11 +211,11 @@ export class DataLake extends cdk.Construct {
 
     // make this optional
     this.logBucket = new s3.Bucket(this, 'datalake-log-bucket', {
-      bucketName: `${buildS3BucketName({
+      bucketName: buildS3BucketName({
         stage: props.stageName,
         resourceUse: 'log-bucket',
         name: props.name,
-      })}-${Aws.REGION}-${Aws.ACCOUNT_ID}`,
+      }),
       ...this.logBucketProps,
     });
     new cdk.CfnOutput(this, 'DataLakeLogBucket', { value: this.logBucket.bucketName });
@@ -256,11 +256,11 @@ export class DataLake extends cdk.Construct {
 
     if (props.createAthenaWorkgroup) {
       this.athenaWorkgroup = new athena.CfnWorkGroup(this, 'workgroup', {
-        name: `${buildUniqueName({
+        name: buildUniqueName({
           name: props.name,
           resourceUse: 'workgroup',
           stage: this.stageName,
-        }, 60)}-${Aws.REGION}-${Aws.ACCOUNT_ID}`,
+        }, 60),
         description: 'Default Data Lake Workgroup',
         state: 'ENABLED',
         recursiveDeleteOption: true,
@@ -299,11 +299,11 @@ export class DataLake extends cdk.Construct {
       runtime: lambda.Runtime.PYTHON_3_7,
       entry: path.join(__dirname, '../lambda/download-data'),
       timeout: cdk.Duration.minutes(15),
-      functionName: `${buildLambdaFunctionName({
+      functionName: buildLambdaFunctionName({
         name: 'load-data',
         resourceUse: 'cr',
         stage: stageName,
-      })}-${Aws.REGION}-${Aws.ACCOUNT_ID}`,
+      }),
     });
 
     // create readable and writable buckets for the datasets and set the appropriate S3 access
@@ -604,11 +604,11 @@ export class DataLake extends cdk.Construct {
       runtime: lambda.Runtime.PYTHON_3_7,
       entry: path.join(__dirname, '../lambda/create-tags-handler'),
       role: this.datalakeAdminRole,
-      functionName: `${buildLambdaFunctionName({
+      functionName: buildLambdaFunctionName({
         name: 'create-tags',
         resourceUse: 'cr',
         stage: this.stageName,
-      })}-${Aws.REGION}-${Aws.ACCOUNT_ID}`,
+      }),
     });
 
     const myProvider = new cr.Provider(this, 'policy-tags-provider', {
@@ -633,11 +633,11 @@ export class DataLake extends cdk.Construct {
       runtime: lambda.Runtime.PYTHON_3_7,
       entry: path.join(__dirname, '../lambda/enable-hybrid-catalog'),
       role: this.datalakeAdminRole,
-      functionName: `${buildLambdaFunctionName({
+      functionName: buildLambdaFunctionName({
         name: 'create-catalog',
         resourceUse: 'cr',
         stage: this.stageName,
-      })}-${Aws.REGION}-${Aws.ACCOUNT_ID}`,
+      }),
     });
 
     const catalogProvider = new cr.Provider(this, 'hybrid-catalog-provider', {

@@ -1,4 +1,3 @@
-import { SynthUtils } from '@aws-cdk/assert';
 import { App, Stack } from '@aws-cdk/core';
 import { DataLake, Stage, Pipeline, DataProduct, LakeType } from '../src';
 import * as pipelines from '../test/pipelines';
@@ -51,5 +50,5 @@ test('Check Resources', () => {
   expect(Object.keys(datalake.dataStreams).length).toEqual(1);
 
   expect(stack).toHaveResource('AWS::S3::Bucket');
-  expect(SynthUtils.toCloudFormation(stack)).toMatchSnapshot();
+  // expect(SynthUtils.toCloudFormation(stack)).toMatchSnapshot();
 });

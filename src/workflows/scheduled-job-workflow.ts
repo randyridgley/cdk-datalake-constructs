@@ -5,7 +5,6 @@ import * as logs from '@aws-cdk/aws-logs';
 import * as sfn from '@aws-cdk/aws-stepfunctions';
 import * as tasks from '@aws-cdk/aws-stepfunctions-tasks';
 import * as cdk from '@aws-cdk/core';
-import { Aws } from '@aws-cdk/core';
 
 import { Stage } from '../data-lake';
 import { buildEventRuleName, buildRoleName } from '../utils';
@@ -27,11 +26,11 @@ export class ScheduledJobWorkflow extends cdk.Construct {
     super(scope, id);
 
     const stateMachineRole = new iam.Role(scope, 'StateMachineJobExecutionRole', {
-      roleName: `${buildRoleName({
+      roleName: buildRoleName({
         name: props.name,
         resourceUse: 'datalake',
         stage: props.stageName,
-      })}-${Aws.REGION}-${Aws.ACCOUNT_ID}`,
+      }),
       assumedBy: new iam.ServicePrincipal('states'),
       managedPolicies: [
         iam.ManagedPolicy.fromAwsManagedPolicyName('service-role/AWSGlueServiceRole'),
@@ -66,11 +65,11 @@ export class ScheduledJobWorkflow extends cdk.Construct {
 
     this.rule = new events.Rule(this, 'Rule', {
       schedule: props.schedule,
-      ruleName: `${buildEventRuleName({
+      ruleName: buildEventRuleName({
         name: props.name,
         resourceUse: 'datalake',
         stage: props.stageName,
-      })}-${Aws.REGION}-${Aws.ACCOUNT_ID}`,
+      }),
     });
     this.rule.addTarget(new targets.SfnStateMachine(this.stateMachine));
   }

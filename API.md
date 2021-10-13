@@ -55,20 +55,8 @@ public createCrossAccountGlueCatalogResourcePolicy(consumerAccountIds: string[],
 ##### `createDownloaderCustomResource` <a name="@randyridgley/cdk-datalake-constructs.DataLake.createDownloaderCustomResource"></a>
 
 ```typescript
-public createDownloaderCustomResource(accountId: string, region: string, stageName: string)
+public createDownloaderCustomResource(stageName: string)
 ```
-
-###### `accountId`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataLake.parameter.accountId"></a>
-
-- *Type:* `string`
-
----
-
-###### `region`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataLake.parameter.region"></a>
-
-- *Type:* `string`
-
----
 
 ###### `stageName`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataLake.parameter.stageName"></a>
 

@@ -8,11 +8,11 @@ import { buildEventRuleName, buildGlueJobName, buildKinesisStreamName, buildLamb
 
 export function IoTDataPipeline(stage: string) {
   const databaseName: string = 'source-lake';
-  const streamName: string = `${buildKinesisStreamName({
+  const streamName: string = buildKinesisStreamName({
     name: 'iot-data',
     resourceUse: 'stream',
     stage: stage,
-  })}-${Aws.REGION}-${Aws.ACCOUNT_ID}`;
+  });
 
   return new Pipeline({
     type: DataPipelineType.STREAM,
@@ -64,11 +64,11 @@ export function IoTDataPipeline(stage: string) {
       maxConcurrentRuns: 1,
       maxRetries: 3,
       numberOfWorkers: 2,
-      roleName: `${buildRoleName({
+      roleName: buildRoleName({
         name: 'glue-streaming',
         resourceUse: 'datalake',
         stage: stage,
-      })}-${Aws.REGION}-${Aws.ACCOUNT_ID}`,
+      }),
       timeout: 2880,
     },
     table: {
