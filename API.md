@@ -79,16 +79,6 @@ public createDownloaderCustomResource(accountId: string, region: string, stageNa
 
 #### Properties <a name="Properties"></a>
 
-##### `accountId`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataLake.property.accountId"></a>
-
-```typescript
-public readonly accountId: string;
-```
-
-- *Type:* `string`
-
----
-
 ##### `databases`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataLake.property.databases"></a>
 
 ```typescript
@@ -139,6 +129,16 @@ public readonly dataStreams: {[ key: string ]: KinesisStream};
 
 ---
 
+##### `lakeType`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataLake.property.lakeType"></a>
+
+```typescript
+public readonly lakeType: LakeType;
+```
+
+- *Type:* [`@randyridgley/cdk-datalake-constructs.LakeType`](#@randyridgley/cdk-datalake-constructs.LakeType)
+
+---
+
 ##### `logBucket`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataLake.property.logBucket"></a>
 
 ```typescript
@@ -146,16 +146,6 @@ public readonly logBucket: Bucket;
 ```
 
 - *Type:* [`@aws-cdk/aws-s3.Bucket`](#@aws-cdk/aws-s3.Bucket)
-
----
-
-##### `region`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataLake.property.region"></a>
-
-```typescript
-public readonly region: string;
-```
-
-- *Type:* `string`
 
 ---
 
@@ -1940,18 +1930,6 @@ import { DataLakeProperties } from '@randyridgley/cdk-datalake-constructs'
 const dataLakeProperties: DataLakeProperties = { ... }
 ```
 
-##### `accountId`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataLakeProperties.property.accountId"></a>
-
-```typescript
-public readonly accountId: string;
-```
-
-- *Type:* `string`
-
-The AWS Account Id of the Datalake.
-
----
-
 ##### `createDefaultDatabase`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataLakeProperties.property.createDefaultDatabase"></a>
 
 ```typescript
@@ -1965,6 +1943,20 @@ Create default Glue Database for DataLake.
 
 ---
 
+##### `lakeType`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataLakeProperties.property.lakeType"></a>
+
+```typescript
+public readonly lakeType: LakeType;
+```
+
+- *Type:* [`@randyridgley/cdk-datalake-constructs.LakeType`](#@randyridgley/cdk-datalake-constructs.LakeType)
+
+The Type of DataLake this instance is.
+
+This can be a DATA_PRODUCT only, CENTRAL_CATALOG, CONSUMER, or DATA_PRODUCT_AND_CATALOG type.
+
+---
+
 ##### `name`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataLakeProperties.property.name"></a>
 
 ```typescript
@@ -1974,18 +1966,6 @@ public readonly name: string;
 - *Type:* `string`
 
 The name of the DataLake.
-
----
-
-##### `region`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataLakeProperties.property.region"></a>
-
-```typescript
-public readonly region: string;
-```
-
-- *Type:* `string`
-
-The AWS Region the Datalake will be deployed.
 
 ---
 
@@ -3961,6 +3941,28 @@ public readonly inputStreamWriteThroughputWarning: CreateAlarmOptions;
 
 
 #### `G2_X` <a name="@randyridgley/cdk-datalake-constructs.GlueWorkerType.G2_X"></a>
+
+---
+
+
+### LakeType <a name="LakeType"></a>
+
+#### `DATA_PRODUCT` <a name="@randyridgley/cdk-datalake-constructs.LakeType.DATA_PRODUCT"></a>
+
+---
+
+
+#### `CENTRAL_CATALOG` <a name="@randyridgley/cdk-datalake-constructs.LakeType.CENTRAL_CATALOG"></a>
+
+---
+
+
+#### `CONSUMER` <a name="@randyridgley/cdk-datalake-constructs.LakeType.CONSUMER"></a>
+
+---
+
+
+#### `DATA_PRODUCT_AND_CATALOG` <a name="@randyridgley/cdk-datalake-constructs.LakeType.DATA_PRODUCT_AND_CATALOG"></a>
 
 ---
 

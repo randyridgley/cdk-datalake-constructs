@@ -11,7 +11,7 @@ import { PythonFunction } from '@aws-cdk/aws-lambda-python';
 import * as logs from '@aws-cdk/aws-logs';
 import * as s3 from '@aws-cdk/aws-s3';
 import * as cdk from '@aws-cdk/core';
-import { IDependable } from '@aws-cdk/core';
+import { Aws, IDependable, Stack } from '@aws-cdk/core';
 import * as cr from '@aws-cdk/custom-resources';
 
 import { DataProduct } from './data-product';
@@ -45,21 +45,15 @@ export interface DataLakeProperties {
    */
   readonly stageName: Stage;
   /**
-   * The AWS Account Id of the Datalake.
-   *
-   */
-  readonly accountId: string;
-  /**
-   * The AWS Region the Datalake will be deployed.
-   *
-   */
-  readonly region: string;
-  /**
    * The List of DataProducts for this account
    *
    * @default - No data products
    */
   readonly dataProducts?: DataProduct[];
+  /**
+   * The Type of DataLake this instance is. This can be a DATA_PRODUCT only, CENTRAL_CATALOG, CONSUMER, or DATA_PRODUCT_AND_CATALOG type.
+   */
+  readonly lakeType: LakeType;
   /**
    * VPC for Glue jobs
    *
@@ -149,7 +143,14 @@ export enum Permissions {
   DROP = 'DROP',
   INSERT = 'INSERT',
   SELECT = 'SELECT',
-  ASSOCIATE = 'ASSOCIATE'
+  ASSOCIATE = 'ASSOCIATE',
+}
+
+export enum LakeType {
+  DATA_PRODUCT = 'DATA_PRODUCT',
+  CENTRAL_CATALOG = 'CENTRAL_CATALOG',
+  CONSUMER = 'CONSUMER',
+  DATA_PRODUCT_AND_CATALOG = 'DATA_PRODUCT_AND_CATALOG',
 }
 
 /**
@@ -162,11 +163,10 @@ export class DataLake extends cdk.Construct {
   public readonly datalakeAdminRole: iam.IRole;
   public readonly datalakeDbCreatorRole: iam.IRole;
   public readonly logBucket: s3.Bucket;
-  public readonly region: string;
-  public readonly accountId: string;
   public readonly stageName: Stage;
   public readonly vpc?: ec2.Vpc;
   public readonly athenaWorkgroup?: athena.CfnWorkGroup;
+  public readonly lakeType: LakeType;
 
   private readonly glueSecurityGroup?: ec2.SecurityGroup
   private readonly crossAccountAccess?: CrossAccountProperties
@@ -176,10 +176,9 @@ export class DataLake extends cdk.Construct {
   constructor(scope: cdk.Construct, id: string, props: DataLakeProperties) {
     super(scope, id);
     this.stageName = props.stageName;
-    this.accountId = props.accountId,
-    this.region = props.region;
     this.crossAccountAccess = props.crossAccountAccess ? props.crossAccountAccess : undefined;
     this.vpc = props.vpc ? props.vpc : undefined;
+    this.lakeType = props.lakeType;
 
     if (props.logBucketProps) {
       this.logBucketProps = props.logBucketProps;
@@ -201,8 +200,8 @@ export class DataLake extends cdk.Construct {
         vpc: this.vpc,
         securityGroupName: buildUniqueName({
           name: 'glue',
-          accountId: this.accountId,
-          region: this.region,
+          accountId: Stack.of(this).account,
+          region: Stack.of(this).region,
           resourceUse: 'datalake',
           stage: this.stageName,
         }, 80),
@@ -212,13 +211,14 @@ export class DataLake extends cdk.Construct {
       new cdk.CfnOutput(this, 'GlueSecurityGroupName', { value: this.glueSecurityGroup.securityGroupName });
     }
 
+    // make this optional
     this.logBucket = new s3.Bucket(this, 'datalake-log-bucket', {
       bucketName: buildS3BucketName({
         stage: props.stageName,
-        region: props.region,
+        accountId: Stack.of(this).account,
+        region: Stack.of(this).region,
         resourceUse: 'log-bucket',
         name: props.name,
-        accountId: props.accountId,
       }),
       ...this.logBucketProps,
     });
@@ -230,8 +230,8 @@ export class DataLake extends cdk.Construct {
       this.datalakeAdminRole = new DataLakeAdministrator(this, `${props.name}-datalake-admin-role`, {
         name: buildUniqueName({
           name: props.name,
-          accountId: props.accountId,
-          region: props.region,
+          accountId: Aws.ACCOUNT_ID,
+          region: Aws.REGION,
           resourceUse: 'datalake-admin',
           stage: this.stageName,
         }, 60),
@@ -244,8 +244,8 @@ export class DataLake extends cdk.Construct {
       this.datalakeDbCreatorRole = new DataLakeCreator(this, `${props.name}-datalake-creator-role`, {
         name: buildUniqueName({
           name: props.name,
-          accountId: props.accountId,
-          region: props.region,
+          accountId: Aws.ACCOUNT_ID,
+          region: Aws.REGION,
           resourceUse: 'datalake-creator',
           stage: this.stageName,
         }, 60),
@@ -266,8 +266,8 @@ export class DataLake extends cdk.Construct {
       this.athenaWorkgroup = new athena.CfnWorkGroup(this, 'workgroup', {
         name: buildUniqueName({
           name: props.name,
-          accountId: props.accountId,
-          region: props.region,
+          accountId: Aws.ACCOUNT_ID,
+          region: Aws.REGION,
           resourceUse: 'workgroup',
           stage: this.stageName,
         }, 60),
@@ -370,54 +370,52 @@ export class DataLake extends cdk.Construct {
     const schemaName = pipeline.name;
     const dataStreamStack = new cdk.NestedStack(cdk.Stack.of(this), `${schemaName}-datastream-stack`);
 
-    if (pipeline.streamProperties) {
-      this.dataStreams[schemaName] = new KinesisStream(dataStreamStack, 'DataStream', {
-        shardCount: 1,
-        streamName: pipeline.streamProperties.streamName,
-      });
-
-      const deliveryStream = new S3DeliveryStream(dataStreamStack, 'deliveryStream', {
-        compression: CompressionType.UNCOMPRESSED,
-        kinesisStream: this.dataStreams[schemaName].stream,
-        s3Bucket: s3.Bucket.fromBucketName(this, 'get-bucket-for-kinesis', getDataSetBucketName(pipeline.dataSetDropLocation, dataSet)),
-        s3Prefix: pipeline.destinationPrefix,
-      });
-
-      new KinesisOps(dataStreamStack, 'kinesis-ops', {
-        stream: this.dataStreams[schemaName],
-        deliveryStream: deliveryStream,
-      });
-
-      if (pipeline.streamProperties.lambdaDataGenerator) {
-        const dataGeneratorFunction = new lambda.Function(dataStreamStack, 'data-generator-function', {
-          code: pipeline.streamProperties.lambdaDataGenerator.code,
-          handler: pipeline.streamProperties.lambdaDataGenerator.handler,
-          timeout: pipeline.streamProperties.lambdaDataGenerator.timeout,
-          runtime: pipeline.streamProperties.lambdaDataGenerator.runtime,
-          functionName: pipeline.streamProperties.lambdaDataGenerator.functionName,
-          environment: {
-            KINESIS_STREAM: this.dataStreams[schemaName].stream.streamName,
-          },
-        });
-
-        this.dataStreams[schemaName].stream.grantWrite(dataGeneratorFunction);
-        const rule = new events.Rule(this, 'Rule', {
-          schedule: pipeline.streamProperties.lambdaDataGenerator.schedule,
-          ruleName: pipeline.streamProperties.lambdaDataGenerator.ruleName,
-        });
-        rule.addTarget(new targets.LambdaFunction(dataGeneratorFunction));
-      }
-      return this.dataStreams[schemaName];
-    } else {
-      throw new Error(
-        'StreamProperties required to create a data stream.',
-      );
+    if (!pipeline.streamProperties) {
+      throw Error("Cannot create a stream pipeline without 'sreamProperties'");
     }
+
+    this.dataStreams[schemaName] = new KinesisStream(dataStreamStack, 'DataStream', {
+      shardCount: 1,
+      streamName: pipeline.streamProperties.streamName,
+    });
+
+    const deliveryStream = new S3DeliveryStream(dataStreamStack, 'deliveryStream', {
+      compression: CompressionType.UNCOMPRESSED,
+      kinesisStream: this.dataStreams[schemaName].stream,
+      s3Bucket: s3.Bucket.fromBucketName(this, 'get-bucket-for-kinesis', getDataSetBucketName(pipeline.dataSetDropLocation, dataSet)),
+      s3Prefix: pipeline.destinationPrefix,
+    });
+
+    new KinesisOps(dataStreamStack, 'kinesis-ops', {
+      stream: this.dataStreams[schemaName],
+      deliveryStream: deliveryStream,
+    });
+
+    if (pipeline.streamProperties.lambdaDataGenerator) {
+      const dataGeneratorFunction = new lambda.Function(dataStreamStack, 'data-generator-function', {
+        code: pipeline.streamProperties.lambdaDataGenerator.code,
+        handler: pipeline.streamProperties.lambdaDataGenerator.handler,
+        timeout: pipeline.streamProperties.lambdaDataGenerator.timeout,
+        runtime: pipeline.streamProperties.lambdaDataGenerator.runtime,
+        functionName: pipeline.streamProperties.lambdaDataGenerator.functionName,
+        environment: {
+          KINESIS_STREAM: this.dataStreams[schemaName].stream.streamName,
+        },
+      });
+
+      this.dataStreams[schemaName].stream.grantWrite(dataGeneratorFunction);
+      const rule = new events.Rule(this, 'Rule', {
+        schedule: pipeline.streamProperties.lambdaDataGenerator.schedule,
+        ruleName: pipeline.streamProperties.lambdaDataGenerator.ruleName,
+      });
+      rule.addTarget(new targets.LambdaFunction(dataGeneratorFunction));
+    }
+    return this.dataStreams[schemaName];
   }
 
   private addPipeline(pipeline:Pipeline, dataProduct: DataProduct) {
     const schemaName = pipeline.name;
-    const dataSetStack = dataProduct.accountId == this.accountId ? new cdk.NestedStack(cdk.Stack.of(this), `${schemaName}-dataset-stack`) : this;
+    const dataSetStack = dataProduct.accountId == Aws.ACCOUNT_ID ? new cdk.NestedStack(cdk.Stack.of(this), `${schemaName}-dataset-stack`) : this;
 
     // create the dataSet
     this.dataSets[schemaName] = new DataSet(dataSetStack, schemaName, {
@@ -425,15 +423,14 @@ export class DataLake extends cdk.Construct {
       dataProduct: dataProduct,
       logBucket: this.logBucket,
       stage: this.stageName,
-      accountId: this.accountId,
-      region: this.region,
+      accountId: Aws.ACCOUNT_ID,
+      region: Aws.REGION,
       s3BucketProps: dataProduct.s3BucketProps,
     });
     const ds = this.dataSets[schemaName];
-    const sameAccount = dataProduct.accountId == this.accountId;
-    const catelogAccountId = dataProduct.dataCatalogAccountId ? dataProduct.dataCatalogAccountId : this.accountId;
+    const catelogAccountId = dataProduct.dataCatalogAccountId ? dataProduct.dataCatalogAccountId : Aws.ACCOUNT_ID;
 
-    if (sameAccount) {
+    if (this.lakeType === LakeType.DATA_PRODUCT || this.lakeType === LakeType.DATA_PRODUCT_AND_CATALOG) {
       this.createPipelineResources(pipeline, dataProduct, ds);
     }
 
@@ -457,7 +454,7 @@ export class DataLake extends cdk.Construct {
     }
 
     // find the correct metadata catalog account
-    if (catelogAccountId == this.accountId) {
+    if (catelogAccountId == Aws.ACCOUNT_ID) {
       // refactor to only register the needed buckets from the data product account
       const rawDlResource = this.registerDataLakeLocation(
         this.datalakeAdminRole.roleArn, this.datalakeDbCreatorRole.roleArn, ds.rawBucketName);
@@ -473,21 +470,21 @@ export class DataLake extends cdk.Construct {
         // only create a crawler for the drop location of the data in the data product of the pipeline
         const crawler = new GlueCrawler(this, `data-lake-crawler-${name}`, {
           name: buildGlueCrawlerName({
-            accountId: this.accountId,
+            accountId: Aws.ACCOUNT_ID,
             stage: this.stageName,
             resourceUse: 'crawler',
             name: pipeline.name,
-            region: this.region,
+            region: Aws.REGION,
           }),
           databaseName: dataProduct.databaseName,
           bucketName: bucketName,
           bucketPrefix: pipeline.destinationPrefix,
           roleName: buildRoleName({
-            accountId: this.accountId,
+            accountId: Aws.ACCOUNT_ID,
             stage: this.stageName,
             resourceUse: 'crawler-role',
             name: pipeline.name,
-            region: this.region,
+            region: Aws.REGION,
           }),
         });
         crawler.node.addDependency(rawDlResource);
@@ -625,8 +622,8 @@ export class DataLake extends cdk.Construct {
       role: this.datalakeAdminRole,
       functionName: buildLambdaFunctionName({
         name: 'create-tags',
-        accountId: this.accountId,
-        region: this.region,
+        accountId: Aws.ACCOUNT_ID,
+        region: Aws.REGION,
         resourceUse: 'cr',
         stage: this.stageName,
       }),
@@ -642,8 +639,8 @@ export class DataLake extends cdk.Construct {
       properties: {
         policyTags: policyTags,
         stackName: cdk.Stack.name,
-        regionName: this.region,
-        catalogId: this.accountId,
+        regionName: Aws.REGION,
+        catalogId: Aws.ACCOUNT_ID,
       },
     });
     outputs.node.addDependency(datalakeAdminRole);
@@ -656,8 +653,8 @@ export class DataLake extends cdk.Construct {
       role: this.datalakeAdminRole,
       functionName: buildLambdaFunctionName({
         name: 'create-catalog',
-        accountId: this.accountId,
-        region: this.region,
+        accountId: Aws.ACCOUNT_ID,
+        region: Aws.REGION,
         resourceUse: 'cr',
         stage: this.stageName,
       }),
@@ -672,7 +669,7 @@ export class DataLake extends cdk.Construct {
       serviceToken: catalogProvider.serviceToken,
       properties: {
         stackName: cdk.Stack.name,
-        regionName: this.region,
+        regionName: Aws.REGION,
         consumerAccountIds: consumerAccountIds,
         producerAccountId: dataCatalogOwnerAccountId,
       },

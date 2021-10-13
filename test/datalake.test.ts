@@ -1,5 +1,5 @@
 import { App, Stack } from '@aws-cdk/core';
-import { DataLake, Stage, Pipeline, DataProduct } from '../src';
+import { DataLake, Stage, Pipeline, DataProduct, LakeType } from '../src';
 import * as pipelines from '../test/pipelines';
 import '@aws-cdk/assert/jest';
 
@@ -30,20 +30,22 @@ const dataProducts: Array<DataProduct> = [{
 
 test('Check Resources', () => {
   const app = new App();
-  const stack = new Stack(app, 'testStack');
+  const stack = new Stack(app, 'testStack', {
+    env: {
+      region: 'us-east-1',
+      account: dataProductAccountId,
+    },
+  });
 
   const datalake = new DataLake(stack, 'datalake', {
-    accountId: dataProductAccountId,
     name: 'test-lake',
-    region: region,
     stageName: stage,
     dataProducts: dataProducts,
     createDefaultDatabase: true,
+    lakeType: LakeType.DATA_PRODUCT_AND_CATALOG,
   });
 
-  expect(datalake.accountId).toMatch(dataProductAccountId);
   expect(datalake.stageName).toMatch(Stage.ALPHA);
-  expect(datalake.region).toMatch(region);
   expect(Object.keys(datalake.dataSets).length).toEqual(4);
   expect(Object.keys(datalake.dataStreams).length).toEqual(1);
 
