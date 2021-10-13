@@ -1,21 +1,18 @@
 import * as path from 'path';
 import * as events from '@aws-cdk/aws-events';
 import * as lambda from '@aws-cdk/aws-lambda';
-import * as cdk from '@aws-cdk/core';
-
+import { Aws, Duration } from '@aws-cdk/core';
 import { GlueJobType, GlueVersion, GlueWorkerType } from '../../src/etl/glue-job';
 import { Pipeline, DataPipelineType, DataSetLocation } from '../../src/pipeline';
 import { buildEventRuleName, buildGlueJobName, buildKinesisStreamName, buildLambdaFunctionName, buildRoleName } from '../../src/utils';
 
-export function IoTDataPipeline(accountId: string, region: string, stage: string) {
+export function IoTDataPipeline(stage: string) {
   const databaseName: string = 'source-lake';
-  const streamName: string = buildKinesisStreamName({
+  const streamName: string = `${buildKinesisStreamName({
     name: 'iot-data',
-    accountId: accountId,
-    region: region,
     resourceUse: 'stream',
     stage: stage,
-  });
+  })}-${Aws.REGION}-${Aws.ACCOUNT_ID}`;
 
   return new Pipeline({
     type: DataPipelineType.STREAM,
@@ -27,20 +24,16 @@ export function IoTDataPipeline(accountId: string, region: string, stage: string
       lambdaDataGenerator: {
         code: lambda.Code.fromAsset(path.join(__dirname, '../lambda/iot-data-generator')),
         handler: 'index.handler',
-        timeout: cdk.Duration.seconds(300),
+        timeout: Duration.seconds(300),
         runtime: lambda.Runtime.PYTHON_3_7,
         functionName: buildLambdaFunctionName({
           name: 'iot-data-generator',
-          accountId: accountId,
-          region: region,
           resourceUse: 'datalake',
           stage: stage,
         }),
         schedule: events.Schedule.expression('rate(1 minute)'),
         ruleName: buildEventRuleName({
           name: 'iot-generator',
-          accountId: accountId,
-          region: region,
           resourceUse: 'datalake',
           stage: stage,
         }),
@@ -51,8 +44,6 @@ export function IoTDataPipeline(accountId: string, region: string, stage: string
       jobType: GlueJobType.GLUE_STREAMING,
       name: buildGlueJobName({
         name: 'iot_data_streaming',
-        accountId: accountId,
-        region: region,
         resourceUse: 'datalake',
         stage: stage,
       }),
@@ -73,17 +64,15 @@ export function IoTDataPipeline(accountId: string, region: string, stage: string
       maxConcurrentRuns: 1,
       maxRetries: 3,
       numberOfWorkers: 2,
-      roleName: buildRoleName({
+      roleName: `${buildRoleName({
         name: 'glue-streaming',
-        accountId: accountId,
-        region: region,
         resourceUse: 'datalake',
         stage: stage,
-      }),
+      })}-${Aws.REGION}-${Aws.ACCOUNT_ID}`,
       timeout: 2880,
     },
     table: {
-      catalogId: accountId,
+      catalogId: Aws.ACCOUNT_ID,
       columns: [
         {
           name: 'sensor_id',
@@ -106,7 +95,7 @@ export function IoTDataPipeline(accountId: string, region: string, stage: string
       outputFormat: 'org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat',
       description: 'Raw IOT Sensor data',
       parameters: {
-        streamARN: `arn:aws:kinesis:${region}:${accountId}:stream/${streamName}`,
+        streamARN: `arn:aws:kinesis:${Aws.REGION}:${Aws.ACCOUNT_ID}:stream/${streamName}`,
         typeOfData: 'kinesis',
         classification: 'json',
       },

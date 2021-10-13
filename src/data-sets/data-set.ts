@@ -3,6 +3,7 @@ import * as s3 from '@aws-cdk/aws-s3';
 import * as s3sns from '@aws-cdk/aws-s3-notifications';
 import * as sns from '@aws-cdk/aws-sns';
 import * as cdk from '@aws-cdk/core';
+import { Aws } from '@aws-cdk/core';
 
 import { Stage } from '../data-lake';
 import { DataLakeBucket } from '../data-lake-bucket';
@@ -48,29 +49,26 @@ export class DataSet extends cdk.Construct {
     this.pipeline = props.pipeline;
     this.dataProduct = props.dataProduct;
 
-    this.rawBucketName = buildS3BucketName({
+    this.rawBucketName = `${buildS3BucketName({
       name: props.pipeline.name,
       accountId: this.dataProduct.accountId,
-      region: props.region,
       resourceUse: 'raw',
       stage: props.stage,
-    });
+    })}-${Aws.REGION}`;
 
-    this.trustedBucketName = buildS3BucketName({
+    this.trustedBucketName = `${buildS3BucketName({
       name: props.pipeline.name,
       accountId: this.dataProduct.accountId,
-      region: props.region,
       resourceUse: 'trusted',
       stage: props.stage,
-    });
+    })}-${Aws.REGION}`;
 
-    this.refinedBucketName = buildS3BucketName({
+    this.refinedBucketName = `${buildS3BucketName({
       name: props.pipeline.name,
       accountId: this.dataProduct.accountId,
-      region: props.region,
       resourceUse: 'refined',
       stage: props.stage,
-    });
+    })}-${Aws.REGION}`;
 
     const dataCatalogAccountId = props.dataProduct.dataCatalogAccountId ?
       props.dataProduct.dataCatalogAccountId : props.dataProduct.accountId;

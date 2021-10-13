@@ -11,7 +11,7 @@ import { PythonFunction } from '@aws-cdk/aws-lambda-python';
 import * as logs from '@aws-cdk/aws-logs';
 import * as s3 from '@aws-cdk/aws-s3';
 import * as cdk from '@aws-cdk/core';
-import { Aws, IDependable, Stack } from '@aws-cdk/core';
+import { Aws, IDependable } from '@aws-cdk/core';
 import * as cr from '@aws-cdk/custom-resources';
 
 import { DataProduct } from './data-product';
@@ -200,8 +200,6 @@ export class DataLake extends cdk.Construct {
         vpc: this.vpc,
         securityGroupName: buildUniqueName({
           name: 'glue',
-          accountId: Stack.of(this).account,
-          region: Stack.of(this).region,
           resourceUse: 'datalake',
           stage: this.stageName,
         }, 80),
@@ -213,13 +211,11 @@ export class DataLake extends cdk.Construct {
 
     // make this optional
     this.logBucket = new s3.Bucket(this, 'datalake-log-bucket', {
-      bucketName: buildS3BucketName({
+      bucketName: `${buildS3BucketName({
         stage: props.stageName,
-        accountId: Stack.of(this).account,
-        region: Stack.of(this).region,
         resourceUse: 'log-bucket',
         name: props.name,
-      }),
+      })}-${Aws.REGION}-${Aws.ACCOUNT_ID}`,
       ...this.logBucketProps,
     });
     new cdk.CfnOutput(this, 'DataLakeLogBucket', { value: this.logBucket.bucketName });
@@ -230,8 +226,6 @@ export class DataLake extends cdk.Construct {
       this.datalakeAdminRole = new DataLakeAdministrator(this, `${props.name}-datalake-admin-role`, {
         name: buildUniqueName({
           name: props.name,
-          accountId: Aws.ACCOUNT_ID,
-          region: Aws.REGION,
           resourceUse: 'datalake-admin',
           stage: this.stageName,
         }, 60),
@@ -244,8 +238,6 @@ export class DataLake extends cdk.Construct {
       this.datalakeDbCreatorRole = new DataLakeCreator(this, `${props.name}-datalake-creator-role`, {
         name: buildUniqueName({
           name: props.name,
-          accountId: Aws.ACCOUNT_ID,
-          region: Aws.REGION,
           resourceUse: 'datalake-creator',
           stage: this.stageName,
         }, 60),
@@ -266,11 +258,9 @@ export class DataLake extends cdk.Construct {
       this.athenaWorkgroup = new athena.CfnWorkGroup(this, 'workgroup', {
         name: `${buildUniqueName({
           name: props.name,
-          accountId: Aws.ACCOUNT_ID,
-          region: Aws.REGION,
           resourceUse: 'workgroup',
           stage: this.stageName,
-        }, 60)}`,
+        }, 60)}-${Aws.REGION}-${Aws.ACCOUNT_ID}`,
         description: 'Default Data Lake Workgroup',
         state: 'ENABLED',
         recursiveDeleteOption: true,
@@ -303,19 +293,17 @@ export class DataLake extends cdk.Construct {
     }
   }
 
-  public createDownloaderCustomResource(accountId: string, region: string, stageName: string) {
+  public createDownloaderCustomResource(stageName: string) {
     // download the data sets with the custom resource after successfull creation of resource
     const onEvent = new PythonFunction(this, 'DataloaderHandler', {
       runtime: lambda.Runtime.PYTHON_3_7,
       entry: path.join(__dirname, '../lambda/download-data'),
       timeout: cdk.Duration.minutes(15),
-      functionName: buildLambdaFunctionName({
+      functionName: `${buildLambdaFunctionName({
         name: 'load-data',
-        accountId: accountId,
-        region: region,
         resourceUse: 'cr',
         stage: stageName,
-      }),
+      })}-${Aws.REGION}-${Aws.ACCOUNT_ID}`,
     });
 
     // create readable and writable buckets for the datasets and set the appropriate S3 access
@@ -337,7 +325,7 @@ export class DataLake extends cdk.Construct {
       properties: {
         dataSets: this.downloadLocations,
         stackName: cdk.Stack.name,
-        regionName: region,
+        regionName: Aws.REGION,
       },
     });
   }
@@ -470,21 +458,17 @@ export class DataLake extends cdk.Construct {
         // only create a crawler for the drop location of the data in the data product of the pipeline
         const crawler = new GlueCrawler(this, `data-lake-crawler-${name}`, {
           name: buildGlueCrawlerName({
-            accountId: Aws.ACCOUNT_ID,
             stage: this.stageName,
             resourceUse: 'crawler',
             name: pipeline.name,
-            region: Aws.REGION,
           }),
           databaseName: dataProduct.databaseName,
           bucketName: bucketName,
           bucketPrefix: pipeline.destinationPrefix,
           roleName: buildRoleName({
-            accountId: Aws.ACCOUNT_ID,
             stage: this.stageName,
             resourceUse: 'crawler-role',
             name: pipeline.name,
-            region: Aws.REGION,
           }),
         });
         crawler.node.addDependency(rawDlResource);
@@ -620,13 +604,11 @@ export class DataLake extends cdk.Construct {
       runtime: lambda.Runtime.PYTHON_3_7,
       entry: path.join(__dirname, '../lambda/create-tags-handler'),
       role: this.datalakeAdminRole,
-      functionName: buildLambdaFunctionName({
+      functionName: `${buildLambdaFunctionName({
         name: 'create-tags',
-        accountId: Aws.ACCOUNT_ID,
-        region: Aws.REGION,
         resourceUse: 'cr',
         stage: this.stageName,
-      }),
+      })}-${Aws.REGION}-${Aws.ACCOUNT_ID}`,
     });
 
     const myProvider = new cr.Provider(this, 'policy-tags-provider', {
@@ -651,13 +633,11 @@ export class DataLake extends cdk.Construct {
       runtime: lambda.Runtime.PYTHON_3_7,
       entry: path.join(__dirname, '../lambda/enable-hybrid-catalog'),
       role: this.datalakeAdminRole,
-      functionName: buildLambdaFunctionName({
+      functionName: `${buildLambdaFunctionName({
         name: 'create-catalog',
-        accountId: Aws.ACCOUNT_ID,
-        region: Aws.REGION,
         resourceUse: 'cr',
         stage: this.stageName,
-      }),
+      })}-${Aws.REGION}-${Aws.ACCOUNT_ID}`,
     });
 
     const catalogProvider = new cr.Provider(this, 'hybrid-catalog-provider', {

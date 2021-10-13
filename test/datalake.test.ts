@@ -1,15 +1,15 @@
+import { SynthUtils } from '@aws-cdk/assert';
 import { App, Stack } from '@aws-cdk/core';
 import { DataLake, Stage, Pipeline, DataProduct, LakeType } from '../src';
 import * as pipelines from '../test/pipelines';
 import '@aws-cdk/assert/jest';
 
-const region = 'us-east-1';
 const stage = Stage.ALPHA;
 const dataProductAccountId = '123456789012';
 
 const pipes: Array<Pipeline> = [
   pipelines.ReviewsPipeline(),
-  pipelines.IoTDataPipeline(dataProductAccountId, region, stage),
+  pipelines.IoTDataPipeline(stage),
 ];
 
 const taxiPipes: Array<Pipeline> = [
@@ -43,6 +43,7 @@ test('Check Resources', () => {
     dataProducts: dataProducts,
     createDefaultDatabase: true,
     lakeType: LakeType.DATA_PRODUCT_AND_CATALOG,
+    createAthenaWorkgroup: true,
   });
 
   expect(datalake.stageName).toMatch(Stage.ALPHA);
@@ -50,4 +51,5 @@ test('Check Resources', () => {
   expect(Object.keys(datalake.dataStreams).length).toEqual(1);
 
   expect(stack).toHaveResource('AWS::S3::Bucket');
+  expect(SynthUtils.toCloudFormation(stack)).toMatchSnapshot();
 });
