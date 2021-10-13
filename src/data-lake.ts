@@ -264,13 +264,13 @@ export class DataLake extends cdk.Construct {
 
     if (props.createAthenaWorkgroup) {
       this.athenaWorkgroup = new athena.CfnWorkGroup(this, 'workgroup', {
-        name: buildUniqueName({
+        name: `${buildUniqueName({
           name: props.name,
           accountId: Aws.ACCOUNT_ID,
           region: Aws.REGION,
           resourceUse: 'workgroup',
           stage: this.stageName,
-        }, 60),
+        }, 60)}`,
         description: 'Default Data Lake Workgroup',
         state: 'ENABLED',
         recursiveDeleteOption: true,
