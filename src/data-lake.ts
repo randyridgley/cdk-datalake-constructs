@@ -422,7 +422,8 @@ export class DataLake extends cdk.Construct {
       this.createPipelineResources(pipeline, dataProduct, ds);
     }
 
-    if (pipeline.table) {
+    // only create the table if the lake has a catelog
+    if (pipeline.table && (this.lakeType === LakeType.CENTRAL_CATALOG || this.lakeType === LakeType.DATA_PRODUCT_AND_CATALOG)) {
       const table = new GlueTable(this, `${pipeline.name}-table`, {
         catalogId: pipeline.table.catalogId,
         columns: pipeline.table.columns,
