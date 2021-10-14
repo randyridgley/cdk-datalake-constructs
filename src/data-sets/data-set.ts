@@ -3,6 +3,7 @@ import * as s3 from '@aws-cdk/aws-s3';
 import * as s3sns from '@aws-cdk/aws-s3-notifications';
 import * as sns from '@aws-cdk/aws-sns';
 import * as cdk from '@aws-cdk/core';
+import { LakeType } from '..';
 
 import { Stage } from '../data-lake';
 import { DataLakeBucket } from '../data-lake-bucket';
@@ -14,11 +15,10 @@ export interface DataSetProperties {
   readonly encryptionKey?: kms.Key;
   readonly logBucket: s3.Bucket;
   readonly stage: Stage;
-  readonly region: string;
-  readonly accountId: string;
   readonly pipeline: Pipeline;
   readonly dataProduct: DataProduct;
   readonly s3BucketProps: s3.BucketProps | undefined;
+  readonly lakeType: LakeType;
 }
 
 export interface DataSetResult {
@@ -29,7 +29,8 @@ export interface DataSetResult {
 }
 
 export class DataSet extends cdk.Construct {
-  public readonly name: string
+  public readonly name: string;
+  public readonly lakeType: LakeType;
   public readonly dropLocation?: DataSetLocation;
   public readonly rawBucketName: string;
   public readonly trustedBucketName: string;
@@ -47,6 +48,7 @@ export class DataSet extends cdk.Construct {
     this.dropLocation = props.pipeline.dataSetDropLocation;
     this.pipeline = props.pipeline;
     this.dataProduct = props.dataProduct;
+    this.lakeType = props.lakeType;
 
     this.rawBucketName = buildS3BucketName({
       name: props.pipeline.name,
@@ -75,7 +77,7 @@ export class DataSet extends cdk.Construct {
       props.dataProduct.dataCatalogAccountId != props.dataProduct.accountId ? true : false : false;
 
     // only create the buckets in the data owner account if using in multi account scenario
-    if (props.accountId == props.dataProduct.accountId) {
+    if (props.lakeType === LakeType.DATA_PRODUCT || props.lakeType === LakeType.DATA_PRODUCT_AND_CATALOG) {
       const rawBucket = new DataLakeBucket(this, `s3-raw-bucket-${props.pipeline.name}`, {
         bucketName: this.rawBucketName,
         dataCatalogAccountId: dataCatalogAccountId,

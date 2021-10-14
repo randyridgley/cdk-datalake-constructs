@@ -411,9 +411,8 @@ export class DataLake extends cdk.Construct {
       dataProduct: dataProduct,
       logBucket: this.logBucket,
       stage: this.stageName,
-      accountId: Aws.ACCOUNT_ID,
-      region: Aws.REGION,
       s3BucketProps: dataProduct.s3BucketProps,
+      lakeType: this.lakeType,
     });
     const ds = this.dataSets[schemaName];
     const catelogAccountId = dataProduct.dataCatalogAccountId ? dataProduct.dataCatalogAccountId : Aws.ACCOUNT_ID;
