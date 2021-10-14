@@ -108,7 +108,7 @@ const project = new AwsCdkConstructLibrary({
     '@aws-cdk/core:newStyleStackSynthesis': 'true',
   },
   autoApproveUpgrades: true,
-  docgen: true,
+  // docgen: true,
   eslint: true,
   mergify: true,
   antitamper: true,

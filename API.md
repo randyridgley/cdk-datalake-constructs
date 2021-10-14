@@ -382,6 +382,16 @@ public readonly dataProduct: DataProduct;
 
 ---
 
+##### `lakeType`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataSet.property.lakeType"></a>
+
+```typescript
+public readonly lakeType: LakeType;
+```
+
+- *Type:* [`@randyridgley/cdk-datalake-constructs.LakeType`](#@randyridgley/cdk-datalake-constructs.LakeType)
+
+---
+
 ##### `name`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataSet.property.name"></a>
 
 ```typescript
@@ -2163,16 +2173,6 @@ import { DataSetProperties } from '@randyridgley/cdk-datalake-constructs'
 const dataSetProperties: DataSetProperties = { ... }
 ```
 
-##### `accountId`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataSetProperties.property.accountId"></a>
-
-```typescript
-public readonly accountId: string;
-```
-
-- *Type:* `string`
-
----
-
 ##### `dataProduct`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataSetProperties.property.dataProduct"></a>
 
 ```typescript
@@ -2180,6 +2180,16 @@ public readonly dataProduct: DataProduct;
 ```
 
 - *Type:* [`@randyridgley/cdk-datalake-constructs.DataProduct`](#@randyridgley/cdk-datalake-constructs.DataProduct)
+
+---
+
+##### `lakeType`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataSetProperties.property.lakeType"></a>
+
+```typescript
+public readonly lakeType: LakeType;
+```
+
+- *Type:* [`@randyridgley/cdk-datalake-constructs.LakeType`](#@randyridgley/cdk-datalake-constructs.LakeType)
 
 ---
 
@@ -2200,16 +2210,6 @@ public readonly pipeline: Pipeline;
 ```
 
 - *Type:* [`@randyridgley/cdk-datalake-constructs.Pipeline`](#@randyridgley/cdk-datalake-constructs.Pipeline)
-
----
-
-##### `region`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataSetProperties.property.region"></a>
-
-```typescript
-public readonly region: string;
-```
-
-- *Type:* `string`
 
 ---
 
