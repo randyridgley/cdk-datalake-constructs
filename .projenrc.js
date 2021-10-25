@@ -1,13 +1,12 @@
-const { AwsCdkConstructLibrary, ProjectType, NpmAccess, DependenciesUpgradeMechanism, Stability, DevEnvironmentDockerImage, Gitpod } = require('projen');
-
-const CDK_VERSION = '1.127.0';
+const { AwsCdkConstructLibrary, NpmAccess, DependenciesUpgradeMechanism, Stability, DevEnvironmentDockerImage, Gitpod } = require('projen');
 
 const project = new AwsCdkConstructLibrary({
   author: 'Randy Ridgley',
   authorAddress: 'randy.ridgley@gmail.com',
   description: 'AWS CDK Constructs that can be used to create datalakes/meshes and more',
   stability: Stability.EXPERIMENTAL,
-  cdkVersion: CDK_VERSION,
+  cdkVersion: '1.85.0',
+  minNodeVersion: '12.20.0',
   defaultReleaseBranch: 'main',
   name: '@randyridgley/cdk-datalake-constructs',
   repositoryUrl: 'https://github.com/randyridgley/cdk-datalake-constructs.git',
@@ -22,10 +21,7 @@ const project = new AwsCdkConstructLibrary({
     '@aws-cdk/assets',
     '@aws-cdk/aws-athena',
     '@aws-cdk/aws-cloudwatch',
-    '@aws-cdk/aws-cloudformation',
     '@aws-cdk/aws-ec2',
-    '@aws-cdk/aws-emr',
-    '@aws-cdk/aws-eks',
     '@aws-cdk/aws-events',
     '@aws-cdk/aws-events-targets',
     '@aws-cdk/aws-glue',
@@ -42,20 +38,13 @@ const project = new AwsCdkConstructLibrary({
     '@aws-cdk/aws-s3-deployment',
     '@aws-cdk/aws-s3-notifications',
     '@aws-cdk/aws-s3',
-    '@aws-cdk/aws-sagemaker',
-    '@aws-cdk/aws-sam',
-    '@aws-cdk/aws-secretsmanager',
     '@aws-cdk/aws-sns',
-    '@aws-cdk/aws-sns-subscriptions',
-    '@aws-cdk/aws-sqs',
     '@aws-cdk/aws-stepfunctions',
     '@aws-cdk/aws-stepfunctions-tasks',
     '@aws-cdk/custom-resources',
-    '@aws-cdk/region-info',
     '@aws-cdk/aws-lambda-python',
   ],
   cdkTestDependencies: [
-    '@aws-cdk/core',
     '@aws-cdk/aws-athena',
     '@aws-cdk/aws-cloudwatch',
     '@aws-cdk/aws-events',
