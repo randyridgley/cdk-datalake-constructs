@@ -1,14 +1,15 @@
-import * as iam from '@aws-cdk/aws-iam';
-import * as cdk from '@aws-cdk/core';
+import { CfnOutput } from 'aws-cdk-lib';
+import * as iam from 'aws-cdk-lib/aws-iam';
+import { Construct } from 'constructs';
 
 export interface DataLakeCreatorProperties {
   readonly name: string;
 }
 
-export class DataLakeCreator extends cdk.Construct {
+export class DataLakeCreator extends Construct {
   public readonly role: iam.IRole;
 
-  constructor(scope: cdk.Construct, id: string, props: DataLakeCreatorProperties) {
+  constructor(scope: Construct, id: string, props: DataLakeCreatorProperties) {
     super(scope, id);
 
     this.role = new iam.Role(this, `AWSDBCreatorServiceRole-${props.name}`, {
@@ -30,6 +31,6 @@ export class DataLakeCreator extends cdk.Construct {
       ],
       resources: ['*'],
     }));
-    new cdk.CfnOutput(this, 'DataLakeDatabaseCreatorRole', { value: this.role.roleName });
+    new CfnOutput(this, 'DataLakeDatabaseCreatorRole', { value: this.role.roleName });
   }
 }

@@ -1,6 +1,7 @@
-import * as iam from '@aws-cdk/aws-iam';
-import * as s3 from '@aws-cdk/aws-s3';
-import * as cdk from '@aws-cdk/core';
+import { SecretValue } from 'aws-cdk-lib';
+import * as iam from 'aws-cdk-lib/aws-iam';
+import * as s3 from 'aws-cdk-lib/aws-s3';
+import { Construct } from 'constructs';
 
 export interface DataLakeAnalystProps {
   readonly name: string;
@@ -8,15 +9,15 @@ export interface DataLakeAnalystProps {
   readonly writeAccessBuckets?: s3.IBucket[];
 }
 
-export class DataLakeAnalyst extends cdk.Construct {
+export class DataLakeAnalyst extends Construct {
   public readonly user: iam.User;
 
-  constructor(scope: cdk.Construct, id: string, props: DataLakeAnalystProps) {
+  constructor(scope: Construct, id: string, props: DataLakeAnalystProps) {
     super(scope, id);
 
     this.user = new iam.User(this, 'DataAnalystUser', {
       userName: props.name,
-      password: cdk.SecretValue.plainText(this.node.tryGetContext('initialPassword')),
+      password: SecretValue.plainText(this.node.tryGetContext('initialPassword')),
       passwordResetRequired: true,
       managedPolicies: [
         iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonAthenaFullAccess'),

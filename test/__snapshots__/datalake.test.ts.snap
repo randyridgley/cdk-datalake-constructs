@@ -1,0 +1,2271 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`default Should match snapshot 1`] = `
+Object {
+  "Outputs": Object {
+    "datalakeDataLakeAthenaWorkgroup48F354CE": Object {
+      "Value": "test-lake-workgroup-alpha",
+    },
+    "datalakeDataLakeDefaultDatabaseF6C404EB": Object {
+      "Value": "test-lake",
+    },
+    "datalakeDataLakeLogBucket7E4B6A14": Object {
+      "Value": Object {
+        "Ref": "datalakedatalakelogbucket0A814944",
+      },
+    },
+    "datalaketestlakedatalakeadminroleDataLakeAdminRoleF412372B": Object {
+      "Value": Object {
+        "Ref": "datalaketestlakedatalakeadminroledatalakeadministratorrole0CE6C3E6",
+      },
+    },
+    "datalaketestlakedatalakecreatorroleDataLakeDatabaseCreatorRoleC012854C": Object {
+      "Value": Object {
+        "Ref": "datalaketestlakedatalakecreatorroleAWSDBCreatorServiceRoletestlakedatalakecreatoralphaF5D800D9",
+      },
+    },
+  },
+  "Parameters": Object {
+    "BootstrapVersion": Object {
+      "Default": "/cdk-bootstrap/hnb659fds/version",
+      "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
+  },
+  "Resources": Object {
+    "CustomS3AutoDeleteObjectsCustomResourceProviderHandler9D90184F": Object {
+      "DependsOn": Array [
+        "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092",
+      ],
+      "Properties": Object {
+        "Code": Object {
+          "S3Bucket": "cdk-hnb659fds-assets-123456789012-us-east-1",
+          "S3Key": "1f7e277bd526ebce1983fa1e7a84a5281ec533d9187caaebb773681bbf7bf4c1.zip",
+        },
+        "Description": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "Lambda function for auto-deleting objects in ",
+              Object {
+                "Ref": "datalakedatalakelogbucket0A814944",
+              },
+              " S3 bucket.",
+            ],
+          ],
+        },
+        "Handler": "__entrypoint__.handler",
+        "MemorySize": 128,
+        "Role": Object {
+          "Fn::GetAtt": Array [
+            "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs12.x",
+        "Timeout": 900,
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Sub": "arn:\${AWS::Partition}:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "SingletonLambdaGlueExecutionFailListenerLambdaD8F79966": Object {
+      "DependsOn": Array [
+        "SingletonLambdaGlueExecutionFailListenerLambdaServiceRoleDefaultPolicy6D106F9E",
+        "SingletonLambdaGlueExecutionFailListenerLambdaServiceRole67F5B9CE",
+      ],
+      "Properties": Object {
+        "Code": Object {
+          "ZipFile": "
+import boto3
+import json
+import os
+import re
+
+def handler(event, context):
+    try:
+        jobRunId = event['detail']['jobRunId']
+        jobName = event['detail']['jobName']
+    except:
+        raise Exception(f'Received an malformed event. ({event})')
+        
+    # get the current execution attempt, we parse it from the jobRunId which has a _attempt_# suffix on retries
+    try:
+        curExecutionAttempt = int(re.findall('_attempt_(\\\\d*)$', jobRunId)[0])
+    except IndexError:
+        curExecutionAttempt = 0
+    
+    # get the number of MaxRetries for this glue job
+    try:
+        glue_client = boto3.client('glue')
+        maxRetries = glue_client.get_job(JobName=jobName)['Job']['MaxRetries']
+    except Exception as e:
+        raise Exception(f'Failed to access the Glue API to get the MaxRetries parameter. ({e})')
+        
+    # is this the last execution? if yes we send out the event
+    isLastExecutionAttempt = curExecutionAttempt == maxRetries
+    print(f'Job name: {jobName}, is last execution attempt: {isLastExecutionAttempt}, current attempt: {curExecutionAttempt}, max retry attempts: {maxRetries}')
+    if isLastExecutionAttempt:
+        event_client = boto3.client('events')
+        event_client.put_events(Entries=[{
+            'Source': os.environ['eventToSendSource'],
+            'Detail': json.dumps(event['detail']),
+            'DetailType': os.environ['eventToSendDetailType']
+        }])
+    ",
+        },
+        "Description": "Checks if an error of a Glue job was on the last attempt (no more retries) in which case the function sends out an event.",
+        "Environment": Object {
+          "Variables": Object {
+            "eventToSendDetailType": "All Execution Attempts Failed",
+            "eventToSendSource": "custom.aws.glue.allExecutionAttemptsFailed",
+          },
+        },
+        "Handler": "index.handler",
+        "Role": Object {
+          "Fn::GetAtt": Array [
+            "SingletonLambdaGlueExecutionFailListenerLambdaServiceRole67F5B9CE",
+            "Arn",
+          ],
+        },
+        "Runtime": "python3.7",
+        "Timeout": 60,
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "SingletonLambdaGlueExecutionFailListenerLambdaServiceRole67F5B9CE": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "SingletonLambdaGlueExecutionFailListenerLambdaServiceRoleDefaultPolicy6D106F9E": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "events:PutEvents",
+              "Effect": "Allow",
+              "Resource": "arn:aws:events:us-east-1:123456789012:event-bus/default",
+            },
+            Object {
+              "Action": "glue:GetJob",
+              "Effect": "Allow",
+              "Resource": "arn:aws:glue:us-east-1:123456789012:job/iot_data_streaming-datalake-alpha",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "SingletonLambdaGlueExecutionFailListenerLambdaServiceRoleDefaultPolicy6D106F9E",
+        "Roles": Array [
+          Object {
+            "Ref": "SingletonLambdaGlueExecutionFailListenerLambdaServiceRole67F5B9CE",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "datalakeRule642350D6": Object {
+      "Properties": Object {
+        "Name": "iot-generator-datalake-alpha",
+        "ScheduleExpression": "rate(1 minute)",
+        "State": "ENABLED",
+        "Targets": Array [
+          Object {
+            "Arn": Object {
+              "Fn::GetAtt": Array [
+                "iotdatadatastreamstackNestedStackiotdatadatastreamstackNestedStackResource916244DA",
+                "Outputs.testStackiotdatadatastreamstackdatageneratorfunction15AD1717Arn",
+              ],
+            },
+            "Id": "Target0",
+          },
+        ],
+      },
+      "Type": "AWS::Events::Rule",
+    },
+    "datalakeRuleAllowEventRuletestStackiotdatadatastreamstackdatageneratorfunction9A26E307C9397F30": Object {
+      "Properties": Object {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": Object {
+          "Fn::GetAtt": Array [
+            "iotdatadatastreamstackNestedStackiotdatadatastreamstackNestedStackResource916244DA",
+            "Outputs.testStackiotdatadatastreamstackdatageneratorfunction15AD1717Arn",
+          ],
+        },
+        "Principal": "events.amazonaws.com",
+        "SourceArn": Object {
+          "Fn::GetAtt": Array [
+            "datalakeRule642350D6",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "datalakedatalakecrawlerreviewsrefinedalpha123456789012FailureRule3D2126EA": Object {
+      "Properties": Object {
+        "Description": "Event triggered when Glue Crawler reviews-crawler-alpha is in Failed state(s)",
+        "EventPattern": Object {
+          "detail": Object {
+            "crawlerName": Array [
+              "reviews-crawler-alpha",
+            ],
+            "state": Array [
+              "Failed",
+            ],
+          },
+          "detail-type": Array [
+            "Glue Crawler State Change",
+          ],
+          "source": Array [
+            "aws.glue",
+          ],
+        },
+        "Name": "reviews-crawler-alphaFailed",
+        "State": "ENABLED",
+      },
+      "Type": "AWS::Events::Rule",
+    },
+    "datalakedatalakecrawlerreviewsrefinedalpha123456789012Role9408F9A9": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "glue.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSGlueServiceRole",
+              ],
+            ],
+          },
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/AmazonS3FullAccess",
+              ],
+            ],
+          },
+        ],
+        "RoleName": "reviews-crawler-role-alpha",
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "datalakedatalakecrawlerreviewsrefinedalpha123456789012RoleDefaultPolicyC191702E": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "lakeformation:GetDataAccess",
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "datalakedatalakecrawlerreviewsrefinedalpha123456789012RoleDefaultPolicyC191702E",
+        "Roles": Array [
+          Object {
+            "Ref": "datalakedatalakecrawlerreviewsrefinedalpha123456789012Role9408F9A9",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "datalakedatalakecrawlerreviewsrefinedalpha123456789012SuccessRule80AD635F": Object {
+      "Properties": Object {
+        "Description": "Event triggered when Glue Crawler reviews-crawler-alpha is in Succeeded state(s)",
+        "EventPattern": Object {
+          "detail": Object {
+            "crawlerName": Array [
+              "reviews-crawler-alpha",
+            ],
+            "state": Array [
+              "Succeeded",
+            ],
+          },
+          "detail-type": Array [
+            "Glue Crawler State Change",
+          ],
+          "source": Array [
+            "aws.glue",
+          ],
+        },
+        "Name": "reviews-crawler-alphaSucceeded",
+        "State": "ENABLED",
+      },
+      "Type": "AWS::Events::Rule",
+    },
+    "datalakedatalakecrawlerreviewsrefinedalpha123456789012datalakecrawlerreviewscrawleralpha2078FDC2": Object {
+      "Properties": Object {
+        "DatabaseName": "data-product",
+        "Name": "reviews-crawler-alpha",
+        "Role": Object {
+          "Fn::GetAtt": Array [
+            "datalakedatalakecrawlerreviewsrefinedalpha123456789012Role9408F9A9",
+            "Arn",
+          ],
+        },
+        "Targets": Object {
+          "S3Targets": Array [
+            Object {
+              "Path": "s3://reviews-refined-alpha-123456789012/reviews/",
+            },
+          ],
+        },
+      },
+      "Type": "AWS::Glue::Crawler",
+    },
+    "datalakedatalakecrawlerreviewsrefinedalpha123456789012datalakecreatorpermissionA24939A8": Object {
+      "Properties": Object {
+        "DataLakePrincipal": Object {
+          "DataLakePrincipalIdentifier": Object {
+            "Fn::GetAtt": Array [
+              "datalakedatalakecrawlerreviewsrefinedalpha123456789012Role9408F9A9",
+              "Arn",
+            ],
+          },
+        },
+        "Permissions": Array [
+          "DATA_LOCATION_ACCESS",
+        ],
+        "Resource": Object {
+          "DataLocationResource": Object {
+            "S3Resource": "arn:aws:s3:::reviews-refined-alpha-123456789012",
+          },
+        },
+      },
+      "Type": "AWS::LakeFormation::Permissions",
+    },
+    "datalakedatalakecrawlerreviewsrefinedalpha123456789012glueroledatabasepermissionF9481403": Object {
+      "Properties": Object {
+        "DataLakePrincipal": Object {
+          "DataLakePrincipalIdentifier": Object {
+            "Fn::GetAtt": Array [
+              "datalakedatalakecrawlerreviewsrefinedalpha123456789012Role9408F9A9",
+              "Arn",
+            ],
+          },
+        },
+        "Permissions": Array [
+          "CREATE_TABLE",
+          "DESCRIBE",
+        ],
+        "Resource": Object {
+          "DatabaseResource": Object {
+            "Name": "data-product",
+          },
+        },
+      },
+      "Type": "AWS::LakeFormation::Permissions",
+    },
+    "datalakedatalakecrawlertaxigreenrawalpha123456789012FailureRule7C1D03EA": Object {
+      "Properties": Object {
+        "Description": "Event triggered when Glue Crawler taxi-green-crawler-alpha is in Failed state(s)",
+        "EventPattern": Object {
+          "detail": Object {
+            "crawlerName": Array [
+              "taxi-green-crawler-alpha",
+            ],
+            "state": Array [
+              "Failed",
+            ],
+          },
+          "detail-type": Array [
+            "Glue Crawler State Change",
+          ],
+          "source": Array [
+            "aws.glue",
+          ],
+        },
+        "Name": "taxi-green-crawler-alphaFailed",
+        "State": "ENABLED",
+      },
+      "Type": "AWS::Events::Rule",
+    },
+    "datalakedatalakecrawlertaxigreenrawalpha123456789012Role5B9DD4A4": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "glue.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSGlueServiceRole",
+              ],
+            ],
+          },
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/AmazonS3FullAccess",
+              ],
+            ],
+          },
+        ],
+        "RoleName": "taxi-green-crawler-role-alpha",
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "datalakedatalakecrawlertaxigreenrawalpha123456789012RoleDefaultPolicy8851E13A": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "lakeformation:GetDataAccess",
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "datalakedatalakecrawlertaxigreenrawalpha123456789012RoleDefaultPolicy8851E13A",
+        "Roles": Array [
+          Object {
+            "Ref": "datalakedatalakecrawlertaxigreenrawalpha123456789012Role5B9DD4A4",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "datalakedatalakecrawlertaxigreenrawalpha123456789012SuccessRule327C72B6": Object {
+      "Properties": Object {
+        "Description": "Event triggered when Glue Crawler taxi-green-crawler-alpha is in Succeeded state(s)",
+        "EventPattern": Object {
+          "detail": Object {
+            "crawlerName": Array [
+              "taxi-green-crawler-alpha",
+            ],
+            "state": Array [
+              "Succeeded",
+            ],
+          },
+          "detail-type": Array [
+            "Glue Crawler State Change",
+          ],
+          "source": Array [
+            "aws.glue",
+          ],
+        },
+        "Name": "taxi-green-crawler-alphaSucceeded",
+        "State": "ENABLED",
+      },
+      "Type": "AWS::Events::Rule",
+    },
+    "datalakedatalakecrawlertaxigreenrawalpha123456789012datalakecrawlertaxigreencrawleralpha0720C3C7": Object {
+      "Properties": Object {
+        "DatabaseName": "taxi-product",
+        "Name": "taxi-green-crawler-alpha",
+        "Role": Object {
+          "Fn::GetAtt": Array [
+            "datalakedatalakecrawlertaxigreenrawalpha123456789012Role5B9DD4A4",
+            "Arn",
+          ],
+        },
+        "Targets": Object {
+          "S3Targets": Array [
+            Object {
+              "Path": "s3://taxi-green-raw-alpha-123456789012/green/",
+            },
+          ],
+        },
+      },
+      "Type": "AWS::Glue::Crawler",
+    },
+    "datalakedatalakecrawlertaxigreenrawalpha123456789012datalakecreatorpermission962AC92F": Object {
+      "Properties": Object {
+        "DataLakePrincipal": Object {
+          "DataLakePrincipalIdentifier": Object {
+            "Fn::GetAtt": Array [
+              "datalakedatalakecrawlertaxigreenrawalpha123456789012Role5B9DD4A4",
+              "Arn",
+            ],
+          },
+        },
+        "Permissions": Array [
+          "DATA_LOCATION_ACCESS",
+        ],
+        "Resource": Object {
+          "DataLocationResource": Object {
+            "S3Resource": "arn:aws:s3:::taxi-green-raw-alpha-123456789012",
+          },
+        },
+      },
+      "Type": "AWS::LakeFormation::Permissions",
+    },
+    "datalakedatalakecrawlertaxigreenrawalpha123456789012glueroledatabasepermissionC6A891C7": Object {
+      "Properties": Object {
+        "DataLakePrincipal": Object {
+          "DataLakePrincipalIdentifier": Object {
+            "Fn::GetAtt": Array [
+              "datalakedatalakecrawlertaxigreenrawalpha123456789012Role5B9DD4A4",
+              "Arn",
+            ],
+          },
+        },
+        "Permissions": Array [
+          "CREATE_TABLE",
+          "DESCRIBE",
+        ],
+        "Resource": Object {
+          "DatabaseResource": Object {
+            "Name": "taxi-product",
+          },
+        },
+      },
+      "Type": "AWS::LakeFormation::Permissions",
+    },
+    "datalakedatalakecrawlertaxiyellowrawalpha123456789012FailureRule5FBF2DF7": Object {
+      "Properties": Object {
+        "Description": "Event triggered when Glue Crawler taxi-yellow-crawler-alpha is in Failed state(s)",
+        "EventPattern": Object {
+          "detail": Object {
+            "crawlerName": Array [
+              "taxi-yellow-crawler-alpha",
+            ],
+            "state": Array [
+              "Failed",
+            ],
+          },
+          "detail-type": Array [
+            "Glue Crawler State Change",
+          ],
+          "source": Array [
+            "aws.glue",
+          ],
+        },
+        "Name": "taxi-yellow-crawler-alphaFailed",
+        "State": "ENABLED",
+      },
+      "Type": "AWS::Events::Rule",
+    },
+    "datalakedatalakecrawlertaxiyellowrawalpha123456789012RoleAB3DB641": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "glue.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSGlueServiceRole",
+              ],
+            ],
+          },
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/AmazonS3FullAccess",
+              ],
+            ],
+          },
+        ],
+        "RoleName": "taxi-yellow-crawler-role-alpha",
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "datalakedatalakecrawlertaxiyellowrawalpha123456789012RoleDefaultPolicy93474087": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "lakeformation:GetDataAccess",
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "datalakedatalakecrawlertaxiyellowrawalpha123456789012RoleDefaultPolicy93474087",
+        "Roles": Array [
+          Object {
+            "Ref": "datalakedatalakecrawlertaxiyellowrawalpha123456789012RoleAB3DB641",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "datalakedatalakecrawlertaxiyellowrawalpha123456789012SuccessRule42CD128D": Object {
+      "Properties": Object {
+        "Description": "Event triggered when Glue Crawler taxi-yellow-crawler-alpha is in Succeeded state(s)",
+        "EventPattern": Object {
+          "detail": Object {
+            "crawlerName": Array [
+              "taxi-yellow-crawler-alpha",
+            ],
+            "state": Array [
+              "Succeeded",
+            ],
+          },
+          "detail-type": Array [
+            "Glue Crawler State Change",
+          ],
+          "source": Array [
+            "aws.glue",
+          ],
+        },
+        "Name": "taxi-yellow-crawler-alphaSucceeded",
+        "State": "ENABLED",
+      },
+      "Type": "AWS::Events::Rule",
+    },
+    "datalakedatalakecrawlertaxiyellowrawalpha123456789012datalakecrawlertaxiyellowcrawleralpha9FF19806": Object {
+      "Properties": Object {
+        "DatabaseName": "taxi-product",
+        "Name": "taxi-yellow-crawler-alpha",
+        "Role": Object {
+          "Fn::GetAtt": Array [
+            "datalakedatalakecrawlertaxiyellowrawalpha123456789012RoleAB3DB641",
+            "Arn",
+          ],
+        },
+        "Targets": Object {
+          "S3Targets": Array [
+            Object {
+              "Path": "s3://taxi-yellow-raw-alpha-123456789012/yellow/",
+            },
+          ],
+        },
+      },
+      "Type": "AWS::Glue::Crawler",
+    },
+    "datalakedatalakecrawlertaxiyellowrawalpha123456789012datalakecreatorpermission70EC4C23": Object {
+      "Properties": Object {
+        "DataLakePrincipal": Object {
+          "DataLakePrincipalIdentifier": Object {
+            "Fn::GetAtt": Array [
+              "datalakedatalakecrawlertaxiyellowrawalpha123456789012RoleAB3DB641",
+              "Arn",
+            ],
+          },
+        },
+        "Permissions": Array [
+          "DATA_LOCATION_ACCESS",
+        ],
+        "Resource": Object {
+          "DataLocationResource": Object {
+            "S3Resource": "arn:aws:s3:::taxi-yellow-raw-alpha-123456789012",
+          },
+        },
+      },
+      "Type": "AWS::LakeFormation::Permissions",
+    },
+    "datalakedatalakecrawlertaxiyellowrawalpha123456789012glueroledatabasepermission2BA928B4": Object {
+      "Properties": Object {
+        "DataLakePrincipal": Object {
+          "DataLakePrincipalIdentifier": Object {
+            "Fn::GetAtt": Array [
+              "datalakedatalakecrawlertaxiyellowrawalpha123456789012RoleAB3DB641",
+              "Arn",
+            ],
+          },
+        },
+        "Permissions": Array [
+          "CREATE_TABLE",
+          "DESCRIBE",
+        ],
+        "Resource": Object {
+          "DatabaseResource": Object {
+            "Name": "taxi-product",
+          },
+        },
+      },
+      "Type": "AWS::LakeFormation::Permissions",
+    },
+    "datalakedatalakelogbucket0A814944": Object {
+      "DeletionPolicy": "Delete",
+      "Properties": Object {
+        "AccessControl": "LogDeliveryWrite",
+        "BucketName": "test-lake-log-bucket-alpha",
+        "LifecycleConfiguration": Object {
+          "Rules": Array [
+            Object {
+              "ExpirationInDays": 30,
+              "Status": "Enabled",
+            },
+          ],
+        },
+        "Tags": Array [
+          Object {
+            "Key": "aws-cdk:auto-delete-objects",
+            "Value": "true",
+          },
+        ],
+      },
+      "Type": "AWS::S3::Bucket",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "datalakedatalakelogbucketAutoDeleteObjectsCustomResource3DCF9F10": Object {
+      "DeletionPolicy": "Delete",
+      "DependsOn": Array [
+        "datalakedatalakelogbucketPolicyD1691576",
+      ],
+      "Properties": Object {
+        "BucketName": Object {
+          "Ref": "datalakedatalakelogbucket0A814944",
+        },
+        "ServiceToken": Object {
+          "Fn::GetAtt": Array [
+            "CustomS3AutoDeleteObjectsCustomResourceProviderHandler9D90184F",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "Custom::S3AutoDeleteObjects",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "datalakedatalakelogbucketPolicyD1691576": Object {
+      "Properties": Object {
+        "Bucket": Object {
+          "Ref": "datalakedatalakelogbucket0A814944",
+        },
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "s3:GetBucket*",
+                "s3:List*",
+                "s3:DeleteObject*",
+              ],
+              "Effect": "Allow",
+              "Principal": Object {
+                "AWS": Object {
+                  "Fn::GetAtt": Array [
+                    "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092",
+                    "Arn",
+                  ],
+                },
+              },
+              "Resource": Array [
+                Object {
+                  "Fn::GetAtt": Array [
+                    "datalakedatalakelogbucket0A814944",
+                    "Arn",
+                  ],
+                },
+                Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      Object {
+                        "Fn::GetAtt": Array [
+                          "datalakedatalakelogbucket0A814944",
+                          "Arn",
+                        ],
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::S3::BucketPolicy",
+    },
+    "datalakedataproductdatabaseAECF5DD4": Object {
+      "Properties": Object {
+        "CatalogId": "123456789012",
+        "DatabaseInput": Object {
+          "Name": "data-product",
+        },
+      },
+      "Type": "AWS::Glue::Database",
+    },
+    "datalakedataproductlfdbcreatorpermissionC1CC76B4": Object {
+      "DependsOn": Array [
+        "datalakedataproductdatabaseAECF5DD4",
+      ],
+      "Properties": Object {
+        "DataLakePrincipal": Object {
+          "DataLakePrincipalIdentifier": Object {
+            "Fn::GetAtt": Array [
+              "datalaketestlakedatalakecreatorroleAWSDBCreatorServiceRoletestlakedatalakecreatoralphaF5D800D9",
+              "Arn",
+            ],
+          },
+        },
+        "Permissions": Array [
+          "ALTER",
+          "CREATE_TABLE",
+          "DROP",
+        ],
+        "Resource": Object {
+          "DatabaseResource": Object {
+            "Name": "data-product",
+          },
+        },
+      },
+      "Type": "AWS::LakeFormation::Permissions",
+    },
+    "datalakeiotdataaccesstableperm0E419435": Object {
+      "Properties": Object {
+        "DataLakePrincipal": Object {
+          "DataLakePrincipalIdentifier": Object {
+            "Fn::GetAtt": Array [
+              "datalakeiotdataetljobRole82D6911F",
+              "Arn",
+            ],
+          },
+        },
+        "Permissions": Array [
+          "SELECT",
+          "DESCRIBE",
+        ],
+        "Resource": Object {
+          "TableResource": Object {
+            "DatabaseName": "data-product",
+            "Name": "r_iot_data",
+          },
+        },
+      },
+      "Type": "AWS::LakeFormation::Permissions",
+    },
+    "datalakeiotdatacreatetablepermF7B199EF": Object {
+      "Properties": Object {
+        "DataLakePrincipal": Object {
+          "DataLakePrincipalIdentifier": Object {
+            "Fn::GetAtt": Array [
+              "datalakeiotdataetljobRole82D6911F",
+              "Arn",
+            ],
+          },
+        },
+        "Permissions": Array [
+          "ALTER",
+          "CREATE_TABLE",
+          "DESCRIBE",
+        ],
+        "Resource": Object {
+          "DatabaseResource": Object {
+            "Name": "data-product",
+          },
+        },
+      },
+      "Type": "AWS::LakeFormation::Permissions",
+    },
+    "datalakeiotdataetljobFailureRuleF4FD2FA0": Object {
+      "Properties": Object {
+        "Description": "Event triggered when Glue job iot_data_streaming-datalake-alpha is in FAILED state(s)",
+        "EventPattern": Object {
+          "detail": Object {
+            "jobName": Array [
+              "iot_data_streaming-datalake-alpha",
+            ],
+            "state": Array [
+              "FAILED",
+            ],
+          },
+          "detail-type": Array [
+            "Glue Job State Change",
+          ],
+          "source": Array [
+            "aws.glue",
+          ],
+        },
+        "Name": "iot_data_streaming-datalake-alphaFAILED",
+        "State": "ENABLED",
+      },
+      "Type": "AWS::Events::Rule",
+    },
+    "datalakeiotdataetljobRole82D6911F": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "glue.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSGlueServiceRole",
+              ],
+            ],
+          },
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/AWSGlueConsoleFullAccess",
+              ],
+            ],
+          },
+        ],
+        "RoleName": "glue-streaming-datalake-alpha",
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "datalakeiotdataetljobRoleDefaultPolicy724F29EE": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "lakeformation:GetDataAccess",
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            Object {
+              "Action": Array [
+                "s3:GetObject*",
+                "s3:GetBucket*",
+                "s3:List*",
+              ],
+              "Effect": "Allow",
+              "Resource": Array [
+                Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      "arn:",
+                      Object {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":s3:::cdk-hnb659fds-assets-123456789012-us-east-1",
+                    ],
+                  ],
+                },
+                Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      "arn:",
+                      Object {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":s3:::cdk-hnb659fds-assets-123456789012-us-east-1/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+            Object {
+              "Action": Array [
+                "s3:GetObject*",
+                "s3:GetBucket*",
+                "s3:List*",
+              ],
+              "Effect": "Allow",
+              "Resource": Array [
+                Object {
+                  "Fn::GetAtt": Array [
+                    "datalakedatalakelogbucket0A814944",
+                    "Arn",
+                  ],
+                },
+                Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      Object {
+                        "Fn::GetAtt": Array [
+                          "datalakedatalakelogbucket0A814944",
+                          "Arn",
+                        ],
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+            Object {
+              "Action": Array [
+                "s3:DeleteObject*",
+                "s3:PutObject",
+                "s3:Abort*",
+              ],
+              "Effect": "Allow",
+              "Resource": Array [
+                Object {
+                  "Fn::GetAtt": Array [
+                    "datalakedatalakelogbucket0A814944",
+                    "Arn",
+                  ],
+                },
+                Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      Object {
+                        "Fn::GetAtt": Array [
+                          "datalakedatalakelogbucket0A814944",
+                          "Arn",
+                        ],
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+            Object {
+              "Action": Array [
+                "s3:DeleteObject*",
+                "s3:PutObject",
+                "s3:Abort*",
+              ],
+              "Effect": "Allow",
+              "Resource": Array [
+                Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      "arn:",
+                      Object {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":s3:::iot-data-raw-alpha-123456789012",
+                    ],
+                  ],
+                },
+                Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      "arn:",
+                      Object {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":s3:::iot-data-raw-alpha-123456789012/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+            Object {
+              "Action": Array [
+                "kinesis:DescribeStreamSummary",
+                "kinesis:GetRecords",
+                "kinesis:GetShardIterator",
+                "kinesis:ListShards",
+                "kinesis:SubscribeToShard",
+                "kinesis:DescribeStream",
+                "kinesis:ListStreams",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::GetAtt": Array [
+                  "iotdatadatastreamstackNestedStackiotdatadatastreamstackNestedStackResource916244DA",
+                  "Outputs.testStackiotdatadatastreamstackDataStreamkinesisstreamADD65B04Arn",
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "datalakeiotdataetljobRoleDefaultPolicy724F29EE",
+        "Roles": Array [
+          Object {
+            "Ref": "datalakeiotdataetljobRole82D6911F",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "datalakeiotdataetljobSuccessRule32B25DD9": Object {
+      "Properties": Object {
+        "Description": "Event triggered when Glue job iot_data_streaming-datalake-alpha is in SUCCEEDED state(s)",
+        "EventPattern": Object {
+          "detail": Object {
+            "jobName": Array [
+              "iot_data_streaming-datalake-alpha",
+            ],
+            "state": Array [
+              "SUCCEEDED",
+            ],
+          },
+          "detail-type": Array [
+            "Glue Job State Change",
+          ],
+          "source": Array [
+            "aws.glue",
+          ],
+        },
+        "Name": "iot_data_streaming-datalake-alphaSUCCEEDED",
+        "State": "ENABLED",
+      },
+      "Type": "AWS::Events::Rule",
+    },
+    "datalakeiotdataetljobTimeoutRule0D72C645": Object {
+      "Properties": Object {
+        "Description": "Event triggered when Glue job iot_data_streaming-datalake-alpha is in TIMEOUT state(s)",
+        "EventPattern": Object {
+          "detail": Object {
+            "jobName": Array [
+              "iot_data_streaming-datalake-alpha",
+            ],
+            "state": Array [
+              "TIMEOUT",
+            ],
+          },
+          "detail-type": Array [
+            "Glue Job State Change",
+          ],
+          "source": Array [
+            "aws.glue",
+          ],
+        },
+        "Name": "iot_data_streaming-datalake-alphaTIMEOUT",
+        "State": "ENABLED",
+      },
+      "Type": "AWS::Events::Rule",
+    },
+    "datalakeiotdataetljobiotdatastreamingdatalakealphaallexecutionattemptsfailedruleA273FF06": Object {
+      "Properties": Object {
+        "Description": "Glue job iot_data_streaming-datalake-alpha failed or timed out on the last attempt. There will be no retries of the job after this error.",
+        "EventPattern": Object {
+          "detail": Object {
+            "jobName": Array [
+              "iot_data_streaming-datalake-alpha",
+            ],
+          },
+          "detail-type": Array [
+            "All Execution Attempts Failed",
+          ],
+          "source": Array [
+            "custom.aws.glue.allExecutionAttemptsFailed",
+          ],
+        },
+        "State": "ENABLED",
+      },
+      "Type": "AWS::Events::Rule",
+    },
+    "datalakeiotdataetljobiotdatastreamingdatalakealphagluejob5601147F": Object {
+      "Properties": Object {
+        "Command": Object {
+          "Name": "gluestreaming",
+          "PythonVersion": "3",
+          "ScriptLocation": "s3://cdk-hnb659fds-assets-123456789012-us-east-1/7b74dbd608174c609a1b7e725a88eb7686a6f14c5475cb6c80995940c0550c2e.py",
+        },
+        "DefaultArguments": Object {
+          "--DESTINATION_BUCKET": "iot-data-raw-alpha-123456789012",
+          "--DESTINATION_DATABASE": "source-lake",
+          "--DESTINATION_TABLE": "p_iot_data",
+          "--SOURCE_DATABASE": "source-lake",
+          "--SOURCE_TABLE": "r_iot_data",
+          "--STREAM_BATCH_TIME_SECS": "100 seconds",
+          "--TempDir": Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "s3://",
+                Object {
+                  "Ref": "datalakedatalakelogbucket0A814944",
+                },
+                "/temp/",
+              ],
+            ],
+          },
+          "--class": "GlueApp",
+          "--enable-continuous-cloudwatch-log": true,
+          "--enable-continuous-log-filter": true,
+          "--enable-glue-datacatalog": true,
+          "--enable-metrics": true,
+          "--enable-spark-ui": true,
+          "--job-bookmark-option": "job-bookmark-disable",
+          "--job-language": "python",
+          "--region": "us-east-1",
+          "--spark-event-logs-path": Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "s3://",
+                Object {
+                  "Ref": "datalakedatalakelogbucket0A814944",
+                },
+                "/logs/",
+              ],
+            ],
+          },
+        },
+        "Description": "Glue ETL Streaming job to convert JSON to Parquet",
+        "ExecutionProperty": Object {
+          "MaxConcurrentRuns": 1,
+        },
+        "GlueVersion": "2.0",
+        "MaxRetries": 3,
+        "Name": "iot_data_streaming-datalake-alpha",
+        "NumberOfWorkers": 2,
+        "Role": Object {
+          "Ref": "datalakeiotdataetljobRole82D6911F",
+        },
+        "Timeout": 2880,
+        "WorkerType": "G.1X",
+      },
+      "Type": "AWS::Glue::Job",
+    },
+    "datalakeiotdataetljobopsdashboard395C7934": Object {
+      "Properties": Object {
+        "DashboardBody": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "{\\"widgets\\":[{\\"type\\":\\"text\\",\\"width\\":24,\\"height\\":1,\\"x\\":0,\\"y\\":0,\\"properties\\":{\\"markdown\\":\\"# iot_data_streaming-datalake-alpha Job Result\\"}},{\\"type\\":\\"metric\\",\\"width\\":6,\\"height\\":6,\\"x\\":0,\\"y\\":1,\\"properties\\":{\\"view\\":\\"timeSeries\\",\\"title\\":\\"Success Count\\",\\"region\\":\\"",
+              Object {
+                "Ref": "AWS::Region",
+              },
+              "\\",\\"metrics\\":[[{\\"label\\":\\"Success Count\\",\\"expression\\":\\"SEARCH('MetricName=\\\\\\"TriggeredRules\\\\\\" RuleName=\\\\\\"",
+              Object {
+                "Ref": "datalakeiotdataetljobSuccessRule32B25DD9",
+              },
+              "\\\\\\"', 'Sum', 900)\\"}]],\\"yAxis\\":{}}},{\\"type\\":\\"metric\\",\\"width\\":6,\\"height\\":6,\\"x\\":6,\\"y\\":1,\\"properties\\":{\\"view\\":\\"timeSeries\\",\\"title\\":\\"Failure Count\\",\\"region\\":\\"",
+              Object {
+                "Ref": "AWS::Region",
+              },
+              "\\",\\"metrics\\":[[{\\"label\\":\\"Failure Count\\",\\"expression\\":\\"SEARCH('MetricName=\\\\\\"TriggeredRules\\\\\\" RuleName=\\\\\\"",
+              Object {
+                "Ref": "datalakeiotdataetljobFailureRuleF4FD2FA0",
+              },
+              "\\\\\\"', 'Sum', 900)\\"}]],\\"yAxis\\":{}}},{\\"type\\":\\"metric\\",\\"width\\":6,\\"height\\":6,\\"x\\":12,\\"y\\":1,\\"properties\\":{\\"view\\":\\"timeSeries\\",\\"title\\":\\"Timeout Count\\",\\"region\\":\\"",
+              Object {
+                "Ref": "AWS::Region",
+              },
+              "\\",\\"metrics\\":[[{\\"label\\":\\"Timeout Count\\",\\"expression\\":\\"SEARCH('MetricName=\\\\\\"TriggeredRules\\\\\\" RuleName=\\\\\\"",
+              Object {
+                "Ref": "datalakeiotdataetljobTimeoutRule0D72C645",
+              },
+              "\\\\\\"', 'Sum', 900)\\"}]],\\"yAxis\\":{}}},{\\"type\\":\\"text\\",\\"width\\":24,\\"height\\":1,\\"x\\":0,\\"y\\":7,\\"properties\\":{\\"markdown\\":\\"# iot_data_streaming-datalake-alpha JVM Glue Driver Stats Alarms\\"}},{\\"type\\":\\"metric\\",\\"width\\":6,\\"height\\":6,\\"x\\":0,\\"y\\":8,\\"properties\\":{\\"view\\":\\"timeSeries\\",\\"title\\":\\"glue.driver.BlockManager.disk.diskSpaceUsed_MB (Average)\\",\\"region\\":\\"",
+              Object {
+                "Ref": "AWS::Region",
+              },
+              "\\",\\"metrics\\":[[\\"AWS/Glue\\",\\"glue.driver.BlockManager.disk.diskSpaceUsed_MB\\",\\"JobName\\",\\"iot_data_streaming-datalake-alpha\\",\\"JobRunId\\",\\"ALL\\",\\"Type\\",\\"gauge\\"]],\\"yAxis\\":{}}},{\\"type\\":\\"metric\\",\\"width\\":6,\\"height\\":6,\\"x\\":6,\\"y\\":8,\\"properties\\":{\\"view\\":\\"timeSeries\\",\\"title\\":\\"glue.driver.aggregate.elapsedTime (Average)\\",\\"region\\":\\"",
+              Object {
+                "Ref": "AWS::Region",
+              },
+              "\\",\\"metrics\\":[[\\"AWS/Glue\\",\\"glue.driver.aggregate.elapsedTime\\",\\"JobName\\",\\"iot_data_streaming-datalake-alpha\\",\\"JobRunId\\",\\"ALL\\",\\"Type\\",\\"count\\"]],\\"yAxis\\":{}}},{\\"type\\":\\"metric\\",\\"width\\":6,\\"height\\":6,\\"x\\":0,\\"y\\":14,\\"properties\\":{\\"view\\":\\"timeSeries\\",\\"title\\":\\"",
+              Object {
+                "Ref": "datalakeiotdataetljobopsjvmheapSizeexceeding90PercentalarmBB5C81D7",
+              },
+              "\\",\\"region\\":\\"",
+              Object {
+                "Ref": "AWS::Region",
+              },
+              "\\",\\"annotations\\":{\\"alarms\\":[\\"",
+              Object {
+                "Fn::GetAtt": Array [
+                  "datalakeiotdataetljobopsjvmheapSizeexceeding90PercentalarmBB5C81D7",
+                  "Arn",
+                ],
+              },
+              "\\"]},\\"yAxis\\":{}}},{\\"type\\":\\"metric\\",\\"width\\":6,\\"height\\":6,\\"x\\":6,\\"y\\":14,\\"properties\\":{\\"view\\":\\"timeSeries\\",\\"title\\":\\"",
+              Object {
+                "Ref": "datalakeiotdataetljobopsmetricallexecutionattemptsfailedalarmBE095274",
+              },
+              "\\",\\"region\\":\\"",
+              Object {
+                "Ref": "AWS::Region",
+              },
+              "\\",\\"annotations\\":{\\"alarms\\":[\\"",
+              Object {
+                "Fn::GetAtt": Array [
+                  "datalakeiotdataetljobopsmetricallexecutionattemptsfailedalarmBE095274",
+                  "Arn",
+                ],
+              },
+              "\\"]},\\"yAxis\\":{}}},{\\"type\\":\\"metric\\",\\"width\\":6,\\"height\\":6,\\"x\\":0,\\"y\\":20,\\"properties\\":{\\"view\\":\\"timeSeries\\",\\"title\\":\\"",
+              Object {
+                "Ref": "datalakeiotdataetljobopsjvmheapSizeexceeding80percentalarmBCA7A162",
+              },
+              "\\",\\"region\\":\\"",
+              Object {
+                "Ref": "AWS::Region",
+              },
+              "\\",\\"annotations\\":{\\"alarms\\":[\\"",
+              Object {
+                "Fn::GetAtt": Array [
+                  "datalakeiotdataetljobopsjvmheapSizeexceeding80percentalarmBCA7A162",
+                  "Arn",
+                ],
+              },
+              "\\"]},\\"yAxis\\":{}}},{\\"type\\":\\"metric\\",\\"width\\":6,\\"height\\":6,\\"x\\":6,\\"y\\":20,\\"properties\\":{\\"view\\":\\"timeSeries\\",\\"title\\":\\"",
+              Object {
+                "Ref": "datalakeiotdataetljobopsmetricexecutionfailurealarm7D0C3477",
+              },
+              "\\",\\"region\\":\\"",
+              Object {
+                "Ref": "AWS::Region",
+              },
+              "\\",\\"annotations\\":{\\"alarms\\":[\\"",
+              Object {
+                "Fn::GetAtt": Array [
+                  "datalakeiotdataetljobopsmetricexecutionfailurealarm7D0C3477",
+                  "Arn",
+                ],
+              },
+              "\\"]},\\"yAxis\\":{}}}]}",
+            ],
+          ],
+        },
+        "DashboardName": "ETL_iot_data_streaming-datalake-alpha",
+      },
+      "Type": "AWS::CloudWatch::Dashboard",
+    },
+    "datalakeiotdataetljobopsjvmheapSizeexceeding80percentalarmBCA7A162": Object {
+      "Properties": Object {
+        "AlarmDescription": "Jvm Heap Size exceeding 80% glue job (iot_data_streaming-datalake-alpha)",
+        "AlarmName": "iot_data_streaming-datalake-alpha JvmHeapSizeExceeding80",
+        "ComparisonOperator": "GreaterThanOrEqualToThreshold",
+        "DatapointsToAlarm": 1,
+        "Dimensions": Array [
+          Object {
+            "Name": "JobName",
+            "Value": "iot_data_streaming-datalake-alpha",
+          },
+          Object {
+            "Name": "JobRunId",
+            "Value": "ALL",
+          },
+          Object {
+            "Name": "Type",
+            "Value": "gauge",
+          },
+        ],
+        "EvaluationPeriods": 1,
+        "MetricName": "glue.ALL.jvm.heap.usage",
+        "Namespace": "AWS/Glue",
+        "Period": 86400,
+        "Statistic": "Maximum",
+        "Threshold": 0.8,
+        "TreatMissingData": "notBreaching",
+      },
+      "Type": "AWS::CloudWatch::Alarm",
+    },
+    "datalakeiotdataetljobopsjvmheapSizeexceeding90PercentalarmBB5C81D7": Object {
+      "Properties": Object {
+        "AlarmDescription": "Jvm Heap Size exceeding 90% glue job (iot_data_streaming-datalake-alpha)",
+        "AlarmName": "iot_data_streaming-datalake-alpha JvmHeapSizeExceeding90",
+        "ComparisonOperator": "GreaterThanOrEqualToThreshold",
+        "DatapointsToAlarm": 1,
+        "Dimensions": Array [
+          Object {
+            "Name": "JobName",
+            "Value": "iot_data_streaming-datalake-alpha",
+          },
+          Object {
+            "Name": "JobRunId",
+            "Value": "ALL",
+          },
+          Object {
+            "Name": "Type",
+            "Value": "gauge",
+          },
+        ],
+        "EvaluationPeriods": 1,
+        "MetricName": "glue.ALL.jvm.heap.usage",
+        "Namespace": "AWS/Glue",
+        "Period": 86400,
+        "Statistic": "Maximum",
+        "Threshold": 0.9,
+        "TreatMissingData": "notBreaching",
+      },
+      "Type": "AWS::CloudWatch::Alarm",
+    },
+    "datalakeiotdataetljobopsmetricallexecutionattemptsfailedalarmBE095274": Object {
+      "Properties": Object {
+        "AlarmDescription": "Error while running the Glue job iot_data_streaming-datalake-alpha on the last attempt. There will be no retries of the job after this error.",
+        "AlarmName": "iot_data_streaming-datalake-alpha AllExecutionAttemptsFailed",
+        "ComparisonOperator": "GreaterThanOrEqualToThreshold",
+        "Dimensions": Array [
+          Object {
+            "Name": "RuleName",
+            "Value": Object {
+              "Ref": "datalakeiotdataetljobiotdatastreamingdatalakealphaallexecutionattemptsfailedruleA273FF06",
+            },
+          },
+        ],
+        "EvaluationPeriods": 1,
+        "MetricName": "TriggeredRules",
+        "Namespace": "AWS/Events",
+        "Period": 60,
+        "Statistic": "Sum",
+        "Threshold": 1,
+        "TreatMissingData": "notBreaching",
+      },
+      "Type": "AWS::CloudWatch::Alarm",
+    },
+    "datalakeiotdataetljobopsmetricexecutionfailurealarm7D0C3477": Object {
+      "Properties": Object {
+        "AlarmDescription": "Error while running the Glue job iot_data_streaming-datalake-alpha on the current attempt. There might be job retries after this error.",
+        "AlarmName": "iot_data_streaming-datalake-alpha ExecutionFailure",
+        "ComparisonOperator": "GreaterThanOrEqualToThreshold",
+        "Dimensions": Array [
+          Object {
+            "Name": "RuleName",
+            "Value": Object {
+              "Ref": "datalakeiotdataetljobFailureRuleF4FD2FA0",
+            },
+          },
+        ],
+        "EvaluationPeriods": 1,
+        "MetricName": "TriggeredRules",
+        "Namespace": "AWS/Events",
+        "Period": 300,
+        "Statistic": "Sum",
+        "Threshold": 1,
+        "TreatMissingData": "notBreaching",
+      },
+      "Type": "AWS::CloudWatch::Alarm",
+    },
+    "datalakeiotdatas3rawbucketiotdatadatalakebucketFF5ED853": Object {
+      "DeletionPolicy": "Retain",
+      "Properties": Object {
+        "BucketName": "iot-data-raw-alpha-123456789012",
+        "LoggingConfiguration": Object {
+          "DestinationBucketName": Object {
+            "Ref": "datalakedatalakelogbucket0A814944",
+          },
+        },
+      },
+      "Type": "AWS::S3::Bucket",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "datalakeiotdatas3refinedbucketiotdatadatalakebucket71DC1015": Object {
+      "DeletionPolicy": "Retain",
+      "Properties": Object {
+        "BucketName": "iot-data-refined-alpha-123456789012",
+        "LoggingConfiguration": Object {
+          "DestinationBucketName": Object {
+            "Ref": "datalakedatalakelogbucket0A814944",
+          },
+        },
+      },
+      "Type": "AWS::S3::Bucket",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "datalakeiotdatas3trustedbucketiotdatadatalakebucket093D45EE": Object {
+      "DeletionPolicy": "Retain",
+      "Properties": Object {
+        "BucketName": "iot-data-trusted-alpha-123456789012",
+        "LoggingConfiguration": Object {
+          "DestinationBucketName": Object {
+            "Ref": "datalakedatalakelogbucket0A814944",
+          },
+        },
+      },
+      "Type": "AWS::S3::Bucket",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "datalakeiotdatastreamingdatalakealphaexecutionfailureruleAllowEventRuletestStackdatalakeiotdataetljobGlueExecutionFailListenerLambdaSingletoniotdatastreamingdatalakealphaE9B2D595AD22C75E": Object {
+      "Properties": Object {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": Object {
+          "Fn::GetAtt": Array [
+            "SingletonLambdaGlueExecutionFailListenerLambdaD8F79966",
+            "Arn",
+          ],
+        },
+        "Principal": "events.amazonaws.com",
+        "SourceArn": Object {
+          "Fn::GetAtt": Array [
+            "datalakeiotdatastreamingdatalakealphaexecutionfailureruleFA19CC36",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "datalakeiotdatastreamingdatalakealphaexecutionfailureruleFA19CC36": Object {
+      "Properties": Object {
+        "Description": "Glue job iot_data_streaming-datalake-alpha failed or timed out on an attempt. There might be job retries after this error.",
+        "EventPattern": Object {
+          "detail": Object {
+            "jobName": Array [
+              "iot_data_streaming-datalake-alpha",
+            ],
+            "state": Array [
+              "FAILED",
+              "TIMEOUT",
+            ],
+          },
+          "detail-type": Array [
+            "Glue Job State Change",
+          ],
+          "source": Array [
+            "aws.glue",
+          ],
+        },
+        "State": "ENABLED",
+        "Targets": Array [
+          Object {
+            "Arn": Object {
+              "Fn::GetAtt": Array [
+                "SingletonLambdaGlueExecutionFailListenerLambdaD8F79966",
+                "Arn",
+              ],
+            },
+            "Id": "Target0",
+          },
+        ],
+      },
+      "Type": "AWS::Events::Rule",
+    },
+    "datalakeiotdatatableriotdatagluetableEB17932D": Object {
+      "DependsOn": Array [
+        "datalakedataproductdatabaseAECF5DD4",
+      ],
+      "Properties": Object {
+        "CatalogId": Object {
+          "Ref": "AWS::AccountId",
+        },
+        "DatabaseName": Object {
+          "Ref": "datalakedataproductdatabaseAECF5DD4",
+        },
+        "TableInput": Object {
+          "Description": "Raw IOT Sensor data",
+          "Name": "r_iot_data",
+          "Parameters": Object {
+            "EXTERNAL": true,
+            "classification": "json",
+            "has_encrypted_data": false,
+            "streamARN": Object {
+              "Fn::Join": Array [
+                "",
+                Array [
+                  "arn:aws:kinesis:",
+                  Object {
+                    "Ref": "AWS::Region",
+                  },
+                  ":",
+                  Object {
+                    "Ref": "AWS::AccountId",
+                  },
+                  ":stream/iot-data-stream-alpha",
+                ],
+              ],
+            },
+            "typeOfData": "kinesis",
+          },
+          "PartitionKeys": Array [],
+          "StorageDescriptor": Object {
+            "Columns": Array [
+              Object {
+                "Name": "sensor_id",
+                "Type": "int",
+              },
+              Object {
+                "Name": "current_temperature",
+                "Type": "double",
+              },
+              Object {
+                "Name": "status",
+                "Type": "string",
+              },
+              Object {
+                "Name": "event_time",
+                "Type": "string",
+              },
+            ],
+            "InputFormat": "org.apache.hadoop.mapred.TextInputFormat",
+            "Location": "s3://iot-data-raw-alpha-123456789012/iot-data/",
+            "OutputFormat": "org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat",
+            "Parameters": Object {
+              "serialization.format": "1",
+            },
+            "SerdeInfo": Object {
+              "Parameters": Object {
+                "paths": "",
+              },
+              "SerializationLibrary": "org.openx.data.jsonserde.JsonSerDe",
+            },
+          },
+          "TableType": "EXTERNAL_TABLE",
+        },
+      },
+      "Type": "AWS::Glue::Table",
+    },
+    "datalakereviewss3rawbucketreviewsdatalakebucketCEB9505F": Object {
+      "DeletionPolicy": "Retain",
+      "Properties": Object {
+        "BucketName": "reviews-raw-alpha-123456789012",
+        "LoggingConfiguration": Object {
+          "DestinationBucketName": Object {
+            "Ref": "datalakedatalakelogbucket0A814944",
+          },
+        },
+      },
+      "Type": "AWS::S3::Bucket",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "datalakereviewss3refinedbucketreviewsdatalakebucket83A564B1": Object {
+      "DeletionPolicy": "Retain",
+      "Properties": Object {
+        "BucketName": "reviews-refined-alpha-123456789012",
+        "LoggingConfiguration": Object {
+          "DestinationBucketName": Object {
+            "Ref": "datalakedatalakelogbucket0A814944",
+          },
+        },
+      },
+      "Type": "AWS::S3::Bucket",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "datalakereviewss3trustedbucketreviewsdatalakebucket09974673": Object {
+      "DeletionPolicy": "Retain",
+      "Properties": Object {
+        "BucketName": "reviews-trusted-alpha-123456789012",
+        "LoggingConfiguration": Object {
+          "DestinationBucketName": Object {
+            "Ref": "datalakedatalakelogbucket0A814944",
+          },
+        },
+      },
+      "Type": "AWS::S3::Bucket",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "datalaketaxigreens3rawbuckettaxigreendatalakebucketD5F717DB": Object {
+      "DeletionPolicy": "Retain",
+      "Properties": Object {
+        "BucketName": "taxi-green-raw-alpha-123456789012",
+        "LoggingConfiguration": Object {
+          "DestinationBucketName": Object {
+            "Ref": "datalakedatalakelogbucket0A814944",
+          },
+        },
+      },
+      "Type": "AWS::S3::Bucket",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "datalaketaxigreens3refinedbuckettaxigreendatalakebucket143C6211": Object {
+      "DeletionPolicy": "Retain",
+      "Properties": Object {
+        "BucketName": "taxi-green-refined-alpha-123456789012",
+        "LoggingConfiguration": Object {
+          "DestinationBucketName": Object {
+            "Ref": "datalakedatalakelogbucket0A814944",
+          },
+        },
+      },
+      "Type": "AWS::S3::Bucket",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "datalaketaxigreens3trustedbuckettaxigreendatalakebucket6BCAC81E": Object {
+      "DeletionPolicy": "Retain",
+      "Properties": Object {
+        "BucketName": "taxi-green-trusted-alpha-123456789012",
+        "LoggingConfiguration": Object {
+          "DestinationBucketName": Object {
+            "Ref": "datalakedatalakelogbucket0A814944",
+          },
+        },
+      },
+      "Type": "AWS::S3::Bucket",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "datalaketaxiproductdatabase4B8A23BF": Object {
+      "Properties": Object {
+        "CatalogId": "123456789012",
+        "DatabaseInput": Object {
+          "Name": "taxi-product",
+        },
+      },
+      "Type": "AWS::Glue::Database",
+    },
+    "datalaketaxiproductlfdbcreatorpermission5C31145A": Object {
+      "DependsOn": Array [
+        "datalaketaxiproductdatabase4B8A23BF",
+      ],
+      "Properties": Object {
+        "DataLakePrincipal": Object {
+          "DataLakePrincipalIdentifier": Object {
+            "Fn::GetAtt": Array [
+              "datalaketestlakedatalakecreatorroleAWSDBCreatorServiceRoletestlakedatalakecreatoralphaF5D800D9",
+              "Arn",
+            ],
+          },
+        },
+        "Permissions": Array [
+          "ALTER",
+          "CREATE_TABLE",
+          "DROP",
+        ],
+        "Resource": Object {
+          "DatabaseResource": Object {
+            "Name": "taxi-product",
+          },
+        },
+      },
+      "Type": "AWS::LakeFormation::Permissions",
+    },
+    "datalaketaxiyellows3rawbuckettaxiyellowdatalakebucket198621A7": Object {
+      "DeletionPolicy": "Retain",
+      "Properties": Object {
+        "BucketName": "taxi-yellow-raw-alpha-123456789012",
+        "LoggingConfiguration": Object {
+          "DestinationBucketName": Object {
+            "Ref": "datalakedatalakelogbucket0A814944",
+          },
+        },
+      },
+      "Type": "AWS::S3::Bucket",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "datalaketaxiyellows3refinedbuckettaxiyellowdatalakebucketF1380E74": Object {
+      "DeletionPolicy": "Retain",
+      "Properties": Object {
+        "BucketName": "taxi-yellow-refined-alpha-123456789012",
+        "LoggingConfiguration": Object {
+          "DestinationBucketName": Object {
+            "Ref": "datalakedatalakelogbucket0A814944",
+          },
+        },
+      },
+      "Type": "AWS::S3::Bucket",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "datalaketaxiyellows3trustedbuckettaxiyellowdatalakebucket6EC25214": Object {
+      "DeletionPolicy": "Retain",
+      "Properties": Object {
+        "BucketName": "taxi-yellow-trusted-alpha-123456789012",
+        "LoggingConfiguration": Object {
+          "DestinationBucketName": Object {
+            "Ref": "datalakedatalakelogbucket0A814944",
+          },
+        },
+      },
+      "Type": "AWS::S3::Bucket",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "datalaketestlakedatabase146A4E2A": Object {
+      "Properties": Object {
+        "CatalogId": "123456789012",
+        "DatabaseInput": Object {
+          "Name": "test-lake",
+        },
+      },
+      "Type": "AWS::Glue::Database",
+    },
+    "datalaketestlakedatalakeadminroledatalakeadministratorTBACC6D7714B": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "lakeformation:AddLFTagsToResource",
+                "lakeformation:RemoveLFTagsFromResource",
+                "lakeformation:GetResourceLFTags",
+                "lakeformation:ListLFTags",
+                "lakeformation:CreateLFTag",
+                "lakeformation:GetLFTag",
+                "lakeformation:UpdateLFTag",
+                "lakeformation:DeleteLFTag",
+                "lakeformation:SearchTablesByLFTags",
+                "lakeformation:SearchDatabasesByLFTags",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "datalaketestlakedatalakeadminroledatalakeadministratorTBACC6D7714B",
+        "Roles": Array [
+          Object {
+            "Ref": "datalaketestlakedatalakeadminroledatalakeadministratorrole0CE6C3E6",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "datalaketestlakedatalakeadminroledatalakeadministratorbasic42E4DDDE": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "iam:CreateServiceLinkedRole",
+              "Condition": Object {
+                "StringEquals": Object {
+                  "iam:AWSServiceName": "lakeformation.amazonaws.com",
+                },
+              },
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            Object {
+              "Action": "iam:PutRolePolicy",
+              "Effect": "Allow",
+              "Resource": "arn:aws:iam::123456789012:role/aws-service-role/lakeformation.amazonaws.com/AWSServiceRoleForLakeFormationDataAccess",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "datalaketestlakedatalakeadminroledatalakeadministratorbasic42E4DDDE",
+        "Roles": Array [
+          Object {
+            "Ref": "datalaketestlakedatalakeadminroledatalakeadministratorrole0CE6C3E6",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "datalaketestlakedatalakeadminroledatalakeadministratorcrossaccountCA5F9CEB": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "ram:AcceptResourceShareInvitation",
+                "ram:RejectResourceShareInvitation",
+                "ec2:DescribeAvailabilityZones",
+                "ram:EnableSharingWithAwsOrganization",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "datalaketestlakedatalakeadminroledatalakeadministratorcrossaccountCA5F9CEB",
+        "Roles": Array [
+          Object {
+            "Ref": "datalaketestlakedatalakeadminroledatalakeadministratorrole0CE6C3E6",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "datalaketestlakedatalakeadminroledatalakeadministratorlambdawriteCWlogs84641127": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "logs:CreateLogGroup",
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+              "Sid": "AllowLogging",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "datalaketestlakedatalakeadminroledatalakeadministratorlambdawriteCWlogs84641127",
+        "Roles": Array [
+          Object {
+            "Ref": "datalaketestlakedatalakeadminroledatalakeadministratorrole0CE6C3E6",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "datalaketestlakedatalakeadminroledatalakeadministratorrole0CE6C3E6": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": Array [
+                  "lakeformation.amazonaws.com",
+                  "lambda.amazonaws.com",
+                  "sagemaker.amazonaws.com",
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/AWSLakeFormationDataAdmin",
+              ],
+            ],
+          },
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/AWSGlueConsoleFullAccess",
+              ],
+            ],
+          },
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/CloudWatchLogsReadOnlyAccess",
+              ],
+            ],
+          },
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/AWSLakeFormationCrossAccountManager",
+              ],
+            ],
+          },
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/AmazonAthenaFullAccess",
+              ],
+            ],
+          },
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/AmazonSageMakerFullAccess",
+              ],
+            ],
+          },
+        ],
+        "RoleName": "test-lake-datalake-admin-alpha",
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "datalaketestlakedatalakeadminrolelfdatalakeroleadminsettings91C36664": Object {
+      "DependsOn": Array [
+        "datalaketestlakedatalakeadminroledatalakeadministratorrole0CE6C3E6",
+      ],
+      "Properties": Object {
+        "Admins": Array [
+          Object {
+            "DataLakePrincipalIdentifier": Object {
+              "Fn::GetAtt": Array [
+                "datalaketestlakedatalakeadminroledatalakeadministratorrole0CE6C3E6",
+                "Arn",
+              ],
+            },
+          },
+        ],
+      },
+      "Type": "AWS::LakeFormation::DataLakeSettings",
+    },
+    "datalaketestlakedatalakecreatorroleAWSDBCreatorServiceRoletestlakedatalakecreatoralphaDefaultPolicy03434DE7": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "lakeformation:GetDataAccess",
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "datalaketestlakedatalakecreatorroleAWSDBCreatorServiceRoletestlakedatalakecreatoralphaDefaultPolicy03434DE7",
+        "Roles": Array [
+          Object {
+            "Ref": "datalaketestlakedatalakecreatorroleAWSDBCreatorServiceRoletestlakedatalakecreatoralphaF5D800D9",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "datalaketestlakedatalakecreatorroleAWSDBCreatorServiceRoletestlakedatalakecreatoralphaF5D800D9": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "glue.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSGlueServiceRole",
+              ],
+            ],
+          },
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/AWSLakeFormationDataAdmin",
+              ],
+            ],
+          },
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/AmazonS3FullAccess",
+              ],
+            ],
+          },
+        ],
+        "Path": "/service-role/",
+        "RoleName": "test-lake-datalake-creator-alpha",
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "datalaketestlakelfdbcreatorpermissionA51CFA18": Object {
+      "DependsOn": Array [
+        "datalaketestlakedatabase146A4E2A",
+      ],
+      "Properties": Object {
+        "DataLakePrincipal": Object {
+          "DataLakePrincipalIdentifier": Object {
+            "Fn::GetAtt": Array [
+              "datalaketestlakedatalakecreatorroleAWSDBCreatorServiceRoletestlakedatalakecreatoralphaF5D800D9",
+              "Arn",
+            ],
+          },
+        },
+        "Permissions": Array [
+          "ALTER",
+          "CREATE_TABLE",
+          "DROP",
+        ],
+        "Resource": Object {
+          "DatabaseResource": Object {
+            "Name": "test-lake",
+          },
+        },
+      },
+      "Type": "AWS::LakeFormation::Permissions",
+    },
+    "datalakeworkgroup682714D0": Object {
+      "Properties": Object {
+        "Description": "Default Data Lake Workgroup",
+        "Name": "test-lake-workgroup-alpha",
+        "RecursiveDeleteOption": true,
+        "State": "ENABLED",
+        "WorkGroupConfiguration": Object {
+          "EnforceWorkGroupConfiguration": true,
+          "EngineVersion": Object {
+            "EffectiveEngineVersion": "Athena engine version 2",
+            "SelectedEngineVersion": "Athena engine version 2",
+          },
+          "ResultConfiguration": Object {
+            "OutputLocation": Object {
+              "Fn::Join": Array [
+                "",
+                Array [
+                  "s3://",
+                  Object {
+                    "Ref": "datalakedatalakelogbucket0A814944",
+                  },
+                  "/results/",
+                ],
+              ],
+            },
+          },
+        },
+      },
+      "Type": "AWS::Athena::WorkGroup",
+    },
+    "iotdatadatastreamstackNestedStackiotdatadatastreamstackNestedStackResource916244DA": Object {
+      "DeletionPolicy": "Delete",
+      "Properties": Object {
+        "TemplateURL": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "https://s3.us-east-1.",
+              Object {
+                "Ref": "AWS::URLSuffix",
+              },
+              "/cdk-hnb659fds-assets-123456789012-us-east-1/90b0ccb599702aa05bc4711a5c61f4464878172190848b607459b9664a1b61c9.json",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::CloudFormation::Stack",
+      "UpdateReplacePolicy": "Delete",
+    },
+  },
+  "Rules": Object {
+    "CheckBootstrapVersion": Object {
+      "Assertions": Array [
+        Object {
+          "Assert": Object {
+            "Fn::Not": Array [
+              Object {
+                "Fn::Contains": Array [
+                  Array [
+                    "1",
+                    "2",
+                    "3",
+                    "4",
+                    "5",
+                  ],
+                  Object {
+                    "Ref": "BootstrapVersion",
+                  },
+                ],
+              },
+            ],
+          },
+          "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI.",
+        },
+      ],
+    },
+  },
+}
+`;

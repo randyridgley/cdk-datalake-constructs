@@ -1,11 +1,12 @@
-import * as glue from '@aws-cdk/aws-glue';
-import * as cdk from '@aws-cdk/core';
+import { IResolvable } from 'aws-cdk-lib';
+import * as glue from 'aws-cdk-lib/aws-glue';
+import { Construct } from 'constructs';
 
 export interface IGlueTableProperties {
   tableName: string;
   description: string;
-  partitionKeys: Array<glue.CfnTable.ColumnProperty | cdk.IResolvable> | cdk.IResolvable;
-  columns: Array<glue.CfnTable.ColumnProperty | cdk.IResolvable> | cdk.IResolvable;
+  partitionKeys: Array<glue.CfnTable.ColumnProperty | IResolvable> | IResolvable;
+  columns: Array<glue.CfnTable.ColumnProperty | IResolvable> | IResolvable;
   parameters: {[param: string]: any};
   databaseName: string;
   s3Location: string;
@@ -16,11 +17,11 @@ export interface IGlueTableProperties {
   catalogId: string;
 }
 
-export class GlueTable extends cdk.Construct {
+export class GlueTable extends Construct {
   readonly table: glue.CfnTable;
   readonly tableName: string;
 
-  constructor(scope: cdk.Construct, id: string, props: IGlueTableProperties) {
+  constructor(scope: Construct, id: string, props: IGlueTableProperties) {
     super(scope, id);
 
     this.tableName = props.tableName;

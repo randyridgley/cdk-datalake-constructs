@@ -1,6 +1,6 @@
-import * as iam from '@aws-cdk/aws-iam';
-import * as s3 from '@aws-cdk/aws-s3';
-import * as cdk from '@aws-cdk/core';
+import * as iam from 'aws-cdk-lib/aws-iam';
+import * as s3 from 'aws-cdk-lib/aws-s3';
+import { Construct } from 'constructs';
 
 export interface DataLakeBucketProps {
   readonly bucketName: string;
@@ -10,10 +10,10 @@ export interface DataLakeBucketProps {
   readonly s3Properties: s3.BucketProps | undefined;
 }
 
-export class DataLakeBucket extends cdk.Construct {
+export class DataLakeBucket extends Construct {
   public readonly bucket: s3.Bucket;
 
-  constructor(scope: cdk.Construct, id: string, props: DataLakeBucketProps) {
+  constructor(scope: Construct, id: string, props: DataLakeBucketProps) {
     super(scope, id);
 
     this.bucket = new s3.Bucket(this, 'datalake-bucket', {

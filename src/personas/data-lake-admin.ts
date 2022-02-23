@@ -1,18 +1,19 @@
-import * as iam from '@aws-cdk/aws-iam';
-import * as lf from '@aws-cdk/aws-lakeformation';
-import * as cdk from '@aws-cdk/core';
+import { CfnOutput, Stack } from 'aws-cdk-lib';
+import * as iam from 'aws-cdk-lib/aws-iam';
+import * as lf from 'aws-cdk-lib/aws-lakeformation';
+import { Construct } from 'constructs';
 
 export interface DataLakeAdministratorProps {
   readonly name: string;
 }
 
-export class DataLakeAdministrator extends cdk.Construct {
+export class DataLakeAdministrator extends Construct {
   public readonly role: iam.IRole;
 
-  constructor(scope: cdk.Construct, id: string, props: DataLakeAdministratorProps) {
+  constructor(scope: Construct, id: string, props: DataLakeAdministratorProps) {
     super(scope, id);
 
-    const accountId = cdk.Stack.of(this).account;
+    const accountId = Stack.of(this).account;
 
     this.role = new iam.Role(this, 'datalake-administrator-role', {
       roleName: props.name,
@@ -112,6 +113,6 @@ export class DataLakeAdministrator extends cdk.Construct {
       }],
     });
     lfAdminRole.node.addDependency(this.role);
-    new cdk.CfnOutput(this, 'DataLakeAdminRole', { value: this.role.roleName });
+    new CfnOutput(this, 'DataLakeAdminRole', { value: this.role.roleName });
   }
 }

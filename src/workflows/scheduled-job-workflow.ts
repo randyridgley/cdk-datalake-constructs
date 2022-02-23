@@ -1,10 +1,11 @@
-import * as events from '@aws-cdk/aws-events';
-import * as targets from '@aws-cdk/aws-events-targets';
-import * as iam from '@aws-cdk/aws-iam';
-import * as logs from '@aws-cdk/aws-logs';
-import * as sfn from '@aws-cdk/aws-stepfunctions';
-import * as tasks from '@aws-cdk/aws-stepfunctions-tasks';
-import * as cdk from '@aws-cdk/core';
+import { Duration } from 'aws-cdk-lib';
+import * as events from 'aws-cdk-lib/aws-events';
+import * as targets from 'aws-cdk-lib/aws-events-targets';
+import * as iam from 'aws-cdk-lib/aws-iam';
+import * as logs from 'aws-cdk-lib/aws-logs';
+import * as sfn from 'aws-cdk-lib/aws-stepfunctions';
+import * as tasks from 'aws-cdk-lib/aws-stepfunctions-tasks';import { Construct } from 'constructs';
+;
 
 import { Stage } from '../data-lake';
 import { buildEventRuleName, buildRoleName } from '../utils';
@@ -15,14 +16,14 @@ export interface ScheduledJobWorkflowProps {
   readonly stageName: Stage;
   readonly jobName: string;
   readonly jobArguments: {[key: string]: any};
-  readonly jobTimeout: cdk.Duration;
+  readonly jobTimeout: Duration;
 }
 
-export class ScheduledJobWorkflow extends cdk.Construct {
-  public readonly rule:events.Rule
-  public readonly stateMachine: sfn.StateMachine
+export class ScheduledJobWorkflow extends Construct {
+  public readonly rule:events.Rule;
+  public readonly stateMachine: sfn.StateMachine;
 
-  constructor(scope: cdk.Construct, id: string, props: ScheduledJobWorkflowProps) {
+  constructor(scope: Construct, id: string, props: ScheduledJobWorkflowProps) {
     super(scope, id);
 
     const stateMachineRole = new iam.Role(scope, 'StateMachineJobExecutionRole', {

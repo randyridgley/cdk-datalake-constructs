@@ -1,5 +1,6 @@
-import * as cloudwatch from '@aws-cdk/aws-cloudwatch';
-import * as cdk from '@aws-cdk/core';
+import { Duration } from 'aws-cdk-lib';
+import * as cloudwatch from 'aws-cdk-lib/aws-cloudwatch';
+import { Construct } from 'constructs';
 
 import { KinesisStream } from './kinesis-stream';
 import { S3DeliveryStream } from './s3-delivery-stream';
@@ -19,12 +20,12 @@ export interface IKinesisOpsProperties {
   firehoseDeliveryToS3Warning?: cloudwatch.CreateAlarmOptions;
 }
 
-export class KinesisOps extends cdk.Construct {
+export class KinesisOps extends Construct {
 
   public dashboard: cloudwatch.Dashboard;
   public readonly stream: KinesisStream;
-  public readonly deliveryStream: S3DeliveryStream
-  public readonly streamName: string
+  public readonly deliveryStream: S3DeliveryStream;
+  public readonly streamName: string;
 
   public readonly inputStreamIteratorAgeCriticalAlarm: cloudwatch.Alarm;
   public readonly inputStreamIteratorAgeWarningAlarm: cloudwatch.Alarm;
@@ -39,7 +40,7 @@ export class KinesisOps extends cdk.Construct {
   public readonly alarmsSev2: cloudwatch.Alarm[];
   public readonly alarmsSev3: cloudwatch.Alarm[];
 
-  constructor(scope: cdk.Construct, id: string, props: IKinesisOpsProperties) {
+  constructor(scope: Construct, id: string, props: IKinesisOpsProperties) {
     super(scope, id);
 
     this.stream = props.stream;
@@ -53,11 +54,11 @@ export class KinesisOps extends cdk.Construct {
     this.inputStreamIteratorAgeCriticalAlarm = new cloudwatch.Alarm(this, 'inputStream-iterator-age-critical-alarm', {
       alarmName: `${this.streamName} inputStream IteratorAge Long`,
       alarmDescription: 'Alarms if maximum iterator age of inputStream is more than 10 minute',
-      metric: this.stream.metricGetRecordsIteratorAgeMilliseconds(),
+      metric: this.stream.metricGetRecordsIteratorAgeMilliseconds({
+        period: Duration.minutes(5),
+      }),
       threshold: 600000,
       comparisonOperator: cloudwatch.ComparisonOperator.GREATER_THAN_OR_EQUAL_TO_THRESHOLD,
-
-      period: cdk.Duration.minutes(5),
       evaluationPeriods: 12,
       ...(props.inputStreamIteratorAgeCritical || {}),
     });
@@ -65,10 +66,11 @@ export class KinesisOps extends cdk.Construct {
     this.inputStreamIteratorAgeWarningAlarm = new cloudwatch.Alarm(this, 'inputStream-iterator-age-warning-alarm', {
       alarmName: `${this.streamName} inputStream IteratorAge Long Warning`,
       alarmDescription: 'Alarms if maximum iterator age of inputStream is more than 5 minute',
-      metric: this.stream.metricGetRecordsIteratorAgeMilliseconds(),
+      metric: this.stream.metricGetRecordsIteratorAgeMilliseconds({
+        period: Duration.minutes(5),
+      }),
       threshold: 30000,
       comparisonOperator: cloudwatch.ComparisonOperator.GREATER_THAN_OR_EQUAL_TO_THRESHOLD,
-      period: cdk.Duration.minutes(5),
       evaluationPeriods: 12,
       ...(props.inputStreamIteratorAgeWarning || {}),
     });
@@ -76,10 +78,11 @@ export class KinesisOps extends cdk.Construct {
     this.inputStreamReadThroughputWarningAlarm = new cloudwatch.Alarm(this, 'inputStream-read-throughput-warning-alarm', {
       alarmName: `${this.streamName} inputStream ReadThroughput Exceed Warning`,
       alarmDescription: 'Alarms if read provisioned throughput of inputStream is exceeded for least 2 hours',
-      metric: this.stream.metricReadProvisionedThroughputExceeded(),
+      metric: this.stream.metricReadProvisionedThroughputExceeded({
+        period: Duration.minutes(10),
+      }),
       threshold: 0.15,
       comparisonOperator: cloudwatch.ComparisonOperator.GREATER_THAN_THRESHOLD,
-      period: cdk.Duration.minutes(10),
       evaluationPeriods: 12,
       ...(props.inputStreamReadThroughputWarning || {}),
     });
@@ -87,10 +90,11 @@ export class KinesisOps extends cdk.Construct {
     this.inputStreamWriteThroughputWarningAlarm = new cloudwatch.Alarm(this, 'inputStream-write-throughput-warning-alarm', {
       alarmName: `${this.streamName} inputStream WriteThroughput Exceed Warning`,
       alarmDescription: 'Alarms if write provisioned throughput of inputStream is exceeded for least 12 hours',
-      metric: this.stream.metricWriteProvisionedThroughputExceeded(),
+      metric: this.stream.metricWriteProvisionedThroughputExceeded({
+        period: Duration.minutes(60),
+      }),
       threshold: 0.15,
       comparisonOperator: cloudwatch.ComparisonOperator.GREATER_THAN_THRESHOLD,
-      period: cdk.Duration.minutes(60),
       evaluationPeriods: 12,
       ...(props.inputStreamWriteThroughputWarning || {}),
     });
@@ -98,10 +102,11 @@ export class KinesisOps extends cdk.Construct {
     this.inputStreamGetRecordsWarningAlarm = new cloudwatch.Alarm(this, 'inputStream-get-records-warning-alarm', {
       alarmName: `${this.streamName} inputStream GetRecords Success Low Warning`,
       alarmDescription: 'Alarms if GetRecords of inputStream not very successful for least 30 minutes',
-      metric: this.stream.metricGetRecordsSuccess(),
+      metric: this.stream.metricGetRecordsSuccess({
+        period: Duration.minutes(5),
+      }),
       threshold: 0.9,
       comparisonOperator: cloudwatch.ComparisonOperator.LESS_THAN_THRESHOLD,
-      period: cdk.Duration.minutes(5),
       evaluationPeriods: 6,
       ...(props.inputStreamGetRecordsWarning || {}),
     });
@@ -109,10 +114,11 @@ export class KinesisOps extends cdk.Construct {
     this.inputStreamPutRecordsWarningAlarm = new cloudwatch.Alarm(this, 'inputStream-put-records-warning-alarm', {
       alarmName: `${this.streamName} inputStream PutRecords Success Low Warning`,
       alarmDescription: 'Alarms if PutRecords of inputStream not very successful for least 12 hours',
-      metric: this.stream.metricPutRecordsSuccess(),
+      metric: this.stream.metricPutRecordsSuccess({
+        period: Duration.minutes(60),
+      }),
       threshold: 0.9,
       comparisonOperator: cloudwatch.ComparisonOperator.LESS_THAN_THRESHOLD,
-      period: cdk.Duration.minutes(60),
       evaluationPeriods: 12,
       ...(props.inputStreamPutRecordsWarning || {}),
     });
@@ -120,11 +126,12 @@ export class KinesisOps extends cdk.Construct {
     this.firehoseDeliveryToS3WarningAlarm = new cloudwatch.Alarm(this, 'deliveryStream-delivery-to-s3-warning-alarm', {
       alarmName: `${this.streamName} Firehose DeliveryToS3 Failure Warning`,
       alarmDescription: 'Alarms if firehose DeliveryToS3 failed for atleast 60 minutes',
-      metric: this.deliveryStream.metricDeliveryToS3Success(),
-      statistic: cloudwatch.Statistic.AVERAGE,
+      metric: this.deliveryStream.metricDeliveryToS3Success({
+        statistic: cloudwatch.Statistic.AVERAGE,
+        period: Duration.minutes(5),
+      }),
       threshold: 1,
       comparisonOperator: cloudwatch.ComparisonOperator.LESS_THAN_THRESHOLD,
-      period: cdk.Duration.minutes(5),
       evaluationPeriods: 12,
       treatMissingData: cloudwatch.TreatMissingData.NOT_BREACHING,
       ...(props.firehoseDeliveryToS3Warning || {}),
@@ -133,11 +140,12 @@ export class KinesisOps extends cdk.Construct {
     this.firehoseDeliveryToS3CriticalAlarm = new cloudwatch.Alarm(this, 'deliveryStream-delivery-to-s3-critical-alarm', {
       alarmName: `${this.streamName} Firehose DeliveryToS3 Failure Critical`,
       alarmDescription: 'Alarms if firehose DeliveryToS3 failed for atleast 24 hours',
-      metric: this.deliveryStream.metricDeliveryToS3Success(),
-      statistic: cloudwatch.Statistic.AVERAGE,
+      metric: this.deliveryStream.metricDeliveryToS3Success({
+        statistic: cloudwatch.Statistic.AVERAGE,
+        period: Duration.hours(1),
+      }),
       threshold: 1,
       comparisonOperator: cloudwatch.ComparisonOperator.LESS_THAN_THRESHOLD,
-      period: cdk.Duration.hours(1),
       evaluationPeriods: 24,
       treatMissingData: cloudwatch.TreatMissingData.NOT_BREACHING,
       ...(props.firehoseDeliveryToS3Critical || {}),
@@ -244,7 +252,7 @@ export class KinesisOps extends cdk.Construct {
           this.deliveryStream.metricDeliveryToS3DataFreshness({
             label: 'Freshness',
             statistic: 'max',
-            period: cdk.Duration.minutes(5),
+            period: Duration.minutes(5),
           }),
         ],
       }),

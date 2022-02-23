@@ -1,7 +1,5 @@
-import { Asset } from '@aws-cdk/aws-s3-assets';
-import * as cdk from '@aws-cdk/core';
-import { DataSet } from './data-sets/data-set';
-import { DataSetLocation } from './pipeline';
+import { Asset } from 'aws-cdk-lib/aws-s3-assets';
+import { Construct } from 'constructs';
 
 export function notUndefined<T>(obj: T | undefined): obj is T {
   return obj !== undefined;
@@ -94,12 +92,6 @@ export function toS3Path(asset: Asset): string {
   return `s3://${asset.s3BucketName}/${asset.s3ObjectKey}`;
 }
 
-export function packageAsset (scope: cdk.Construct, id: string, projectRelativePath: string): Asset {
+export function packageAsset (scope: Construct, id: string, projectRelativePath: string): Asset {
   return new Asset(scope, id, { path: projectRelativePath });
 };
-
-export function getDataSetBucketName(dataSetLocation: DataSetLocation, dataSet: DataSet) : string {
-  return dataSetLocation == DataSetLocation.RAW ? dataSet.rawBucketName :
-    dataSetLocation == DataSetLocation.REFINED ? dataSet.refinedBucketName :
-      dataSet.trustedBucketName;
-}

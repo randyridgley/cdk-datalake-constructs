@@ -1,9 +1,9 @@
-import * as cloudwatch from '@aws-cdk/aws-cloudwatch';
-import * as events from '@aws-cdk/aws-events';
-import * as glue from '@aws-cdk/aws-glue';
-import * as iam from '@aws-cdk/aws-iam';
-import * as lf from '@aws-cdk/aws-lakeformation';
-import * as cdk from '@aws-cdk/core';
+import * as cloudwatch from 'aws-cdk-lib/aws-cloudwatch';
+import * as events from 'aws-cdk-lib/aws-events';
+import * as glue from 'aws-cdk-lib/aws-glue';
+import * as iam from 'aws-cdk-lib/aws-iam';
+import * as lf from 'aws-cdk-lib/aws-lakeformation';
+import { Construct } from 'constructs';
 import { Permissions } from '../data-lake';
 
 export interface IGlueCrawlerProperties {
@@ -15,13 +15,13 @@ export interface IGlueCrawlerProperties {
   bucketPrefix?: string;
 }
 
-export class GlueCrawler extends cdk.Construct {
-  public readonly crawler: glue.CfnCrawler
+export class GlueCrawler extends Construct {
+  public readonly crawler: glue.CfnCrawler;
   public readonly role: iam.IRole;
   public readonly metricSuccessRule: events.Rule;
   public readonly metricFailureRule: events.Rule;
 
-  constructor(scope: cdk.Construct, id: string, props: IGlueCrawlerProperties) {
+  constructor(scope: Construct, id: string, props: IGlueCrawlerProperties) {
     super(scope, id);
 
     this.role = this.createGlueCrawlerRole(props);
@@ -84,7 +84,7 @@ export class GlueCrawler extends cdk.Construct {
     return new cloudwatch.Metric({
       namespace: 'AWS/Events',
       metricName: 'TriggeredRules',
-      dimensions: { RuleName: ruleName },
+      dimensionsMap: { RuleName: ruleName },
       statistic: cloudwatch.Statistic.SUM,
       ...props,
     }).attachTo(this);
@@ -108,7 +108,7 @@ export class GlueCrawler extends cdk.Construct {
   private createGlueCrawlerRole(props: IGlueCrawlerProperties): iam.Role {
     const role = new iam.Role(this, 'Role', {
       roleName: props.roleName || props.name + 'Role',
-      assumedBy: new iam.ServicePrincipal('glue'),
+      assumedBy: new iam.ServicePrincipal('glue.amazonaws.com'),
       managedPolicies: [
         iam.ManagedPolicy.fromAwsManagedPolicyName('service-role/AWSGlueServiceRole'),
         iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonS3FullAccess'), // slim this down if possible

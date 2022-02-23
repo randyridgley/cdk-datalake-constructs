@@ -1,10 +1,11 @@
-import * as cloudwatch from '@aws-cdk/aws-cloudwatch';
-import * as iam from '@aws-cdk/aws-iam';
-import * as kinesis from '@aws-cdk/aws-kinesis';
-import * as firehose from '@aws-cdk/aws-kinesisfirehose';
-import * as lambda from '@aws-cdk/aws-lambda';
-import * as s3 from '@aws-cdk/aws-s3';
-import * as cdk from '@aws-cdk/core';
+import { Resource } from 'aws-cdk-lib';
+import * as cloudwatch from 'aws-cdk-lib/aws-cloudwatch';
+import * as iam from 'aws-cdk-lib/aws-iam';
+import * as kinesis from 'aws-cdk-lib/aws-kinesis';
+import * as firehose from 'aws-cdk-lib/aws-kinesisfirehose';
+import * as lambda from 'aws-cdk-lib/aws-lambda';
+import * as s3 from 'aws-cdk-lib/aws-s3';
+import { Construct } from 'constructs';
 
 export enum DeliveryStreamType {
   DIRECT_PUT = 'DirectPut',
@@ -30,7 +31,7 @@ export interface DeliveryStreamProperties {
   readonly transformFunction?: lambda.Function;
 }
 
-export class S3DeliveryStream extends cdk.Resource {
+export class S3DeliveryStream extends Resource {
   public s3Bucket: s3.IBucket;
   protected cloudWatchLogsRole?: iam.Role;
   public readonly deliveryStreamArn: string;
@@ -38,7 +39,7 @@ export class S3DeliveryStream extends cdk.Resource {
   private readonly role: iam.Role;
   private readonly deliveryStreamResource: firehose.CfnDeliveryStream;
 
-  constructor(parent: cdk.Construct, name: string, props: DeliveryStreamProperties) {
+  constructor(parent: Construct, name: string, props: DeliveryStreamProperties) {
     super(parent, name);
     this.role = new iam.Role(this, 'kinesis-role', {
       assumedBy: new iam.ServicePrincipal('firehose.amazonaws.com'),
@@ -60,7 +61,7 @@ export class S3DeliveryStream extends cdk.Resource {
     return new cloudwatch.Metric({
       namespace: 'AWS/Firehose',
       metricName,
-      dimensions: {
+      dimensionsMap: {
         DeliveryStreamName: this.deliveryStreamName,
       },
       ...props,

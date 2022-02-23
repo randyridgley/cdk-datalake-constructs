@@ -1,11 +1,12 @@
-import * as cloudwatch from '@aws-cdk/aws-cloudwatch';
-import * as events from '@aws-cdk/aws-events';
-import * as eventtargets from '@aws-cdk/aws-events-targets';
-import * as glue from '@aws-cdk/aws-glue';
-import * as iam from '@aws-cdk/aws-iam';
-import * as lambda from '@aws-cdk/aws-lambda';
-import * as s3 from '@aws-cdk/aws-s3';
-import * as cdk from '@aws-cdk/core';
+import { Duration, Stack } from 'aws-cdk-lib';
+import * as cloudwatch from 'aws-cdk-lib/aws-cloudwatch';
+import * as events from 'aws-cdk-lib/aws-events';
+import * as eventtargets from 'aws-cdk-lib/aws-events-targets';
+import * as glue from 'aws-cdk-lib/aws-glue';
+import * as iam from 'aws-cdk-lib/aws-iam';
+import * as lambda from 'aws-cdk-lib/aws-lambda';
+import * as s3 from 'aws-cdk-lib/aws-s3';
+import { Construct } from 'constructs';
 
 export enum GlueWorkerType {
   STANDARD = 'Standard',
@@ -16,7 +17,8 @@ export enum GlueWorkerType {
 export enum GlueVersion {
   V_0 = '0.9',
   V_1 = '1.0',
-  V_2 = '2.0'
+  V_2 = '2.0',
+  V_3 = '3.0'
 }
 
 export enum GlueJobType {
@@ -43,7 +45,7 @@ export interface GlueJobProperties {
   readonly jobType: GlueJobType;
 }
 
-export class GlueJob extends cdk.Construct {
+export class GlueJob extends Construct {
   private static readonly DAY_IN_MINUTES = 1440;
 
   public readonly job: glue.CfnJob;
@@ -59,7 +61,7 @@ export class GlueJob extends cdk.Construct {
 
   private allExecutionAttemptsFailedRule: events.Rule;
 
-  constructor(scope: cdk.Construct, id: string, props: GlueJobProperties) {
+  constructor(scope: Construct, id: string, props: GlueJobProperties) {
     super(scope, id);
 
     this.role = this.createGlueJobRole(props);
@@ -85,7 +87,7 @@ export class GlueJob extends cdk.Construct {
         '--job-language': 'python',
         '--enable-metrics': true,
         '--enable-continuous-cloudwatch-log': true,
-        '--region': cdk.Stack.of(this).region,
+        '--region': Stack.of(this).region,
         '--enable-glue-datacatalog': true,
         '--enable-continuous-log-filter': true,
         '--enable-spark-ui': true,
@@ -129,7 +131,7 @@ export class GlueJob extends cdk.Construct {
   private createGlueJobRole(props: GlueJobProperties): iam.Role {
     const role = new iam.Role(this, 'Role', {
       roleName: props.roleName || props.name + 'Role',
-      assumedBy: new iam.ServicePrincipal('glue'),
+      assumedBy: new iam.ServicePrincipal('glue.amazonaws.com'),
       managedPolicies: [
         iam.ManagedPolicy.fromAwsManagedPolicyName('service-role/AWSGlueServiceRole'),
         iam.ManagedPolicy.fromAwsManagedPolicyName('AWSGlueConsoleFullAccess'),
@@ -180,11 +182,11 @@ export class GlueJob extends cdk.Construct {
     return new cloudwatch.Metric({
       metricName: 'TriggeredRules',
       namespace: 'AWS/Events',
-      dimensions: {
+      dimensionsMap: {
         RuleName: this.allExecutionAttemptsFailedRule.ruleName,
       },
       statistic: 'Sum',
-      period: cdk.Duration.minutes(1),
+      period: Duration.minutes(1),
       ...props,
     });
   }
@@ -197,7 +199,7 @@ export class GlueJob extends cdk.Construct {
     return new cloudwatch.Metric({
       namespace: 'AWS/Events',
       metricName: 'TriggeredRules',
-      dimensions: { RuleName: ruleName },
+      dimensionsMap: { RuleName: ruleName },
       statistic: cloudwatch.Statistic.SUM,
       ...props,
     }).attachTo(this);
@@ -207,7 +209,7 @@ export class GlueJob extends cdk.Construct {
     return new cloudwatch.Metric({
       namespace: 'AWS/Glue',
       metricName,
-      dimensions: {
+      dimensionsMap: {
         JobName: this.name,
         JobRunId: 'ALL',
         Type: dimensionType,
@@ -245,7 +247,7 @@ export class GlueJob extends cdk.Construct {
         uuid: 'GlueExecutionFailListenerLambda',
         runtime: lambda.Runtime.PYTHON_3_7,
         handler: 'index.handler',
-        timeout: cdk.Duration.minutes(1),
+        timeout: Duration.minutes(1),
         code: lambda.Code.fromInline(`
 import boto3
 import json
@@ -286,8 +288,8 @@ def handler(event, context):
       },
     );
 
-    const region = cdk.Stack.of(this).region;
-    const accountId = cdk.Stack.of(this).account;
+    const region = Stack.of(this).region;
+    const accountId = Stack.of(this).account;
 
     lambdaFunction.addToRolePolicy(
       new iam.PolicyStatement({

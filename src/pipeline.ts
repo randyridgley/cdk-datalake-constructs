@@ -1,8 +1,9 @@
-import * as events from '@aws-cdk/aws-events';
-import * as glue from '@aws-cdk/aws-glue';
-import * as lambda from '@aws-cdk/aws-lambda';
-import * as s3 from '@aws-cdk/aws-s3';
-import * as cdk from '@aws-cdk/core';
+import * as events from 'aws-cdk-lib/aws-events';
+import * as glue from 'aws-cdk-lib/aws-glue';
+import * as lambda from 'aws-cdk-lib/aws-lambda';
+import * as s3 from 'aws-cdk-lib/aws-s3';
+import * as cdk from 'aws-cdk-lib/core';
+import { DataTier } from '.';
 
 import { GlueJobType, GlueVersion, GlueWorkerType } from './etl/glue-job';
 
@@ -20,12 +21,6 @@ export interface StreamProperties {
 export interface S3Properties {
   readonly sourceBucketName: string;
   readonly sourceKeys: string[];
-}
-
-export enum DataSetLocation {
-  RAW = 'raw',
-  TRUSTED = 'trusted',
-  REFINED = 'refined'
 }
 
 export interface TableProps {
@@ -57,7 +52,7 @@ export interface JobProperties {
   readonly jobArgs?: { [key: string]: string };
   readonly timeout?: number;
   readonly jobType: GlueJobType;
-  readonly destinationLocation?: DataSetLocation;
+  readonly destinationLocation?: DataTier;
 }
 
 export interface DataStreamProperties {
@@ -83,7 +78,7 @@ export interface PipelineProperties {
   readonly type: DataPipelineType;
   readonly name: string;
   readonly destinationPrefix: string;
-  readonly dataSetDropLocation: DataSetLocation;
+  readonly dataSetDropTier: DataTier;
   readonly s3Properties?: S3Properties;
   readonly streamProperties?: StreamProperties;
   readonly jdbcProperties?: JDBCProperties;
@@ -109,21 +104,21 @@ export enum DataPipelineType {
 }
 
 export class Pipeline {
-  public readonly type: DataPipelineType
-  public readonly name: string
-  public readonly destinationPrefix: string
-  public readonly dataSetDropLocation: DataSetLocation
-  public readonly s3Properties?: S3Properties
-  public readonly streamProperties?: StreamProperties
-  public readonly jdbcProperties?: JDBCProperties
-  public readonly s3NotificationProps?: S3NotificationProperties
-  public readonly table? : TableProps
-  public readonly job?: JobProperties
+  public readonly type: DataPipelineType;
+  public readonly name: string;
+  public readonly destinationPrefix: string;
+  public readonly dataSetDropTier: DataTier;
+  public readonly s3Properties?: S3Properties;
+  public readonly streamProperties?: StreamProperties;
+  public readonly jdbcProperties?: JDBCProperties;
+  public readonly s3NotificationProps?: S3NotificationProperties;
+  public readonly table? : TableProps;
+  public readonly job?: JobProperties;
 
   constructor(props: PipelineProperties) {
     this.type = props.type;
     this.name = props.name;
-    this.dataSetDropLocation = props.dataSetDropLocation;
+    this.dataSetDropTier = props.dataSetDropTier;
     this.destinationPrefix = props.destinationPrefix;
     this.jdbcProperties = props.jdbcProperties ? props.jdbcProperties : undefined;
     this.job = props.job ? props.job : undefined;

@@ -1,11 +1,12 @@
-import { Pipeline, DataPipelineType, DataSetLocation } from '../../src/pipeline';
+import { DataTier } from '../../src';
+import { Pipeline, DataPipelineType } from '../../src/pipeline';
 
 export function YellowPipeline() {
   return new Pipeline({
     type: DataPipelineType.S3,
     name: 'taxi-yellow',
     destinationPrefix: 'yellow/',
-    dataSetDropLocation: DataSetLocation.RAW,
+    dataSetDropTier: DataTier.RAW,
     s3Properties: {
       sourceBucketName: 'nyc-tlc',
       sourceKeys: [

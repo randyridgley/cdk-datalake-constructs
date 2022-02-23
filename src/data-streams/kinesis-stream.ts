@@ -1,11 +1,12 @@
-import * as cloudwatch from '@aws-cdk/aws-cloudwatch';
-import * as kinesis from '@aws-cdk/aws-kinesis';
-import * as cdk from '@aws-cdk/core';
+import * as cloudwatch from 'aws-cdk-lib/aws-cloudwatch';
+import * as kinesis from 'aws-cdk-lib/aws-kinesis';
+import * as cdk from 'aws-cdk-lib/core';
+import { Construct } from 'constructs';
 
 export class KinesisStream extends cdk.Resource {
   public readonly stream: kinesis.Stream;
 
-  constructor(parent: cdk.Construct, name: string, props: kinesis.StreamProps) {
+  constructor(parent: Construct, name: string, props: kinesis.StreamProps) {
     super(parent, name);
     this.stream = new kinesis.Stream(this, 'kinesis-stream', props);
   }
@@ -14,7 +15,7 @@ export class KinesisStream extends cdk.Resource {
     return new cloudwatch.Metric({
       namespace: 'AWS/Kinesis',
       metricName,
-      dimensions: {
+      dimensionsMap: {
         StreamName: this.stream.streamName,
       },
       ...props,

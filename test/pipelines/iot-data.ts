@@ -1,9 +1,10 @@
 import * as path from 'path';
-import * as events from '@aws-cdk/aws-events';
-import * as lambda from '@aws-cdk/aws-lambda';
-import { Aws, Duration } from '@aws-cdk/core';
+import * as events from 'aws-cdk-lib/aws-events';
+import * as lambda from 'aws-cdk-lib/aws-lambda';
+import { Aws, Duration } from 'aws-cdk-lib/core';
+import { DataTier } from '../../src';
 import { GlueJobType, GlueVersion, GlueWorkerType } from '../../src/etl/glue-job';
-import { Pipeline, DataPipelineType, DataSetLocation } from '../../src/pipeline';
+import { Pipeline, DataPipelineType } from '../../src/pipeline';
 import { buildEventRuleName, buildGlueJobName, buildKinesisStreamName, buildLambdaFunctionName, buildRoleName } from '../../src/utils';
 
 export function IoTDataPipeline(stage: string) {
@@ -14,15 +15,17 @@ export function IoTDataPipeline(stage: string) {
     stage: stage,
   });
 
+  const code = lambda.Code.fromAsset(path.join(__dirname, '../lambda/iot-data-generator'));
+
   return new Pipeline({
     type: DataPipelineType.STREAM,
     name: 'iot-data',
     destinationPrefix: 'iot-data/',
-    dataSetDropLocation: DataSetLocation.RAW,
+    dataSetDropTier: DataTier.RAW,
     streamProperties: {
       streamName: streamName,
       lambdaDataGenerator: {
-        code: lambda.Code.fromAsset(path.join(__dirname, '../lambda/iot-data-generator')),
+        code: code,
         handler: 'index.handler',
         timeout: Duration.seconds(300),
         runtime: lambda.Runtime.PYTHON_3_7,
@@ -59,7 +62,7 @@ export function IoTDataPipeline(stage: string) {
         '--DESTINATION_DATABASE': databaseName,
         '--DESTINATION_TABLE': 'p_iot_data',
       },
-      destinationLocation: DataSetLocation.RAW,
+      destinationLocation: DataTier.RAW,
       maxCapacity: 2,
       maxConcurrentRuns: 1,
       maxRetries: 3,

@@ -1,5 +1,5 @@
-import * as s3 from '@aws-cdk/aws-s3';
-import * as cdk from '@aws-cdk/core';
+import { Duration, RemovalPolicy } from 'aws-cdk-lib';
+import * as s3 from 'aws-cdk-lib/aws-s3';
 import { Pipeline } from './pipeline';
 
 export interface DataProductProperties {
@@ -11,11 +11,11 @@ export interface DataProductProperties {
 }
 
 export class DataProduct {
-  readonly accountId: string
+  readonly accountId: string;
   readonly dataCatalogAccountId?: string;
-  readonly databaseName: string
-  readonly pipelines: Pipeline[]
-  readonly s3BucketProps?: s3.BucketProps
+  readonly databaseName: string;
+  readonly pipelines: Pipeline[];
+  readonly s3BucketProps?: s3.BucketProps;
 
   constructor(props: DataProductProperties) {
     this.accountId = props.accountId;
@@ -27,11 +27,11 @@ export class DataProduct {
       this.s3BucketProps = props.s3BucketProps;
     } else {
       this.s3BucketProps = {
-        removalPolicy: cdk.RemovalPolicy.DESTROY,
+        removalPolicy: RemovalPolicy.DESTROY,
         autoDeleteObjects: true,
         lifecycleRules: [
           {
-            expiration: cdk.Duration.days(30),
+            expiration: Duration.days(30),
           },
         ],
       };

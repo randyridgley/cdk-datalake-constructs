@@ -1,5 +1,6 @@
-import * as cloudwatch from '@aws-cdk/aws-cloudwatch';
-import * as cdk from '@aws-cdk/core';
+import { Duration } from 'aws-cdk-lib';
+import * as cloudwatch from 'aws-cdk-lib/aws-cloudwatch';
+import { Construct } from 'constructs';
 
 import { GlueJob } from './glue-job';
 
@@ -11,7 +12,7 @@ export interface IGlueOpsProperties {
   metricAllExecutionAttemptsFailed?: cloudwatch.CreateAlarmOptions;
 }
 
-export class GlueJobOps extends cdk.Construct {
+export class GlueJobOps extends Construct {
   public readonly job: GlueJob;
   public dashboard: cloudwatch.Dashboard;
   public readonly jvmHeapSizeExceeding80PercentAlarm: cloudwatch.Alarm;
@@ -22,7 +23,7 @@ export class GlueJobOps extends cdk.Construct {
   public readonly alarmsSev2: cloudwatch.Alarm[];
   public readonly alarmsSev3: cloudwatch.Alarm[];
 
-  constructor(scope: cdk.Construct, id: string, props: IGlueOpsProperties) {
+  constructor(scope: Construct, id: string, props: IGlueOpsProperties) {
     super(scope, id);
 
     this.job = props.job;
@@ -34,12 +35,13 @@ export class GlueJobOps extends cdk.Construct {
     this.jvmHeapSizeExceeding80PercentAlarm = new cloudwatch.Alarm(this, 'jvm-heapSize-exceeding80percent-alarm', {
       alarmName: `${this.job.name} JvmHeapSizeExceeding80`,
       alarmDescription: `Jvm Heap Size exceeding 80% glue job (${this.job.name})`,
-      metric: this.job.jvmHeapUsageMetric(),
+      metric: this.job.jvmHeapUsageMetric({
+        period: Duration.days(1),
+        statistic: cloudwatch.Statistic.MAXIMUM,
+      }),
       threshold: 0.8,
       evaluationPeriods: 1,
       datapointsToAlarm: 1,
-      period: cdk.Duration.days(1),
-      statistic: cloudwatch.Statistic.MAXIMUM,
       treatMissingData: cloudwatch.TreatMissingData.NOT_BREACHING,
       comparisonOperator: cloudwatch.ComparisonOperator.GREATER_THAN_OR_EQUAL_TO_THRESHOLD,
       ...(props.jvmHeapSizeExceeding80percent || {}),
@@ -48,12 +50,13 @@ export class GlueJobOps extends cdk.Construct {
     this.jvmHeapSizeExceeding90PercentAlarm = new cloudwatch.Alarm(this, 'jvm-heapSize-exceeding90Percent-alarm', {
       alarmName: `${this.job.name} JvmHeapSizeExceeding90`,
       alarmDescription: `Jvm Heap Size exceeding 90% glue job (${this.job.name})`,
-      metric: this.job.jvmHeapUsageMetric(),
+      metric: this.job.jvmHeapUsageMetric({
+        period: Duration.days(1),
+        statistic: cloudwatch.Statistic.MAXIMUM,
+      }),
       threshold: 0.9,
       evaluationPeriods: 1,
       datapointsToAlarm: 1,
-      period: cdk.Duration.days(1),
-      statistic: cloudwatch.Statistic.MAXIMUM,
       treatMissingData: cloudwatch.TreatMissingData.NOT_BREACHING,
       comparisonOperator: cloudwatch.ComparisonOperator.GREATER_THAN_OR_EQUAL_TO_THRESHOLD,
       ...(props.jvmHeapSizeExceeding90percent || {}),

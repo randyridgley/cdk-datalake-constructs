@@ -16,7 +16,7 @@ new DataLake(scope: Construct, id: string, props: DataLakeProperties)
 
 ##### `scope`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataLake.parameter.scope"></a>
 
-- *Type:* [`@aws-cdk/core.Construct`](#@aws-cdk/core.Construct)
+- *Type:* [`constructs.Construct`](#constructs.Construct)
 
 ---
 
@@ -73,7 +73,7 @@ public createDownloaderCustomResource(stageName: string)
 public readonly databases: {[ key: string ]: Database};
 ```
 
-- *Type:* {[ key: string ]: [`@aws-cdk/aws-glue.Database`](#@aws-cdk/aws-glue.Database)}
+- *Type:* {[ key: string ]: [`@aws-cdk/aws-glue-alpha.Database`](#@aws-cdk/aws-glue-alpha.Database)}
 
 ---
 
@@ -83,7 +83,7 @@ public readonly databases: {[ key: string ]: Database};
 public readonly datalakeAdminRole: IRole;
 ```
 
-- *Type:* [`@aws-cdk/aws-iam.IRole`](#@aws-cdk/aws-iam.IRole)
+- *Type:* [`aws-cdk-lib.aws_iam.IRole`](#aws-cdk-lib.aws_iam.IRole)
 
 ---
 
@@ -93,7 +93,7 @@ public readonly datalakeAdminRole: IRole;
 public readonly datalakeDbCreatorRole: IRole;
 ```
 
-- *Type:* [`@aws-cdk/aws-iam.IRole`](#@aws-cdk/aws-iam.IRole)
+- *Type:* [`aws-cdk-lib.aws_iam.IRole`](#aws-cdk-lib.aws_iam.IRole)
 
 ---
 
@@ -133,7 +133,7 @@ public readonly lakeType: LakeType;
 public readonly logBucket: Bucket;
 ```
 
-- *Type:* [`@aws-cdk/aws-s3.Bucket`](#@aws-cdk/aws-s3.Bucket)
+- *Type:* [`aws-cdk-lib.aws_s3.Bucket`](#aws-cdk-lib.aws_s3.Bucket)
 
 ---
 
@@ -153,7 +153,7 @@ public readonly stageName: Stage;
 public readonly athenaWorkgroup: CfnWorkGroup;
 ```
 
-- *Type:* [`@aws-cdk/aws-athena.CfnWorkGroup`](#@aws-cdk/aws-athena.CfnWorkGroup)
+- *Type:* [`aws-cdk-lib.aws_athena.CfnWorkGroup`](#aws-cdk-lib.aws_athena.CfnWorkGroup)
 
 ---
 
@@ -163,7 +163,7 @@ public readonly athenaWorkgroup: CfnWorkGroup;
 public readonly vpc: Vpc;
 ```
 
-- *Type:* [`@aws-cdk/aws-ec2.Vpc`](#@aws-cdk/aws-ec2.Vpc)
+- *Type:* [`aws-cdk-lib.aws_ec2.Vpc`](#aws-cdk-lib.aws_ec2.Vpc)
 
 ---
 
@@ -180,7 +180,7 @@ new DataLakeAdministrator(scope: Construct, id: string, props: DataLakeAdministr
 
 ##### `scope`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataLakeAdministrator.parameter.scope"></a>
 
-- *Type:* [`@aws-cdk/core.Construct`](#@aws-cdk/core.Construct)
+- *Type:* [`constructs.Construct`](#constructs.Construct)
 
 ---
 
@@ -206,7 +206,7 @@ new DataLakeAdministrator(scope: Construct, id: string, props: DataLakeAdministr
 public readonly role: IRole;
 ```
 
-- *Type:* [`@aws-cdk/aws-iam.IRole`](#@aws-cdk/aws-iam.IRole)
+- *Type:* [`aws-cdk-lib.aws_iam.IRole`](#aws-cdk-lib.aws_iam.IRole)
 
 ---
 
@@ -223,7 +223,7 @@ new DataLakeAnalyst(scope: Construct, id: string, props: DataLakeAnalystProps)
 
 ##### `scope`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataLakeAnalyst.parameter.scope"></a>
 
-- *Type:* [`@aws-cdk/core.Construct`](#@aws-cdk/core.Construct)
+- *Type:* [`constructs.Construct`](#constructs.Construct)
 
 ---
 
@@ -249,7 +249,7 @@ new DataLakeAnalyst(scope: Construct, id: string, props: DataLakeAnalystProps)
 public readonly user: User;
 ```
 
-- *Type:* [`@aws-cdk/aws-iam.User`](#@aws-cdk/aws-iam.User)
+- *Type:* [`aws-cdk-lib.aws_iam.User`](#aws-cdk-lib.aws_iam.User)
 
 ---
 
@@ -266,7 +266,7 @@ new DataLakeBucket(scope: Construct, id: string, props: DataLakeBucketProps)
 
 ##### `scope`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataLakeBucket.parameter.scope"></a>
 
-- *Type:* [`@aws-cdk/core.Construct`](#@aws-cdk/core.Construct)
+- *Type:* [`constructs.Construct`](#constructs.Construct)
 
 ---
 
@@ -292,7 +292,7 @@ new DataLakeBucket(scope: Construct, id: string, props: DataLakeBucketProps)
 public readonly bucket: Bucket;
 ```
 
-- *Type:* [`@aws-cdk/aws-s3.Bucket`](#@aws-cdk/aws-s3.Bucket)
+- *Type:* [`aws-cdk-lib.aws_s3.Bucket`](#aws-cdk-lib.aws_s3.Bucket)
 
 ---
 
@@ -309,7 +309,7 @@ new DataLakeCreator(scope: Construct, id: string, props: DataLakeCreatorProperti
 
 ##### `scope`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataLakeCreator.parameter.scope"></a>
 
-- *Type:* [`@aws-cdk/core.Construct`](#@aws-cdk/core.Construct)
+- *Type:* [`constructs.Construct`](#constructs.Construct)
 
 ---
 
@@ -335,7 +335,7 @@ new DataLakeCreator(scope: Construct, id: string, props: DataLakeCreatorProperti
 public readonly role: IRole;
 ```
 
-- *Type:* [`@aws-cdk/aws-iam.IRole`](#@aws-cdk/aws-iam.IRole)
+- *Type:* [`aws-cdk-lib.aws_iam.IRole`](#aws-cdk-lib.aws_iam.IRole)
 
 ---
 
@@ -352,7 +352,7 @@ new DataSet(scope: Construct, id: string, props: DataSetProperties)
 
 ##### `scope`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataSet.parameter.scope"></a>
 
-- *Type:* [`@aws-cdk/core.Construct`](#@aws-cdk/core.Construct)
+- *Type:* [`constructs.Construct`](#constructs.Construct)
 
 ---
 
@@ -368,6 +368,19 @@ new DataSet(scope: Construct, id: string, props: DataSetProperties)
 
 ---
 
+#### Methods <a name="Methods"></a>
+
+##### `getDataSetBucketName` <a name="@randyridgley/cdk-datalake-constructs.DataSet.getDataSetBucketName"></a>
+
+```typescript
+public getDataSetBucketName(dataTier: DataTier)
+```
+
+###### `dataTier`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataSet.parameter.dataTier"></a>
+
+- *Type:* [`@randyridgley/cdk-datalake-constructs.DataTier`](#@randyridgley/cdk-datalake-constructs.DataTier)
+
+---
 
 
 #### Properties <a name="Properties"></a>
@@ -412,36 +425,6 @@ public readonly pipeline: Pipeline;
 
 ---
 
-##### `rawBucketName`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataSet.property.rawBucketName"></a>
-
-```typescript
-public readonly rawBucketName: string;
-```
-
-- *Type:* `string`
-
----
-
-##### `refinedBucketName`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataSet.property.refinedBucketName"></a>
-
-```typescript
-public readonly refinedBucketName: string;
-```
-
-- *Type:* `string`
-
----
-
-##### `trustedBucketName`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataSet.property.trustedBucketName"></a>
-
-```typescript
-public readonly trustedBucketName: string;
-```
-
-- *Type:* `string`
-
----
-
 ##### `downloadLocations`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.DataSet.property.downloadLocations"></a>
 
 ```typescript
@@ -455,10 +438,10 @@ public readonly downloadLocations: DataSetResult;
 ##### `dropLocation`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.DataSet.property.dropLocation"></a>
 
 ```typescript
-public readonly dropLocation: DataSetLocation;
+public readonly dropLocation: DataTier;
 ```
 
-- *Type:* [`@randyridgley/cdk-datalake-constructs.DataSetLocation`](#@randyridgley/cdk-datalake-constructs.DataSetLocation)
+- *Type:* [`@randyridgley/cdk-datalake-constructs.DataTier`](#@randyridgley/cdk-datalake-constructs.DataTier)
 
 ---
 
@@ -468,7 +451,47 @@ public readonly dropLocation: DataSetLocation;
 public readonly encryptionKey: Key;
 ```
 
-- *Type:* [`@aws-cdk/aws-kms.Key`](#@aws-cdk/aws-kms.Key)
+- *Type:* [`aws-cdk-lib.aws_kms.Key`](#aws-cdk-lib.aws_kms.Key)
+
+---
+
+##### `rawBucketName`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.DataSet.property.rawBucketName"></a>
+
+```typescript
+public readonly rawBucketName: string;
+```
+
+- *Type:* `string`
+
+---
+
+##### `refinedBucketName`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.DataSet.property.refinedBucketName"></a>
+
+```typescript
+public readonly refinedBucketName: string;
+```
+
+- *Type:* `string`
+
+---
+
+##### `trustedBucketName`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.DataSet.property.trustedBucketName"></a>
+
+```typescript
+public readonly trustedBucketName: string;
+```
+
+- *Type:* `string`
+
+---
+
+##### `locationRegistry`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataSet.property.locationRegistry"></a>
+
+```typescript
+public readonly locationRegistry: CfnResource[];
+```
+
+- *Type:* [`aws-cdk-lib.aws_lakeformation.CfnResource`](#aws-cdk-lib.aws_lakeformation.CfnResource)[]
 
 ---
 
@@ -478,7 +501,7 @@ public readonly encryptionKey: Key;
 public readonly s3NotificationTopic: Topic;
 ```
 
-- *Type:* [`@aws-cdk/aws-sns.Topic`](#@aws-cdk/aws-sns.Topic)
+- *Type:* [`aws-cdk-lib.aws_sns.Topic`](#aws-cdk-lib.aws_sns.Topic)
 
 ---
 
@@ -495,7 +518,7 @@ new GlueCrawler(scope: Construct, id: string, props: IGlueCrawlerProperties)
 
 ##### `scope`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.GlueCrawler.parameter.scope"></a>
 
-- *Type:* [`@aws-cdk/core.Construct`](#@aws-cdk/core.Construct)
+- *Type:* [`constructs.Construct`](#constructs.Construct)
 
 ---
 
@@ -521,7 +544,7 @@ public metricFailure(props?: MetricOptions)
 
 ###### `props`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.GlueCrawler.parameter.props"></a>
 
-- *Type:* [`@aws-cdk/aws-cloudwatch.MetricOptions`](#@aws-cdk/aws-cloudwatch.MetricOptions)
+- *Type:* [`aws-cdk-lib.aws_cloudwatch.MetricOptions`](#aws-cdk-lib.aws_cloudwatch.MetricOptions)
 
 ---
 
@@ -533,7 +556,7 @@ public metricSuccess(props?: MetricOptions)
 
 ###### `props`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.GlueCrawler.parameter.props"></a>
 
-- *Type:* [`@aws-cdk/aws-cloudwatch.MetricOptions`](#@aws-cdk/aws-cloudwatch.MetricOptions)
+- *Type:* [`aws-cdk-lib.aws_cloudwatch.MetricOptions`](#aws-cdk-lib.aws_cloudwatch.MetricOptions)
 
 ---
 
@@ -546,7 +569,7 @@ public metricSuccess(props?: MetricOptions)
 public readonly crawler: CfnCrawler;
 ```
 
-- *Type:* [`@aws-cdk/aws-glue.CfnCrawler`](#@aws-cdk/aws-glue.CfnCrawler)
+- *Type:* [`aws-cdk-lib.aws_glue.CfnCrawler`](#aws-cdk-lib.aws_glue.CfnCrawler)
 
 ---
 
@@ -556,7 +579,7 @@ public readonly crawler: CfnCrawler;
 public readonly metricFailureRule: Rule;
 ```
 
-- *Type:* [`@aws-cdk/aws-events.Rule`](#@aws-cdk/aws-events.Rule)
+- *Type:* [`aws-cdk-lib.aws_events.Rule`](#aws-cdk-lib.aws_events.Rule)
 
 ---
 
@@ -566,7 +589,7 @@ public readonly metricFailureRule: Rule;
 public readonly metricSuccessRule: Rule;
 ```
 
-- *Type:* [`@aws-cdk/aws-events.Rule`](#@aws-cdk/aws-events.Rule)
+- *Type:* [`aws-cdk-lib.aws_events.Rule`](#aws-cdk-lib.aws_events.Rule)
 
 ---
 
@@ -576,7 +599,7 @@ public readonly metricSuccessRule: Rule;
 public readonly role: IRole;
 ```
 
-- *Type:* [`@aws-cdk/aws-iam.IRole`](#@aws-cdk/aws-iam.IRole)
+- *Type:* [`aws-cdk-lib.aws_iam.IRole`](#aws-cdk-lib.aws_iam.IRole)
 
 ---
 
@@ -593,7 +616,7 @@ new GlueJob(scope: Construct, id: string, props: GlueJobProperties)
 
 ##### `scope`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.GlueJob.parameter.scope"></a>
 
-- *Type:* [`@aws-cdk/core.Construct`](#@aws-cdk/core.Construct)
+- *Type:* [`constructs.Construct`](#constructs.Construct)
 
 ---
 
@@ -619,7 +642,7 @@ public diskSpaceUsedMbMetric(props?: MetricOptions)
 
 ###### `props`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.GlueJob.parameter.props"></a>
 
-- *Type:* [`@aws-cdk/aws-cloudwatch.MetricOptions`](#@aws-cdk/aws-cloudwatch.MetricOptions)
+- *Type:* [`aws-cdk-lib.aws_cloudwatch.MetricOptions`](#aws-cdk-lib.aws_cloudwatch.MetricOptions)
 
 ---
 
@@ -631,7 +654,7 @@ public elapsedTimeMetric(props?: MetricOptions)
 
 ###### `props`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.GlueJob.parameter.props"></a>
 
-- *Type:* [`@aws-cdk/aws-cloudwatch.MetricOptions`](#@aws-cdk/aws-cloudwatch.MetricOptions)
+- *Type:* [`aws-cdk-lib.aws_cloudwatch.MetricOptions`](#aws-cdk-lib.aws_cloudwatch.MetricOptions)
 
 ---
 
@@ -643,7 +666,7 @@ public jvmHeapUsageMetric(props?: MetricOptions)
 
 ###### `props`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.GlueJob.parameter.props"></a>
 
-- *Type:* [`@aws-cdk/aws-cloudwatch.MetricOptions`](#@aws-cdk/aws-cloudwatch.MetricOptions)
+- *Type:* [`aws-cdk-lib.aws_cloudwatch.MetricOptions`](#aws-cdk-lib.aws_cloudwatch.MetricOptions)
 
 ---
 
@@ -667,7 +690,7 @@ public metric(metricName: string, dimensionType: string, props?: MetricOptions)
 
 ###### `props`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.GlueJob.parameter.props"></a>
 
-- *Type:* [`@aws-cdk/aws-cloudwatch.MetricOptions`](#@aws-cdk/aws-cloudwatch.MetricOptions)
+- *Type:* [`aws-cdk-lib.aws_cloudwatch.MetricOptions`](#aws-cdk-lib.aws_cloudwatch.MetricOptions)
 
 ---
 
@@ -679,7 +702,7 @@ public metricAllExecutionAttemptsFailed(props?: MetricOptions)
 
 ###### `props`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.GlueJob.parameter.props"></a>
 
-- *Type:* [`@aws-cdk/aws-cloudwatch.MetricOptions`](#@aws-cdk/aws-cloudwatch.MetricOptions)
+- *Type:* [`aws-cdk-lib.aws_cloudwatch.MetricOptions`](#aws-cdk-lib.aws_cloudwatch.MetricOptions)
 
 ---
 
@@ -691,7 +714,7 @@ public metricFailure(props?: MetricOptions)
 
 ###### `props`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.GlueJob.parameter.props"></a>
 
-- *Type:* [`@aws-cdk/aws-cloudwatch.MetricOptions`](#@aws-cdk/aws-cloudwatch.MetricOptions)
+- *Type:* [`aws-cdk-lib.aws_cloudwatch.MetricOptions`](#aws-cdk-lib.aws_cloudwatch.MetricOptions)
 
 ---
 
@@ -703,7 +726,7 @@ public metricSuccess(props?: MetricOptions)
 
 ###### `props`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.GlueJob.parameter.props"></a>
 
-- *Type:* [`@aws-cdk/aws-cloudwatch.MetricOptions`](#@aws-cdk/aws-cloudwatch.MetricOptions)
+- *Type:* [`aws-cdk-lib.aws_cloudwatch.MetricOptions`](#aws-cdk-lib.aws_cloudwatch.MetricOptions)
 
 ---
 
@@ -715,7 +738,7 @@ public metricTimeout(props?: MetricOptions)
 
 ###### `props`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.GlueJob.parameter.props"></a>
 
-- *Type:* [`@aws-cdk/aws-cloudwatch.MetricOptions`](#@aws-cdk/aws-cloudwatch.MetricOptions)
+- *Type:* [`aws-cdk-lib.aws_cloudwatch.MetricOptions`](#aws-cdk-lib.aws_cloudwatch.MetricOptions)
 
 ---
 
@@ -727,7 +750,7 @@ public runTimeInMiliseconds(props?: MetricOptions)
 
 ###### `props`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.GlueJob.parameter.props"></a>
 
-- *Type:* [`@aws-cdk/aws-cloudwatch.MetricOptions`](#@aws-cdk/aws-cloudwatch.MetricOptions)
+- *Type:* [`aws-cdk-lib.aws_cloudwatch.MetricOptions`](#aws-cdk-lib.aws_cloudwatch.MetricOptions)
 
 ---
 
@@ -760,7 +783,7 @@ public readonly allExecutionAttemptsFailedEventSource: string;
 public readonly executionFailureRule: Rule;
 ```
 
-- *Type:* [`@aws-cdk/aws-events.Rule`](#@aws-cdk/aws-events.Rule)
+- *Type:* [`aws-cdk-lib.aws_events.Rule`](#aws-cdk-lib.aws_events.Rule)
 
 ---
 
@@ -770,7 +793,7 @@ public readonly executionFailureRule: Rule;
 public readonly job: CfnJob;
 ```
 
-- *Type:* [`@aws-cdk/aws-glue.CfnJob`](#@aws-cdk/aws-glue.CfnJob)
+- *Type:* [`aws-cdk-lib.aws_glue.CfnJob`](#aws-cdk-lib.aws_glue.CfnJob)
 
 ---
 
@@ -780,7 +803,7 @@ public readonly job: CfnJob;
 public readonly lambdaFunction: SingletonFunction;
 ```
 
-- *Type:* [`@aws-cdk/aws-lambda.SingletonFunction`](#@aws-cdk/aws-lambda.SingletonFunction)
+- *Type:* [`aws-cdk-lib.aws_lambda.SingletonFunction`](#aws-cdk-lib.aws_lambda.SingletonFunction)
 
 ---
 
@@ -790,7 +813,7 @@ public readonly lambdaFunction: SingletonFunction;
 public readonly metricFailureRule: Rule;
 ```
 
-- *Type:* [`@aws-cdk/aws-events.Rule`](#@aws-cdk/aws-events.Rule)
+- *Type:* [`aws-cdk-lib.aws_events.Rule`](#aws-cdk-lib.aws_events.Rule)
 
 ---
 
@@ -800,7 +823,7 @@ public readonly metricFailureRule: Rule;
 public readonly metricSuccessRule: Rule;
 ```
 
-- *Type:* [`@aws-cdk/aws-events.Rule`](#@aws-cdk/aws-events.Rule)
+- *Type:* [`aws-cdk-lib.aws_events.Rule`](#aws-cdk-lib.aws_events.Rule)
 
 ---
 
@@ -810,7 +833,7 @@ public readonly metricSuccessRule: Rule;
 public readonly metricTimeoutRule: Rule;
 ```
 
-- *Type:* [`@aws-cdk/aws-events.Rule`](#@aws-cdk/aws-events.Rule)
+- *Type:* [`aws-cdk-lib.aws_events.Rule`](#aws-cdk-lib.aws_events.Rule)
 
 ---
 
@@ -830,7 +853,7 @@ public readonly name: string;
 public readonly role: IRole;
 ```
 
-- *Type:* [`@aws-cdk/aws-iam.IRole`](#@aws-cdk/aws-iam.IRole)
+- *Type:* [`aws-cdk-lib.aws_iam.IRole`](#aws-cdk-lib.aws_iam.IRole)
 
 ---
 
@@ -847,7 +870,7 @@ new GlueJobOps(scope: Construct, id: string, props: IGlueOpsProperties)
 
 ##### `scope`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.GlueJobOps.parameter.scope"></a>
 
-- *Type:* [`@aws-cdk/core.Construct`](#@aws-cdk/core.Construct)
+- *Type:* [`constructs.Construct`](#constructs.Construct)
 
 ---
 
@@ -873,7 +896,7 @@ new GlueJobOps(scope: Construct, id: string, props: IGlueOpsProperties)
 public readonly alarmsSev2: Alarm[];
 ```
 
-- *Type:* [`@aws-cdk/aws-cloudwatch.Alarm`](#@aws-cdk/aws-cloudwatch.Alarm)[]
+- *Type:* [`aws-cdk-lib.aws_cloudwatch.Alarm`](#aws-cdk-lib.aws_cloudwatch.Alarm)[]
 
 ---
 
@@ -883,7 +906,7 @@ public readonly alarmsSev2: Alarm[];
 public readonly alarmsSev3: Alarm[];
 ```
 
-- *Type:* [`@aws-cdk/aws-cloudwatch.Alarm`](#@aws-cdk/aws-cloudwatch.Alarm)[]
+- *Type:* [`aws-cdk-lib.aws_cloudwatch.Alarm`](#aws-cdk-lib.aws_cloudwatch.Alarm)[]
 
 ---
 
@@ -903,7 +926,7 @@ public readonly job: GlueJob;
 public readonly jvmHeapSizeExceeding80PercentAlarm: Alarm;
 ```
 
-- *Type:* [`@aws-cdk/aws-cloudwatch.Alarm`](#@aws-cdk/aws-cloudwatch.Alarm)
+- *Type:* [`aws-cdk-lib.aws_cloudwatch.Alarm`](#aws-cdk-lib.aws_cloudwatch.Alarm)
 
 ---
 
@@ -913,7 +936,7 @@ public readonly jvmHeapSizeExceeding80PercentAlarm: Alarm;
 public readonly jvmHeapSizeExceeding90PercentAlarm: Alarm;
 ```
 
-- *Type:* [`@aws-cdk/aws-cloudwatch.Alarm`](#@aws-cdk/aws-cloudwatch.Alarm)
+- *Type:* [`aws-cdk-lib.aws_cloudwatch.Alarm`](#aws-cdk-lib.aws_cloudwatch.Alarm)
 
 ---
 
@@ -923,7 +946,7 @@ public readonly jvmHeapSizeExceeding90PercentAlarm: Alarm;
 public readonly metricAllExecutionAttemptsFailedAlarm: Alarm;
 ```
 
-- *Type:* [`@aws-cdk/aws-cloudwatch.Alarm`](#@aws-cdk/aws-cloudwatch.Alarm)
+- *Type:* [`aws-cdk-lib.aws_cloudwatch.Alarm`](#aws-cdk-lib.aws_cloudwatch.Alarm)
 
 ---
 
@@ -933,7 +956,7 @@ public readonly metricAllExecutionAttemptsFailedAlarm: Alarm;
 public readonly metricExecutionFailureAlarm: Alarm;
 ```
 
-- *Type:* [`@aws-cdk/aws-cloudwatch.Alarm`](#@aws-cdk/aws-cloudwatch.Alarm)
+- *Type:* [`aws-cdk-lib.aws_cloudwatch.Alarm`](#aws-cdk-lib.aws_cloudwatch.Alarm)
 
 ---
 
@@ -943,7 +966,7 @@ public readonly metricExecutionFailureAlarm: Alarm;
 public readonly dashboard: Dashboard;
 ```
 
-- *Type:* [`@aws-cdk/aws-cloudwatch.Dashboard`](#@aws-cdk/aws-cloudwatch.Dashboard)
+- *Type:* [`aws-cdk-lib.aws_cloudwatch.Dashboard`](#aws-cdk-lib.aws_cloudwatch.Dashboard)
 
 ---
 
@@ -960,7 +983,7 @@ new GlueTable(scope: Construct, id: string, props: IGlueTableProperties)
 
 ##### `scope`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.GlueTable.parameter.scope"></a>
 
-- *Type:* [`@aws-cdk/core.Construct`](#@aws-cdk/core.Construct)
+- *Type:* [`constructs.Construct`](#constructs.Construct)
 
 ---
 
@@ -986,7 +1009,7 @@ new GlueTable(scope: Construct, id: string, props: IGlueTableProperties)
 public readonly table: CfnTable;
 ```
 
-- *Type:* [`@aws-cdk/aws-glue.CfnTable`](#@aws-cdk/aws-glue.CfnTable)
+- *Type:* [`aws-cdk-lib.aws_glue.CfnTable`](#aws-cdk-lib.aws_glue.CfnTable)
 
 ---
 
@@ -1013,7 +1036,7 @@ new KinesisOps(scope: Construct, id: string, props: IKinesisOpsProperties)
 
 ##### `scope`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.KinesisOps.parameter.scope"></a>
 
-- *Type:* [`@aws-cdk/core.Construct`](#@aws-cdk/core.Construct)
+- *Type:* [`constructs.Construct`](#constructs.Construct)
 
 ---
 
@@ -1039,7 +1062,7 @@ new KinesisOps(scope: Construct, id: string, props: IKinesisOpsProperties)
 public readonly alarmsSev2: Alarm[];
 ```
 
-- *Type:* [`@aws-cdk/aws-cloudwatch.Alarm`](#@aws-cdk/aws-cloudwatch.Alarm)[]
+- *Type:* [`aws-cdk-lib.aws_cloudwatch.Alarm`](#aws-cdk-lib.aws_cloudwatch.Alarm)[]
 
 ---
 
@@ -1049,7 +1072,7 @@ public readonly alarmsSev2: Alarm[];
 public readonly alarmsSev3: Alarm[];
 ```
 
-- *Type:* [`@aws-cdk/aws-cloudwatch.Alarm`](#@aws-cdk/aws-cloudwatch.Alarm)[]
+- *Type:* [`aws-cdk-lib.aws_cloudwatch.Alarm`](#aws-cdk-lib.aws_cloudwatch.Alarm)[]
 
 ---
 
@@ -1069,7 +1092,7 @@ public readonly deliveryStream: S3DeliveryStream;
 public readonly firehoseDeliveryToS3CriticalAlarm: Alarm;
 ```
 
-- *Type:* [`@aws-cdk/aws-cloudwatch.Alarm`](#@aws-cdk/aws-cloudwatch.Alarm)
+- *Type:* [`aws-cdk-lib.aws_cloudwatch.Alarm`](#aws-cdk-lib.aws_cloudwatch.Alarm)
 
 ---
 
@@ -1079,7 +1102,7 @@ public readonly firehoseDeliveryToS3CriticalAlarm: Alarm;
 public readonly firehoseDeliveryToS3WarningAlarm: Alarm;
 ```
 
-- *Type:* [`@aws-cdk/aws-cloudwatch.Alarm`](#@aws-cdk/aws-cloudwatch.Alarm)
+- *Type:* [`aws-cdk-lib.aws_cloudwatch.Alarm`](#aws-cdk-lib.aws_cloudwatch.Alarm)
 
 ---
 
@@ -1089,7 +1112,7 @@ public readonly firehoseDeliveryToS3WarningAlarm: Alarm;
 public readonly inputStreamGetRecordsWarningAlarm: Alarm;
 ```
 
-- *Type:* [`@aws-cdk/aws-cloudwatch.Alarm`](#@aws-cdk/aws-cloudwatch.Alarm)
+- *Type:* [`aws-cdk-lib.aws_cloudwatch.Alarm`](#aws-cdk-lib.aws_cloudwatch.Alarm)
 
 ---
 
@@ -1099,7 +1122,7 @@ public readonly inputStreamGetRecordsWarningAlarm: Alarm;
 public readonly inputStreamIteratorAgeCriticalAlarm: Alarm;
 ```
 
-- *Type:* [`@aws-cdk/aws-cloudwatch.Alarm`](#@aws-cdk/aws-cloudwatch.Alarm)
+- *Type:* [`aws-cdk-lib.aws_cloudwatch.Alarm`](#aws-cdk-lib.aws_cloudwatch.Alarm)
 
 ---
 
@@ -1109,7 +1132,7 @@ public readonly inputStreamIteratorAgeCriticalAlarm: Alarm;
 public readonly inputStreamIteratorAgeWarningAlarm: Alarm;
 ```
 
-- *Type:* [`@aws-cdk/aws-cloudwatch.Alarm`](#@aws-cdk/aws-cloudwatch.Alarm)
+- *Type:* [`aws-cdk-lib.aws_cloudwatch.Alarm`](#aws-cdk-lib.aws_cloudwatch.Alarm)
 
 ---
 
@@ -1119,7 +1142,7 @@ public readonly inputStreamIteratorAgeWarningAlarm: Alarm;
 public readonly inputStreamPutRecordsWarningAlarm: Alarm;
 ```
 
-- *Type:* [`@aws-cdk/aws-cloudwatch.Alarm`](#@aws-cdk/aws-cloudwatch.Alarm)
+- *Type:* [`aws-cdk-lib.aws_cloudwatch.Alarm`](#aws-cdk-lib.aws_cloudwatch.Alarm)
 
 ---
 
@@ -1129,7 +1152,7 @@ public readonly inputStreamPutRecordsWarningAlarm: Alarm;
 public readonly inputStreamReadThroughputWarningAlarm: Alarm;
 ```
 
-- *Type:* [`@aws-cdk/aws-cloudwatch.Alarm`](#@aws-cdk/aws-cloudwatch.Alarm)
+- *Type:* [`aws-cdk-lib.aws_cloudwatch.Alarm`](#aws-cdk-lib.aws_cloudwatch.Alarm)
 
 ---
 
@@ -1139,7 +1162,7 @@ public readonly inputStreamReadThroughputWarningAlarm: Alarm;
 public readonly inputStreamWriteThroughputWarningAlarm: Alarm;
 ```
 
-- *Type:* [`@aws-cdk/aws-cloudwatch.Alarm`](#@aws-cdk/aws-cloudwatch.Alarm)
+- *Type:* [`aws-cdk-lib.aws_cloudwatch.Alarm`](#aws-cdk-lib.aws_cloudwatch.Alarm)
 
 ---
 
@@ -1169,7 +1192,7 @@ public readonly streamName: string;
 public readonly dashboard: Dashboard;
 ```
 
-- *Type:* [`@aws-cdk/aws-cloudwatch.Dashboard`](#@aws-cdk/aws-cloudwatch.Dashboard)
+- *Type:* [`aws-cdk-lib.aws_cloudwatch.Dashboard`](#aws-cdk-lib.aws_cloudwatch.Dashboard)
 
 ---
 
@@ -1186,7 +1209,7 @@ new KinesisStream(parent: Construct, name: string, props: StreamProps)
 
 ##### `parent`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.KinesisStream.parameter.parent"></a>
 
-- *Type:* [`@aws-cdk/core.Construct`](#@aws-cdk/core.Construct)
+- *Type:* [`constructs.Construct`](#constructs.Construct)
 
 ---
 
@@ -1198,7 +1221,7 @@ new KinesisStream(parent: Construct, name: string, props: StreamProps)
 
 ##### `props`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.KinesisStream.parameter.props"></a>
 
-- *Type:* [`@aws-cdk/aws-kinesis.StreamProps`](#@aws-cdk/aws-kinesis.StreamProps)
+- *Type:* [`aws-cdk-lib.aws_kinesis.StreamProps`](#aws-cdk-lib.aws_kinesis.StreamProps)
 
 ---
 
@@ -1218,7 +1241,7 @@ public metric(metricName: string, props?: MetricOptions)
 
 ###### `props`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.KinesisStream.parameter.props"></a>
 
-- *Type:* [`@aws-cdk/aws-cloudwatch.MetricOptions`](#@aws-cdk/aws-cloudwatch.MetricOptions)
+- *Type:* [`aws-cdk-lib.aws_cloudwatch.MetricOptions`](#aws-cdk-lib.aws_cloudwatch.MetricOptions)
 
 ---
 
@@ -1230,7 +1253,7 @@ public metricGetRecordsBytes(props?: MetricOptions)
 
 ###### `props`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.KinesisStream.parameter.props"></a>
 
-- *Type:* [`@aws-cdk/aws-cloudwatch.MetricOptions`](#@aws-cdk/aws-cloudwatch.MetricOptions)
+- *Type:* [`aws-cdk-lib.aws_cloudwatch.MetricOptions`](#aws-cdk-lib.aws_cloudwatch.MetricOptions)
 
 ---
 
@@ -1242,7 +1265,7 @@ public metricGetRecordsIteratorAgeMilliseconds(props?: MetricOptions)
 
 ###### `props`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.KinesisStream.parameter.props"></a>
 
-- *Type:* [`@aws-cdk/aws-cloudwatch.MetricOptions`](#@aws-cdk/aws-cloudwatch.MetricOptions)
+- *Type:* [`aws-cdk-lib.aws_cloudwatch.MetricOptions`](#aws-cdk-lib.aws_cloudwatch.MetricOptions)
 
 ---
 
@@ -1254,7 +1277,7 @@ public metricGetRecordsLatency(props?: MetricOptions)
 
 ###### `props`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.KinesisStream.parameter.props"></a>
 
-- *Type:* [`@aws-cdk/aws-cloudwatch.MetricOptions`](#@aws-cdk/aws-cloudwatch.MetricOptions)
+- *Type:* [`aws-cdk-lib.aws_cloudwatch.MetricOptions`](#aws-cdk-lib.aws_cloudwatch.MetricOptions)
 
 ---
 
@@ -1266,7 +1289,7 @@ public metricGetRecordsRecords(props?: MetricOptions)
 
 ###### `props`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.KinesisStream.parameter.props"></a>
 
-- *Type:* [`@aws-cdk/aws-cloudwatch.MetricOptions`](#@aws-cdk/aws-cloudwatch.MetricOptions)
+- *Type:* [`aws-cdk-lib.aws_cloudwatch.MetricOptions`](#aws-cdk-lib.aws_cloudwatch.MetricOptions)
 
 ---
 
@@ -1278,7 +1301,7 @@ public metricGetRecordsSuccess(props?: MetricOptions)
 
 ###### `props`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.KinesisStream.parameter.props"></a>
 
-- *Type:* [`@aws-cdk/aws-cloudwatch.MetricOptions`](#@aws-cdk/aws-cloudwatch.MetricOptions)
+- *Type:* [`aws-cdk-lib.aws_cloudwatch.MetricOptions`](#aws-cdk-lib.aws_cloudwatch.MetricOptions)
 
 ---
 
@@ -1290,7 +1313,7 @@ public metricIncomingBytes(props?: MetricOptions)
 
 ###### `props`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.KinesisStream.parameter.props"></a>
 
-- *Type:* [`@aws-cdk/aws-cloudwatch.MetricOptions`](#@aws-cdk/aws-cloudwatch.MetricOptions)
+- *Type:* [`aws-cdk-lib.aws_cloudwatch.MetricOptions`](#aws-cdk-lib.aws_cloudwatch.MetricOptions)
 
 ---
 
@@ -1302,7 +1325,7 @@ public metricIncomingRecords(props?: MetricOptions)
 
 ###### `props`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.KinesisStream.parameter.props"></a>
 
-- *Type:* [`@aws-cdk/aws-cloudwatch.MetricOptions`](#@aws-cdk/aws-cloudwatch.MetricOptions)
+- *Type:* [`aws-cdk-lib.aws_cloudwatch.MetricOptions`](#aws-cdk-lib.aws_cloudwatch.MetricOptions)
 
 ---
 
@@ -1314,7 +1337,7 @@ public metricPutRecordBytes(props?: MetricOptions)
 
 ###### `props`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.KinesisStream.parameter.props"></a>
 
-- *Type:* [`@aws-cdk/aws-cloudwatch.MetricOptions`](#@aws-cdk/aws-cloudwatch.MetricOptions)
+- *Type:* [`aws-cdk-lib.aws_cloudwatch.MetricOptions`](#aws-cdk-lib.aws_cloudwatch.MetricOptions)
 
 ---
 
@@ -1326,7 +1349,7 @@ public metricPutRecordLatency(props?: MetricOptions)
 
 ###### `props`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.KinesisStream.parameter.props"></a>
 
-- *Type:* [`@aws-cdk/aws-cloudwatch.MetricOptions`](#@aws-cdk/aws-cloudwatch.MetricOptions)
+- *Type:* [`aws-cdk-lib.aws_cloudwatch.MetricOptions`](#aws-cdk-lib.aws_cloudwatch.MetricOptions)
 
 ---
 
@@ -1338,7 +1361,7 @@ public metricPutRecordsBytes(props?: MetricOptions)
 
 ###### `props`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.KinesisStream.parameter.props"></a>
 
-- *Type:* [`@aws-cdk/aws-cloudwatch.MetricOptions`](#@aws-cdk/aws-cloudwatch.MetricOptions)
+- *Type:* [`aws-cdk-lib.aws_cloudwatch.MetricOptions`](#aws-cdk-lib.aws_cloudwatch.MetricOptions)
 
 ---
 
@@ -1350,7 +1373,7 @@ public metricPutRecordsLatency(props?: MetricOptions)
 
 ###### `props`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.KinesisStream.parameter.props"></a>
 
-- *Type:* [`@aws-cdk/aws-cloudwatch.MetricOptions`](#@aws-cdk/aws-cloudwatch.MetricOptions)
+- *Type:* [`aws-cdk-lib.aws_cloudwatch.MetricOptions`](#aws-cdk-lib.aws_cloudwatch.MetricOptions)
 
 ---
 
@@ -1362,7 +1385,7 @@ public metricPutRecordsRecords(props?: MetricOptions)
 
 ###### `props`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.KinesisStream.parameter.props"></a>
 
-- *Type:* [`@aws-cdk/aws-cloudwatch.MetricOptions`](#@aws-cdk/aws-cloudwatch.MetricOptions)
+- *Type:* [`aws-cdk-lib.aws_cloudwatch.MetricOptions`](#aws-cdk-lib.aws_cloudwatch.MetricOptions)
 
 ---
 
@@ -1374,7 +1397,7 @@ public metricPutRecordsSuccess(props?: MetricOptions)
 
 ###### `props`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.KinesisStream.parameter.props"></a>
 
-- *Type:* [`@aws-cdk/aws-cloudwatch.MetricOptions`](#@aws-cdk/aws-cloudwatch.MetricOptions)
+- *Type:* [`aws-cdk-lib.aws_cloudwatch.MetricOptions`](#aws-cdk-lib.aws_cloudwatch.MetricOptions)
 
 ---
 
@@ -1386,7 +1409,7 @@ public metricPutRecordSuccess(props?: MetricOptions)
 
 ###### `props`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.KinesisStream.parameter.props"></a>
 
-- *Type:* [`@aws-cdk/aws-cloudwatch.MetricOptions`](#@aws-cdk/aws-cloudwatch.MetricOptions)
+- *Type:* [`aws-cdk-lib.aws_cloudwatch.MetricOptions`](#aws-cdk-lib.aws_cloudwatch.MetricOptions)
 
 ---
 
@@ -1398,7 +1421,7 @@ public metricReadProvisionedThroughputExceeded(props?: MetricOptions)
 
 ###### `props`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.KinesisStream.parameter.props"></a>
 
-- *Type:* [`@aws-cdk/aws-cloudwatch.MetricOptions`](#@aws-cdk/aws-cloudwatch.MetricOptions)
+- *Type:* [`aws-cdk-lib.aws_cloudwatch.MetricOptions`](#aws-cdk-lib.aws_cloudwatch.MetricOptions)
 
 ---
 
@@ -1410,7 +1433,7 @@ public metricSubscribeToShardEventBytes(props?: MetricOptions)
 
 ###### `props`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.KinesisStream.parameter.props"></a>
 
-- *Type:* [`@aws-cdk/aws-cloudwatch.MetricOptions`](#@aws-cdk/aws-cloudwatch.MetricOptions)
+- *Type:* [`aws-cdk-lib.aws_cloudwatch.MetricOptions`](#aws-cdk-lib.aws_cloudwatch.MetricOptions)
 
 ---
 
@@ -1422,7 +1445,7 @@ public metricSubscribeToShardEventMillisBehindLatest(props?: MetricOptions)
 
 ###### `props`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.KinesisStream.parameter.props"></a>
 
-- *Type:* [`@aws-cdk/aws-cloudwatch.MetricOptions`](#@aws-cdk/aws-cloudwatch.MetricOptions)
+- *Type:* [`aws-cdk-lib.aws_cloudwatch.MetricOptions`](#aws-cdk-lib.aws_cloudwatch.MetricOptions)
 
 ---
 
@@ -1434,7 +1457,7 @@ public metricSubscribeToShardEventRecords(props?: MetricOptions)
 
 ###### `props`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.KinesisStream.parameter.props"></a>
 
-- *Type:* [`@aws-cdk/aws-cloudwatch.MetricOptions`](#@aws-cdk/aws-cloudwatch.MetricOptions)
+- *Type:* [`aws-cdk-lib.aws_cloudwatch.MetricOptions`](#aws-cdk-lib.aws_cloudwatch.MetricOptions)
 
 ---
 
@@ -1446,7 +1469,7 @@ public metricSubscribeToShardEventSuccess(props?: MetricOptions)
 
 ###### `props`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.KinesisStream.parameter.props"></a>
 
-- *Type:* [`@aws-cdk/aws-cloudwatch.MetricOptions`](#@aws-cdk/aws-cloudwatch.MetricOptions)
+- *Type:* [`aws-cdk-lib.aws_cloudwatch.MetricOptions`](#aws-cdk-lib.aws_cloudwatch.MetricOptions)
 
 ---
 
@@ -1458,7 +1481,7 @@ public metricSubscribeToShardRateExceeded(props?: MetricOptions)
 
 ###### `props`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.KinesisStream.parameter.props"></a>
 
-- *Type:* [`@aws-cdk/aws-cloudwatch.MetricOptions`](#@aws-cdk/aws-cloudwatch.MetricOptions)
+- *Type:* [`aws-cdk-lib.aws_cloudwatch.MetricOptions`](#aws-cdk-lib.aws_cloudwatch.MetricOptions)
 
 ---
 
@@ -1470,7 +1493,7 @@ public metricSubscribeToShardSuccess(props?: MetricOptions)
 
 ###### `props`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.KinesisStream.parameter.props"></a>
 
-- *Type:* [`@aws-cdk/aws-cloudwatch.MetricOptions`](#@aws-cdk/aws-cloudwatch.MetricOptions)
+- *Type:* [`aws-cdk-lib.aws_cloudwatch.MetricOptions`](#aws-cdk-lib.aws_cloudwatch.MetricOptions)
 
 ---
 
@@ -1482,7 +1505,7 @@ public metricWriteProvisionedThroughputExceeded(props?: MetricOptions)
 
 ###### `props`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.KinesisStream.parameter.props"></a>
 
-- *Type:* [`@aws-cdk/aws-cloudwatch.MetricOptions`](#@aws-cdk/aws-cloudwatch.MetricOptions)
+- *Type:* [`aws-cdk-lib.aws_cloudwatch.MetricOptions`](#aws-cdk-lib.aws_cloudwatch.MetricOptions)
 
 ---
 
@@ -1495,7 +1518,7 @@ public metricWriteProvisionedThroughputExceeded(props?: MetricOptions)
 public readonly stream: Stream;
 ```
 
-- *Type:* [`@aws-cdk/aws-kinesis.Stream`](#@aws-cdk/aws-kinesis.Stream)
+- *Type:* [`aws-cdk-lib.aws_kinesis.Stream`](#aws-cdk-lib.aws_kinesis.Stream)
 
 ---
 
@@ -1512,7 +1535,7 @@ new S3DeliveryStream(parent: Construct, name: string, props: DeliveryStreamPrope
 
 ##### `parent`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.S3DeliveryStream.parameter.parent"></a>
 
-- *Type:* [`@aws-cdk/core.Construct`](#@aws-cdk/core.Construct)
+- *Type:* [`constructs.Construct`](#constructs.Construct)
 
 ---
 
@@ -1544,7 +1567,7 @@ public metric(metricName: string, props?: MetricOptions)
 
 ###### `props`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.S3DeliveryStream.parameter.props"></a>
 
-- *Type:* [`@aws-cdk/aws-cloudwatch.MetricOptions`](#@aws-cdk/aws-cloudwatch.MetricOptions)
+- *Type:* [`aws-cdk-lib.aws_cloudwatch.MetricOptions`](#aws-cdk-lib.aws_cloudwatch.MetricOptions)
 
 ---
 
@@ -1556,7 +1579,7 @@ public metricBackupToS3Bytes(props?: MetricOptions)
 
 ###### `props`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.S3DeliveryStream.parameter.props"></a>
 
-- *Type:* [`@aws-cdk/aws-cloudwatch.MetricOptions`](#@aws-cdk/aws-cloudwatch.MetricOptions)
+- *Type:* [`aws-cdk-lib.aws_cloudwatch.MetricOptions`](#aws-cdk-lib.aws_cloudwatch.MetricOptions)
 
 ---
 
@@ -1568,7 +1591,7 @@ public metricBackupToS3DataFreshness(props?: MetricOptions)
 
 ###### `props`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.S3DeliveryStream.parameter.props"></a>
 
-- *Type:* [`@aws-cdk/aws-cloudwatch.MetricOptions`](#@aws-cdk/aws-cloudwatch.MetricOptions)
+- *Type:* [`aws-cdk-lib.aws_cloudwatch.MetricOptions`](#aws-cdk-lib.aws_cloudwatch.MetricOptions)
 
 ---
 
@@ -1580,7 +1603,7 @@ public metricBackupToS3Records(props?: MetricOptions)
 
 ###### `props`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.S3DeliveryStream.parameter.props"></a>
 
-- *Type:* [`@aws-cdk/aws-cloudwatch.MetricOptions`](#@aws-cdk/aws-cloudwatch.MetricOptions)
+- *Type:* [`aws-cdk-lib.aws_cloudwatch.MetricOptions`](#aws-cdk-lib.aws_cloudwatch.MetricOptions)
 
 ---
 
@@ -1592,7 +1615,7 @@ public metricBackupToS3Success(props?: MetricOptions)
 
 ###### `props`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.S3DeliveryStream.parameter.props"></a>
 
-- *Type:* [`@aws-cdk/aws-cloudwatch.MetricOptions`](#@aws-cdk/aws-cloudwatch.MetricOptions)
+- *Type:* [`aws-cdk-lib.aws_cloudwatch.MetricOptions`](#aws-cdk-lib.aws_cloudwatch.MetricOptions)
 
 ---
 
@@ -1604,7 +1627,7 @@ public metricDataReadFromKinesisStreamBytes(props?: MetricOptions)
 
 ###### `props`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.S3DeliveryStream.parameter.props"></a>
 
-- *Type:* [`@aws-cdk/aws-cloudwatch.MetricOptions`](#@aws-cdk/aws-cloudwatch.MetricOptions)
+- *Type:* [`aws-cdk-lib.aws_cloudwatch.MetricOptions`](#aws-cdk-lib.aws_cloudwatch.MetricOptions)
 
 ---
 
@@ -1616,7 +1639,7 @@ public metricDataReadFromKinesisStreamRecords(props?: MetricOptions)
 
 ###### `props`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.S3DeliveryStream.parameter.props"></a>
 
-- *Type:* [`@aws-cdk/aws-cloudwatch.MetricOptions`](#@aws-cdk/aws-cloudwatch.MetricOptions)
+- *Type:* [`aws-cdk-lib.aws_cloudwatch.MetricOptions`](#aws-cdk-lib.aws_cloudwatch.MetricOptions)
 
 ---
 
@@ -1628,7 +1651,7 @@ public metricDeliveryToS3Bytes(props?: MetricOptions)
 
 ###### `props`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.S3DeliveryStream.parameter.props"></a>
 
-- *Type:* [`@aws-cdk/aws-cloudwatch.MetricOptions`](#@aws-cdk/aws-cloudwatch.MetricOptions)
+- *Type:* [`aws-cdk-lib.aws_cloudwatch.MetricOptions`](#aws-cdk-lib.aws_cloudwatch.MetricOptions)
 
 ---
 
@@ -1640,7 +1663,7 @@ public metricDeliveryToS3DataFreshness(props?: MetricOptions)
 
 ###### `props`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.S3DeliveryStream.parameter.props"></a>
 
-- *Type:* [`@aws-cdk/aws-cloudwatch.MetricOptions`](#@aws-cdk/aws-cloudwatch.MetricOptions)
+- *Type:* [`aws-cdk-lib.aws_cloudwatch.MetricOptions`](#aws-cdk-lib.aws_cloudwatch.MetricOptions)
 
 ---
 
@@ -1652,7 +1675,7 @@ public metricDeliveryToS3Records(props?: MetricOptions)
 
 ###### `props`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.S3DeliveryStream.parameter.props"></a>
 
-- *Type:* [`@aws-cdk/aws-cloudwatch.MetricOptions`](#@aws-cdk/aws-cloudwatch.MetricOptions)
+- *Type:* [`aws-cdk-lib.aws_cloudwatch.MetricOptions`](#aws-cdk-lib.aws_cloudwatch.MetricOptions)
 
 ---
 
@@ -1664,7 +1687,7 @@ public metricDeliveryToS3Success(props?: MetricOptions)
 
 ###### `props`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.S3DeliveryStream.parameter.props"></a>
 
-- *Type:* [`@aws-cdk/aws-cloudwatch.MetricOptions`](#@aws-cdk/aws-cloudwatch.MetricOptions)
+- *Type:* [`aws-cdk-lib.aws_cloudwatch.MetricOptions`](#aws-cdk-lib.aws_cloudwatch.MetricOptions)
 
 ---
 
@@ -1676,7 +1699,7 @@ public metricIncomingBytes(props?: MetricOptions)
 
 ###### `props`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.S3DeliveryStream.parameter.props"></a>
 
-- *Type:* [`@aws-cdk/aws-cloudwatch.MetricOptions`](#@aws-cdk/aws-cloudwatch.MetricOptions)
+- *Type:* [`aws-cdk-lib.aws_cloudwatch.MetricOptions`](#aws-cdk-lib.aws_cloudwatch.MetricOptions)
 
 ---
 
@@ -1688,7 +1711,7 @@ public metricIncomingRecords(props?: MetricOptions)
 
 ###### `props`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.S3DeliveryStream.parameter.props"></a>
 
-- *Type:* [`@aws-cdk/aws-cloudwatch.MetricOptions`](#@aws-cdk/aws-cloudwatch.MetricOptions)
+- *Type:* [`aws-cdk-lib.aws_cloudwatch.MetricOptions`](#aws-cdk-lib.aws_cloudwatch.MetricOptions)
 
 ---
 
@@ -1721,7 +1744,7 @@ public readonly deliveryStreamName: string;
 public readonly s3Bucket: IBucket;
 ```
 
-- *Type:* [`@aws-cdk/aws-s3.IBucket`](#@aws-cdk/aws-s3.IBucket)
+- *Type:* [`aws-cdk-lib.aws_s3.IBucket`](#aws-cdk-lib.aws_s3.IBucket)
 
 ---
 
@@ -1824,7 +1847,7 @@ public readonly name: string;
 public readonly readAccessBuckets: IBucket[];
 ```
 
-- *Type:* [`@aws-cdk/aws-s3.IBucket`](#@aws-cdk/aws-s3.IBucket)[]
+- *Type:* [`aws-cdk-lib.aws_s3.IBucket`](#aws-cdk-lib.aws_s3.IBucket)[]
 
 ---
 
@@ -1834,7 +1857,7 @@ public readonly readAccessBuckets: IBucket[];
 public readonly writeAccessBuckets: IBucket[];
 ```
 
-- *Type:* [`@aws-cdk/aws-s3.IBucket`](#@aws-cdk/aws-s3.IBucket)[]
+- *Type:* [`aws-cdk-lib.aws_s3.IBucket`](#aws-cdk-lib.aws_s3.IBucket)[]
 
 ---
 
@@ -1884,7 +1907,7 @@ public readonly dataCatalogAccountId: string;
 public readonly logBucket: Bucket;
 ```
 
-- *Type:* [`@aws-cdk/aws-s3.Bucket`](#@aws-cdk/aws-s3.Bucket)
+- *Type:* [`aws-cdk-lib.aws_s3.Bucket`](#aws-cdk-lib.aws_s3.Bucket)
 
 ---
 
@@ -1894,7 +1917,7 @@ public readonly logBucket: Bucket;
 public readonly s3Properties: BucketProps;
 ```
 
-- *Type:* [`@aws-cdk/aws-s3.BucketProps`](#@aws-cdk/aws-s3.BucketProps)
+- *Type:* [`aws-cdk-lib.aws_s3.BucketProps`](#aws-cdk-lib.aws_s3.BucketProps)
 
 ---
 
@@ -2013,7 +2036,7 @@ Cross account AWS account IDs.
 public readonly datalakeAdminRole: Role;
 ```
 
-- *Type:* [`@aws-cdk/aws-iam.Role`](#@aws-cdk/aws-iam.Role)
+- *Type:* [`aws-cdk-lib.aws_iam.Role`](#aws-cdk-lib.aws_iam.Role)
 - *Default:* Admin role created based on best practices
 
 Data Lake Admin role.
@@ -2028,7 +2051,7 @@ Data Lake Admin role.
 public readonly datalakeCreatorRole: Role;
 ```
 
-- *Type:* [`@aws-cdk/aws-iam.Role`](#@aws-cdk/aws-iam.Role)
+- *Type:* [`aws-cdk-lib.aws_iam.Role`](#aws-cdk-lib.aws_iam.Role)
 - *Default:* Database creator role created based on best practices
 
 Data Lake Database Creator role.
@@ -2056,7 +2079,7 @@ The List of DataProducts for this account.
 public readonly glueSecurityGroup: SecurityGroup;
 ```
 
-- *Type:* [`@aws-cdk/aws-ec2.SecurityGroup`](#@aws-cdk/aws-ec2.SecurityGroup)
+- *Type:* [`aws-cdk-lib.aws_ec2.SecurityGroup`](#aws-cdk-lib.aws_ec2.SecurityGroup)
 - *Default:* No security group
 
 Security group to attach to Glue jobs.
@@ -2071,7 +2094,7 @@ Security group to attach to Glue jobs.
 public readonly logBucketProps: BucketProps;
 ```
 
-- *Type:* [`@aws-cdk/aws-s3.BucketProps`](#@aws-cdk/aws-s3.BucketProps)
+- *Type:* [`aws-cdk-lib.aws_s3.BucketProps`](#aws-cdk-lib.aws_s3.BucketProps)
 
 ---
 
@@ -2096,7 +2119,7 @@ List of Lake Formation TBAC policy tags.
 public readonly vpc: Vpc;
 ```
 
-- *Type:* [`@aws-cdk/aws-ec2.Vpc`](#@aws-cdk/aws-ec2.Vpc)
+- *Type:* [`aws-cdk-lib.aws_ec2.Vpc`](#aws-cdk-lib.aws_ec2.Vpc)
 - *Default:* No vpc
 
 VPC for Glue jobs.
@@ -2159,7 +2182,7 @@ public readonly dataCatalogAccountId: string;
 public readonly s3BucketProps: BucketProps;
 ```
 
-- *Type:* [`@aws-cdk/aws-s3.BucketProps`](#@aws-cdk/aws-s3.BucketProps)
+- *Type:* [`aws-cdk-lib.aws_s3.BucketProps`](#aws-cdk-lib.aws_s3.BucketProps)
 
 ---
 
@@ -2173,6 +2196,26 @@ import { DataSetProperties } from '@randyridgley/cdk-datalake-constructs'
 const dataSetProperties: DataSetProperties = { ... }
 ```
 
+##### `datalakeAdminRole`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataSetProperties.property.datalakeAdminRole"></a>
+
+```typescript
+public readonly datalakeAdminRole: IRole;
+```
+
+- *Type:* [`aws-cdk-lib.aws_iam.IRole`](#aws-cdk-lib.aws_iam.IRole)
+
+---
+
+##### `datalakeDbCreatorRole`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataSetProperties.property.datalakeDbCreatorRole"></a>
+
+```typescript
+public readonly datalakeDbCreatorRole: IRole;
+```
+
+- *Type:* [`aws-cdk-lib.aws_iam.IRole`](#aws-cdk-lib.aws_iam.IRole)
+
+---
+
 ##### `dataProduct`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataSetProperties.property.dataProduct"></a>
 
 ```typescript
@@ -2180,6 +2223,16 @@ public readonly dataProduct: DataProduct;
 ```
 
 - *Type:* [`@randyridgley/cdk-datalake-constructs.DataProduct`](#@randyridgley/cdk-datalake-constructs.DataProduct)
+
+---
+
+##### `dataTiers`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataSetProperties.property.dataTiers"></a>
+
+```typescript
+public readonly dataTiers: DataTier[];
+```
+
+- *Type:* [`@randyridgley/cdk-datalake-constructs.DataTier`](#@randyridgley/cdk-datalake-constructs.DataTier)[]
 
 ---
 
@@ -2199,7 +2252,7 @@ public readonly lakeType: LakeType;
 public readonly logBucket: Bucket;
 ```
 
-- *Type:* [`@aws-cdk/aws-s3.Bucket`](#@aws-cdk/aws-s3.Bucket)
+- *Type:* [`aws-cdk-lib.aws_s3.Bucket`](#aws-cdk-lib.aws_s3.Bucket)
 
 ---
 
@@ -2229,7 +2282,7 @@ public readonly stage: Stage;
 public readonly encryptionKey: Key;
 ```
 
-- *Type:* [`@aws-cdk/aws-kms.Key`](#@aws-cdk/aws-kms.Key)
+- *Type:* [`aws-cdk-lib.aws_kms.Key`](#aws-cdk-lib.aws_kms.Key)
 
 ---
 
@@ -2239,7 +2292,7 @@ public readonly encryptionKey: Key;
 public readonly s3BucketProps: BucketProps;
 ```
 
-- *Type:* [`@aws-cdk/aws-s3.BucketProps`](#@aws-cdk/aws-s3.BucketProps)
+- *Type:* [`aws-cdk-lib.aws_s3.BucketProps`](#aws-cdk-lib.aws_s3.BucketProps)
 
 ---
 
@@ -2363,6 +2416,126 @@ public readonly streamName: string;
 
 ---
 
+### DataTierBucketProps <a name="@randyridgley/cdk-datalake-constructs.DataTierBucketProps"></a>
+
+#### Initializer <a name="[object Object].Initializer"></a>
+
+```typescript
+import { DataTierBucketProps } from '@randyridgley/cdk-datalake-constructs'
+
+const dataTierBucketProps: DataTierBucketProps = { ... }
+```
+
+##### `crossAccount`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataTierBucketProps.property.crossAccount"></a>
+
+```typescript
+public readonly crossAccount: boolean;
+```
+
+- *Type:* `boolean`
+
+---
+
+##### `dataCatalogAccountId`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataTierBucketProps.property.dataCatalogAccountId"></a>
+
+```typescript
+public readonly dataCatalogAccountId: string;
+```
+
+- *Type:* `string`
+
+---
+
+##### `datalakeAdminRole`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataTierBucketProps.property.datalakeAdminRole"></a>
+
+```typescript
+public readonly datalakeAdminRole: IRole;
+```
+
+- *Type:* [`aws-cdk-lib.aws_iam.IRole`](#aws-cdk-lib.aws_iam.IRole)
+
+---
+
+##### `datalakeDbCreatorRole`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataTierBucketProps.property.datalakeDbCreatorRole"></a>
+
+```typescript
+public readonly datalakeDbCreatorRole: IRole;
+```
+
+- *Type:* [`aws-cdk-lib.aws_iam.IRole`](#aws-cdk-lib.aws_iam.IRole)
+
+---
+
+##### `lakeType`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataTierBucketProps.property.lakeType"></a>
+
+```typescript
+public readonly lakeType: LakeType;
+```
+
+- *Type:* [`@randyridgley/cdk-datalake-constructs.LakeType`](#@randyridgley/cdk-datalake-constructs.LakeType)
+
+---
+
+##### `logBucket`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataTierBucketProps.property.logBucket"></a>
+
+```typescript
+public readonly logBucket: Bucket;
+```
+
+- *Type:* [`aws-cdk-lib.aws_s3.Bucket`](#aws-cdk-lib.aws_s3.Bucket)
+
+---
+
+##### `pipelineName`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataTierBucketProps.property.pipelineName"></a>
+
+```typescript
+public readonly pipelineName: string;
+```
+
+- *Type:* `string`
+
+---
+
+##### `tier`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataTierBucketProps.property.tier"></a>
+
+```typescript
+public readonly tier: DataTier;
+```
+
+- *Type:* [`@randyridgley/cdk-datalake-constructs.DataTier`](#@randyridgley/cdk-datalake-constructs.DataTier)
+
+---
+
+##### `bucketName`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.DataTierBucketProps.property.bucketName"></a>
+
+```typescript
+public readonly bucketName: string;
+```
+
+- *Type:* `string`
+
+---
+
+##### `s3BucketProps`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.DataTierBucketProps.property.s3BucketProps"></a>
+
+```typescript
+public readonly s3BucketProps: BucketProps;
+```
+
+- *Type:* [`aws-cdk-lib.aws_s3.BucketProps`](#aws-cdk-lib.aws_s3.BucketProps)
+
+---
+
+##### `s3NotificationProps`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.DataTierBucketProps.property.s3NotificationProps"></a>
+
+```typescript
+public readonly s3NotificationProps: S3NotificationProperties;
+```
+
+- *Type:* [`@randyridgley/cdk-datalake-constructs.S3NotificationProperties`](#@randyridgley/cdk-datalake-constructs.S3NotificationProperties)
+
+---
+
 ### DeliveryStreamProperties <a name="@randyridgley/cdk-datalake-constructs.DeliveryStreamProperties"></a>
 
 #### Initializer <a name="[object Object].Initializer"></a>
@@ -2379,7 +2552,7 @@ const deliveryStreamProperties: DeliveryStreamProperties = { ... }
 public readonly kinesisStream: Stream;
 ```
 
-- *Type:* [`@aws-cdk/aws-kinesis.Stream`](#@aws-cdk/aws-kinesis.Stream)
+- *Type:* [`aws-cdk-lib.aws_kinesis.Stream`](#aws-cdk-lib.aws_kinesis.Stream)
 
 ---
 
@@ -2389,7 +2562,7 @@ public readonly kinesisStream: Stream;
 public readonly s3Bucket: IBucket;
 ```
 
-- *Type:* [`@aws-cdk/aws-s3.IBucket`](#@aws-cdk/aws-s3.IBucket)
+- *Type:* [`aws-cdk-lib.aws_s3.IBucket`](#aws-cdk-lib.aws_s3.IBucket)
 
 ---
 
@@ -2419,7 +2592,7 @@ public readonly s3Prefix: string;
 public readonly transformFunction: Function;
 ```
 
-- *Type:* [`@aws-cdk/aws-lambda.Function`](#@aws-cdk/aws-lambda.Function)
+- *Type:* [`aws-cdk-lib.aws_lambda.Function`](#aws-cdk-lib.aws_lambda.Function)
 
 ---
 
@@ -2439,7 +2612,7 @@ const glueJobProperties: GlueJobProperties = { ... }
 public readonly deploymentBucket: IBucket;
 ```
 
-- *Type:* [`@aws-cdk/aws-s3.IBucket`](#@aws-cdk/aws-s3.IBucket)
+- *Type:* [`aws-cdk-lib.aws_s3.IBucket`](#aws-cdk-lib.aws_s3.IBucket)
 
 ---
 
@@ -2559,7 +2732,7 @@ public readonly numberOfWorkers: number;
 public readonly readAccessBuckets: IBucket[];
 ```
 
-- *Type:* [`@aws-cdk/aws-s3.IBucket`](#@aws-cdk/aws-s3.IBucket)[]
+- *Type:* [`aws-cdk-lib.aws_s3.IBucket`](#aws-cdk-lib.aws_s3.IBucket)[]
 
 ---
 
@@ -2589,7 +2762,7 @@ public readonly timeout: number;
 public readonly writeAccessBuckets: IBucket[];
 ```
 
-- *Type:* [`@aws-cdk/aws-s3.IBucket`](#@aws-cdk/aws-s3.IBucket)[]
+- *Type:* [`aws-cdk-lib.aws_s3.IBucket`](#aws-cdk-lib.aws_s3.IBucket)[]
 
 ---
 
@@ -2696,10 +2869,10 @@ public readonly description: string;
 ##### `destinationLocation`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.JobProperties.property.destinationLocation"></a>
 
 ```typescript
-public readonly destinationLocation: DataSetLocation;
+public readonly destinationLocation: DataTier;
 ```
 
-- *Type:* [`@randyridgley/cdk-datalake-constructs.DataSetLocation`](#@randyridgley/cdk-datalake-constructs.DataSetLocation)
+- *Type:* [`@randyridgley/cdk-datalake-constructs.DataTier`](#@randyridgley/cdk-datalake-constructs.DataTier)
 
 ---
 
@@ -2769,7 +2942,7 @@ public readonly numberOfWorkers: number;
 public readonly readAccessBuckets: IBucket[];
 ```
 
-- *Type:* [`@aws-cdk/aws-s3.IBucket`](#@aws-cdk/aws-s3.IBucket)[]
+- *Type:* [`aws-cdk-lib.aws_s3.IBucket`](#aws-cdk-lib.aws_s3.IBucket)[]
 
 ---
 
@@ -2799,7 +2972,7 @@ public readonly timeout: number;
 public readonly writeAccessBuckets: IBucket[];
 ```
 
-- *Type:* [`@aws-cdk/aws-s3.IBucket`](#@aws-cdk/aws-s3.IBucket)[]
+- *Type:* [`aws-cdk-lib.aws_s3.IBucket`](#aws-cdk-lib.aws_s3.IBucket)[]
 
 ---
 
@@ -2819,7 +2992,7 @@ const lambdaDataGeneratorProperties: LambdaDataGeneratorProperties = { ... }
 public readonly code: Code;
 ```
 
-- *Type:* [`@aws-cdk/aws-lambda.Code`](#@aws-cdk/aws-lambda.Code)
+- *Type:* [`aws-cdk-lib.aws_lambda.Code`](#aws-cdk-lib.aws_lambda.Code)
 
 ---
 
@@ -2859,7 +3032,7 @@ public readonly ruleName: string;
 public readonly runtime: Runtime;
 ```
 
-- *Type:* [`@aws-cdk/aws-lambda.Runtime`](#@aws-cdk/aws-lambda.Runtime)
+- *Type:* [`aws-cdk-lib.aws_lambda.Runtime`](#aws-cdk-lib.aws_lambda.Runtime)
 
 ---
 
@@ -2869,7 +3042,7 @@ public readonly runtime: Runtime;
 public readonly schedule: Schedule;
 ```
 
-- *Type:* [`@aws-cdk/aws-events.Schedule`](#@aws-cdk/aws-events.Schedule)
+- *Type:* [`aws-cdk-lib.aws_events.Schedule`](#aws-cdk-lib.aws_events.Schedule)
 
 ---
 
@@ -2879,7 +3052,7 @@ public readonly schedule: Schedule;
 public readonly timeout: Duration;
 ```
 
-- *Type:* [`@aws-cdk/core.Duration`](#@aws-cdk/core.Duration)
+- *Type:* [`aws-cdk-lib.Duration`](#aws-cdk-lib.Duration)
 
 ---
 
@@ -2953,13 +3126,13 @@ import { PipelineProperties } from '@randyridgley/cdk-datalake-constructs'
 const pipelineProperties: PipelineProperties = { ... }
 ```
 
-##### `dataSetDropLocation`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.PipelineProperties.property.dataSetDropLocation"></a>
+##### `dataSetDropTier`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.PipelineProperties.property.dataSetDropTier"></a>
 
 ```typescript
-public readonly dataSetDropLocation: DataSetLocation;
+public readonly dataSetDropTier: DataTier;
 ```
 
-- *Type:* [`@randyridgley/cdk-datalake-constructs.DataSetLocation`](#@randyridgley/cdk-datalake-constructs.DataSetLocation)
+- *Type:* [`@randyridgley/cdk-datalake-constructs.DataTier`](#@randyridgley/cdk-datalake-constructs.DataTier)
 
 ---
 
@@ -3069,7 +3242,7 @@ const s3NotificationProperties: S3NotificationProperties = { ... }
 public readonly event: EventType;
 ```
 
-- *Type:* [`@aws-cdk/aws-s3.EventType`](#@aws-cdk/aws-s3.EventType)
+- *Type:* [`aws-cdk-lib.aws_s3.EventType`](#aws-cdk-lib.aws_s3.EventType)
 
 ---
 
@@ -3179,7 +3352,7 @@ public readonly catalogId: string;
 public readonly columns: IResolvable | ColumnProperty | IResolvable[];
 ```
 
-- *Type:* [`@aws-cdk/core.IResolvable`](#@aws-cdk/core.IResolvable) | [`@aws-cdk/aws-glue.CfnTable.ColumnProperty`](#@aws-cdk/aws-glue.CfnTable.ColumnProperty) | [`@aws-cdk/core.IResolvable`](#@aws-cdk/core.IResolvable)[]
+- *Type:* [`aws-cdk-lib.IResolvable`](#aws-cdk-lib.IResolvable) | [`aws-cdk-lib.aws_glue.CfnTable.ColumnProperty`](#aws-cdk-lib.aws_glue.CfnTable.ColumnProperty) | [`aws-cdk-lib.IResolvable`](#aws-cdk-lib.IResolvable)[]
 
 ---
 
@@ -3229,7 +3402,7 @@ public readonly parameters: {[ key: string ]: any};
 public readonly partitionKeys: IResolvable | ColumnProperty | IResolvable[];
 ```
 
-- *Type:* [`@aws-cdk/core.IResolvable`](#@aws-cdk/core.IResolvable) | [`@aws-cdk/aws-glue.CfnTable.ColumnProperty`](#@aws-cdk/aws-glue.CfnTable.ColumnProperty) | [`@aws-cdk/core.IResolvable`](#@aws-cdk/core.IResolvable)[]
+- *Type:* [`aws-cdk-lib.IResolvable`](#aws-cdk-lib.IResolvable) | [`aws-cdk-lib.aws_glue.CfnTable.ColumnProperty`](#aws-cdk-lib.aws_glue.CfnTable.ColumnProperty) | [`aws-cdk-lib.IResolvable`](#aws-cdk-lib.IResolvable)[]
 
 ---
 
@@ -3331,7 +3504,7 @@ public readonly dataCatalogAccountId: string;
 public readonly s3BucketProps: BucketProps;
 ```
 
-- *Type:* [`@aws-cdk/aws-s3.BucketProps`](#@aws-cdk/aws-s3.BucketProps)
+- *Type:* [`aws-cdk-lib.aws_s3.BucketProps`](#aws-cdk-lib.aws_s3.BucketProps)
 
 ---
 
@@ -3356,13 +3529,13 @@ new Pipeline(props: PipelineProperties)
 
 #### Properties <a name="Properties"></a>
 
-##### `dataSetDropLocation`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.Pipeline.property.dataSetDropLocation"></a>
+##### `dataSetDropTier`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.Pipeline.property.dataSetDropTier"></a>
 
 ```typescript
-public readonly dataSetDropLocation: DataSetLocation;
+public readonly dataSetDropTier: DataTier;
 ```
 
-- *Type:* [`@randyridgley/cdk-datalake-constructs.DataSetLocation`](#@randyridgley/cdk-datalake-constructs.DataSetLocation)
+- *Type:* [`@randyridgley/cdk-datalake-constructs.DataTier`](#@randyridgley/cdk-datalake-constructs.DataTier)
 
 ---
 
@@ -3522,7 +3695,7 @@ public readonly roleName: string;
 public readonly trigger: CfnTrigger;
 ```
 
-- *Type:* [`@aws-cdk/aws-glue.CfnTrigger`](#@aws-cdk/aws-glue.CfnTrigger)
+- *Type:* [`aws-cdk-lib.aws_glue.CfnTrigger`](#aws-cdk-lib.aws_glue.CfnTrigger)
 
 ---
 
@@ -3549,7 +3722,7 @@ public readonly job: GlueJob;
 public readonly jvmHeapSizeExceeding80percent: CreateAlarmOptions;
 ```
 
-- *Type:* [`@aws-cdk/aws-cloudwatch.CreateAlarmOptions`](#@aws-cdk/aws-cloudwatch.CreateAlarmOptions)
+- *Type:* [`aws-cdk-lib.aws_cloudwatch.CreateAlarmOptions`](#aws-cdk-lib.aws_cloudwatch.CreateAlarmOptions)
 
 ---
 
@@ -3559,7 +3732,7 @@ public readonly jvmHeapSizeExceeding80percent: CreateAlarmOptions;
 public readonly jvmHeapSizeExceeding90percent: CreateAlarmOptions;
 ```
 
-- *Type:* [`@aws-cdk/aws-cloudwatch.CreateAlarmOptions`](#@aws-cdk/aws-cloudwatch.CreateAlarmOptions)
+- *Type:* [`aws-cdk-lib.aws_cloudwatch.CreateAlarmOptions`](#aws-cdk-lib.aws_cloudwatch.CreateAlarmOptions)
 
 ---
 
@@ -3569,7 +3742,7 @@ public readonly jvmHeapSizeExceeding90percent: CreateAlarmOptions;
 public readonly metricAllExecutionAttemptsFailed: CreateAlarmOptions;
 ```
 
-- *Type:* [`@aws-cdk/aws-cloudwatch.CreateAlarmOptions`](#@aws-cdk/aws-cloudwatch.CreateAlarmOptions)
+- *Type:* [`aws-cdk-lib.aws_cloudwatch.CreateAlarmOptions`](#aws-cdk-lib.aws_cloudwatch.CreateAlarmOptions)
 
 ---
 
@@ -3579,7 +3752,7 @@ public readonly metricAllExecutionAttemptsFailed: CreateAlarmOptions;
 public readonly metricExecutionFailure: CreateAlarmOptions;
 ```
 
-- *Type:* [`@aws-cdk/aws-cloudwatch.CreateAlarmOptions`](#@aws-cdk/aws-cloudwatch.CreateAlarmOptions)
+- *Type:* [`aws-cdk-lib.aws_cloudwatch.CreateAlarmOptions`](#aws-cdk-lib.aws_cloudwatch.CreateAlarmOptions)
 
 ---
 
@@ -3606,7 +3779,7 @@ public readonly catalogId: string;
 public readonly columns: IResolvable | ColumnProperty | IResolvable[];
 ```
 
-- *Type:* [`@aws-cdk/core.IResolvable`](#@aws-cdk/core.IResolvable) | [`@aws-cdk/aws-glue.CfnTable.ColumnProperty`](#@aws-cdk/aws-glue.CfnTable.ColumnProperty) | [`@aws-cdk/core.IResolvable`](#@aws-cdk/core.IResolvable)[]
+- *Type:* [`aws-cdk-lib.IResolvable`](#aws-cdk-lib.IResolvable) | [`aws-cdk-lib.aws_glue.CfnTable.ColumnProperty`](#aws-cdk-lib.aws_glue.CfnTable.ColumnProperty) | [`aws-cdk-lib.IResolvable`](#aws-cdk-lib.IResolvable)[]
 
 ---
 
@@ -3666,7 +3839,7 @@ public readonly parameters: {[ key: string ]: any};
 public readonly partitionKeys: IResolvable | ColumnProperty | IResolvable[];
 ```
 
-- *Type:* [`@aws-cdk/core.IResolvable`](#@aws-cdk/core.IResolvable) | [`@aws-cdk/aws-glue.CfnTable.ColumnProperty`](#@aws-cdk/aws-glue.CfnTable.ColumnProperty) | [`@aws-cdk/core.IResolvable`](#@aws-cdk/core.IResolvable)[]
+- *Type:* [`aws-cdk-lib.IResolvable`](#aws-cdk-lib.IResolvable) | [`aws-cdk-lib.aws_glue.CfnTable.ColumnProperty`](#aws-cdk-lib.aws_glue.CfnTable.ColumnProperty) | [`aws-cdk-lib.IResolvable`](#aws-cdk-lib.IResolvable)[]
 
 ---
 
@@ -3743,7 +3916,7 @@ public readonly stream: KinesisStream;
 public readonly firehoseDeliveryToS3Critical: CreateAlarmOptions;
 ```
 
-- *Type:* [`@aws-cdk/aws-cloudwatch.CreateAlarmOptions`](#@aws-cdk/aws-cloudwatch.CreateAlarmOptions)
+- *Type:* [`aws-cdk-lib.aws_cloudwatch.CreateAlarmOptions`](#aws-cdk-lib.aws_cloudwatch.CreateAlarmOptions)
 
 ---
 
@@ -3753,7 +3926,7 @@ public readonly firehoseDeliveryToS3Critical: CreateAlarmOptions;
 public readonly firehoseDeliveryToS3Warning: CreateAlarmOptions;
 ```
 
-- *Type:* [`@aws-cdk/aws-cloudwatch.CreateAlarmOptions`](#@aws-cdk/aws-cloudwatch.CreateAlarmOptions)
+- *Type:* [`aws-cdk-lib.aws_cloudwatch.CreateAlarmOptions`](#aws-cdk-lib.aws_cloudwatch.CreateAlarmOptions)
 
 ---
 
@@ -3763,7 +3936,7 @@ public readonly firehoseDeliveryToS3Warning: CreateAlarmOptions;
 public readonly inputStreamGetRecordsWarning: CreateAlarmOptions;
 ```
 
-- *Type:* [`@aws-cdk/aws-cloudwatch.CreateAlarmOptions`](#@aws-cdk/aws-cloudwatch.CreateAlarmOptions)
+- *Type:* [`aws-cdk-lib.aws_cloudwatch.CreateAlarmOptions`](#aws-cdk-lib.aws_cloudwatch.CreateAlarmOptions)
 
 ---
 
@@ -3773,7 +3946,7 @@ public readonly inputStreamGetRecordsWarning: CreateAlarmOptions;
 public readonly inputStreamIteratorAgeCritical: CreateAlarmOptions;
 ```
 
-- *Type:* [`@aws-cdk/aws-cloudwatch.CreateAlarmOptions`](#@aws-cdk/aws-cloudwatch.CreateAlarmOptions)
+- *Type:* [`aws-cdk-lib.aws_cloudwatch.CreateAlarmOptions`](#aws-cdk-lib.aws_cloudwatch.CreateAlarmOptions)
 
 ---
 
@@ -3783,7 +3956,7 @@ public readonly inputStreamIteratorAgeCritical: CreateAlarmOptions;
 public readonly inputStreamIteratorAgeWarning: CreateAlarmOptions;
 ```
 
-- *Type:* [`@aws-cdk/aws-cloudwatch.CreateAlarmOptions`](#@aws-cdk/aws-cloudwatch.CreateAlarmOptions)
+- *Type:* [`aws-cdk-lib.aws_cloudwatch.CreateAlarmOptions`](#aws-cdk-lib.aws_cloudwatch.CreateAlarmOptions)
 
 ---
 
@@ -3793,7 +3966,7 @@ public readonly inputStreamIteratorAgeWarning: CreateAlarmOptions;
 public readonly inputStreamPutRecordsWarning: CreateAlarmOptions;
 ```
 
-- *Type:* [`@aws-cdk/aws-cloudwatch.CreateAlarmOptions`](#@aws-cdk/aws-cloudwatch.CreateAlarmOptions)
+- *Type:* [`aws-cdk-lib.aws_cloudwatch.CreateAlarmOptions`](#aws-cdk-lib.aws_cloudwatch.CreateAlarmOptions)
 
 ---
 
@@ -3803,7 +3976,7 @@ public readonly inputStreamPutRecordsWarning: CreateAlarmOptions;
 public readonly inputStreamReadThroughputWarning: CreateAlarmOptions;
 ```
 
-- *Type:* [`@aws-cdk/aws-cloudwatch.CreateAlarmOptions`](#@aws-cdk/aws-cloudwatch.CreateAlarmOptions)
+- *Type:* [`aws-cdk-lib.aws_cloudwatch.CreateAlarmOptions`](#aws-cdk-lib.aws_cloudwatch.CreateAlarmOptions)
 
 ---
 
@@ -3813,7 +3986,7 @@ public readonly inputStreamReadThroughputWarning: CreateAlarmOptions;
 public readonly inputStreamWriteThroughputWarning: CreateAlarmOptions;
 ```
 
-- *Type:* [`@aws-cdk/aws-cloudwatch.CreateAlarmOptions`](#@aws-cdk/aws-cloudwatch.CreateAlarmOptions)
+- *Type:* [`aws-cdk-lib.aws_cloudwatch.CreateAlarmOptions`](#aws-cdk-lib.aws_cloudwatch.CreateAlarmOptions)
 
 ---
 
@@ -3858,19 +4031,19 @@ public readonly inputStreamWriteThroughputWarning: CreateAlarmOptions;
 ---
 
 
-### DataSetLocation <a name="DataSetLocation"></a>
+### DataTier <a name="DataTier"></a>
 
-#### `RAW` <a name="@randyridgley/cdk-datalake-constructs.DataSetLocation.RAW"></a>
-
----
-
-
-#### `TRUSTED` <a name="@randyridgley/cdk-datalake-constructs.DataSetLocation.TRUSTED"></a>
+#### `RAW` <a name="@randyridgley/cdk-datalake-constructs.DataTier.RAW"></a>
 
 ---
 
 
-#### `REFINED` <a name="@randyridgley/cdk-datalake-constructs.DataSetLocation.REFINED"></a>
+#### `REFINED` <a name="@randyridgley/cdk-datalake-constructs.DataTier.REFINED"></a>
+
+---
+
+
+#### `TRUSTED` <a name="@randyridgley/cdk-datalake-constructs.DataTier.TRUSTED"></a>
 
 ---
 
@@ -3912,6 +4085,11 @@ public readonly inputStreamWriteThroughputWarning: CreateAlarmOptions;
 
 
 #### `V_2` <a name="@randyridgley/cdk-datalake-constructs.GlueVersion.V_2"></a>
+
+---
+
+
+#### `V_3` <a name="@randyridgley/cdk-datalake-constructs.GlueVersion.V_3"></a>
 
 ---
 

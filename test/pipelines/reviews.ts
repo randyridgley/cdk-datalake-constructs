@@ -1,11 +1,12 @@
-import { Pipeline, DataPipelineType, DataSetLocation } from '../../src/pipeline';
+import { DataTier } from '../../src';
+import { Pipeline, DataPipelineType } from '../../src/pipeline';
 
 export function ReviewsPipeline() {
   return new Pipeline({
     type: DataPipelineType.S3,
     name: 'reviews',
     destinationPrefix: 'reviews/',
-    dataSetDropLocation: DataSetLocation.REFINED,
+    dataSetDropTier: DataTier.REFINED,
     s3Properties: {
       sourceBucketName: 'amazon-reviews-pds',
       sourceKeys: [

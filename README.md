@@ -70,7 +70,7 @@ const dataProducts: Array<dl.DataProduct> = [{
 
 // deploy to local account
 new dl.DataLake(this, 'LocalDataLake', {
-  name: 'data-lake,
+  name: 'data-lake',
   accountId: centralAccountId,
   region: 'us-east-1',
   policyTags: {
@@ -105,7 +105,7 @@ const dataProducts: Array<dl.DataProduct> = [{
 
 // deploy to the central account
 new dl.DataLake(this, 'CentralDataLake', {
-  name: 'central-lake,
+  name: 'central-lake',
   accountId: centralAccountId,
   region: 'us-east-1',
   policyTags: {

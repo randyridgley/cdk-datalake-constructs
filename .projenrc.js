@@ -1,73 +1,29 @@
-const { AwsCdkConstructLibrary, NpmAccess, DependenciesUpgradeMechanism, Stability, DevEnvironmentDockerImage, Gitpod } = require('projen');
+const { awscdk } = require('projen');
 
-const project = new AwsCdkConstructLibrary({
+const project = new awscdk.AwsCdkConstructLibrary({
   author: 'Randy Ridgley',
   authorAddress: 'randy.ridgley@gmail.com',
   description: 'AWS CDK Constructs that can be used to create datalakes/meshes and more',
-  stability: Stability.EXPERIMENTAL,
-  cdkVersion: '1.85.0',
-  minNodeVersion: '12.20.0',
+  cdkVersion: '2.1.0',
   defaultReleaseBranch: 'main',
   name: '@randyridgley/cdk-datalake-constructs',
   repositoryUrl: 'https://github.com/randyridgley/cdk-datalake-constructs.git',
   jsiiFqn: 'projen.AwsCdkConstructLibrary',
-  npmAccess: NpmAccess.PUBLIC,
-  cdkAssert: true,
   licensed: true,
   license: 'MIT',
   devenv: true,
-  cdkDependencies: [
-    '@aws-cdk/core',
-    '@aws-cdk/assets',
-    '@aws-cdk/aws-athena',
-    '@aws-cdk/aws-cloudwatch',
-    '@aws-cdk/aws-ec2',
-    '@aws-cdk/aws-events',
-    '@aws-cdk/aws-events-targets',
-    '@aws-cdk/aws-glue',
-    '@aws-cdk/aws-iam',
-    '@aws-cdk/aws-kinesis',
-    '@aws-cdk/aws-kinesisanalytics',
-    '@aws-cdk/aws-kinesisfirehose',
-    '@aws-cdk/aws-kms',
-    '@aws-cdk/aws-lakeformation',
-    '@aws-cdk/aws-lambda',
-    '@aws-cdk/aws-lambda-nodejs',
-    '@aws-cdk/aws-logs',
-    '@aws-cdk/aws-s3-assets',
-    '@aws-cdk/aws-s3-deployment',
-    '@aws-cdk/aws-s3-notifications',
-    '@aws-cdk/aws-s3',
-    '@aws-cdk/aws-sns',
-    '@aws-cdk/aws-stepfunctions',
-    '@aws-cdk/aws-stepfunctions-tasks',
-    '@aws-cdk/custom-resources',
-    '@aws-cdk/aws-lambda-python',
+  deps: [
+    'aws-cdk-lib',
+    '@aws-cdk/aws-glue-alpha',
+    '@aws-cdk/aws-lambda-python-alpha',
   ],
-  cdkTestDependencies: [
-    '@aws-cdk/aws-athena',
-    '@aws-cdk/aws-cloudwatch',
-    '@aws-cdk/aws-events',
-    '@aws-cdk/aws-events-targets',
-    '@aws-cdk/aws-glue',
-    '@aws-cdk/aws-iam',
-    '@aws-cdk/aws-kinesis',
-    '@aws-cdk/aws-kinesisfirehose',
-    '@aws-cdk/aws-kms',
-    '@aws-cdk/aws-lakeformation',
-    '@aws-cdk/aws-lambda',
-    '@aws-cdk/aws-logs',
-    '@aws-cdk/aws-s3',
-    '@aws-cdk/aws-s3-assets',
-    '@aws-cdk/aws-s3-notifications',
-    '@aws-cdk/aws-sns',
-    '@aws-cdk/aws-stepfunctions',
-    '@aws-cdk/aws-stepfunctions-tasks',
+  peerDeps: [
+    '@aws-cdk/aws-glue-alpha',
+    '@aws-cdk/aws-lambda-python-alpha',
   ],
   devDeps: [
-    'esbuild',
-    'source-map-support',
-    'constructs',
+    'aws-cdk-lib',
+    'cdk-nag',
   ],
   gitignore: [
     'src/emr-studio.ts',
@@ -78,7 +34,6 @@ const project = new AwsCdkConstructLibrary({
     '*.DS_Store',
     '*cdk.context.json',
   ],
-  projenUpgradeSecret: 'PROJEN_GITHUB_TOKEN',
   releaseEveryCommit: true,
   release: true,
   releaseWorkflowName: 'release',
@@ -87,12 +42,6 @@ const project = new AwsCdkConstructLibrary({
     allowedUsernames: ['randyridgley'],
   },
   depsUpgrade: true,
-  depsUpgradeOptions: {
-    workflowOptions: {
-      labels: ['auto-approve', 'auto-merge'],
-      secret: 'PROJEN_GITHUB_TOKEN',
-    },
-  },
   context: {
     '@aws-cdk/core:newStyleStackSynthesis': 'true',
   },
@@ -146,37 +95,6 @@ const common_exclude = [
 ];
 project.npmignore.exclude(...common_exclude, 'maven_release*', 'examples*');
 project.gitignore.exclude(...common_exclude);
-
-const gitpodPrebuild = project.addTask('gitpod:prebuild', {
-  description: 'Prebuild setup for Gitpod',
-});
-// install and compile only, do not test or package.
-gitpodPrebuild.exec('yarn install --frozen-lockfile --check-files');
-gitpodPrebuild.exec('npx projen compile');
-
-let gitpod = new Gitpod(project, {
-  dockerImage: DevEnvironmentDockerImage.fromImage('public.ecr.aws/pahudnet/gitpod-workspace:latest'),
-  prebuilds: {
-    addCheck: true,
-    addBadge: true,
-    addLabel: true,
-    branches: true,
-    pullRequests: true,
-    pullRequestsFromForks: true,
-  },
-});
-
-gitpod.addCustomTask({
-  init: 'yarn gitpod:prebuild',
-  // always upgrade after init
-  command: 'npx projen upgrade',
-});
-
-gitpod.addVscodeExtensions(
-  'dbaeumer.vscode-eslint',
-  'ms-azuretools.vscode-docker',
-  'AmazonWebServices.aws-toolkit-vscode',
-);
 
 const openCoverage = project.addTask('coverage');
 openCoverage.exec('npx projen test && open coverage/lcov-report/index.html');
