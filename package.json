@@ -44,6 +44,7 @@
     "@types/node": "^12",
     "@typescript-eslint/eslint-plugin": "^5",
     "@typescript-eslint/parser": "^5",
+    "cdk-nag": "^2.12.43",
     "constructs": "10.0.5",
     "eslint": "^8",
     "eslint-import-resolver-node": "^0.3.6",
@@ -69,8 +70,7 @@
   "dependencies": {
     "@aws-cdk/aws-glue-alpha": "^2.22.0-alpha.0",
     "@aws-cdk/aws-lambda-python-alpha": "^2.22.0-alpha.0",
-    "aws-cdk-lib": "^2.22.0",
-    "cdk-nag": "^2.12.43"
+    "aws-cdk-lib": "^2.22.0"
   },
   "keywords": [
     "aws",
