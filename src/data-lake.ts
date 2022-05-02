@@ -210,7 +210,6 @@ export class DataLake extends Construct {
       new CfnOutput(this, 'GlueSecurityGroupName', { value: securityGroupName });
     }
 
-    // make this optional?
     this.logBucket = new s3.Bucket(this, 'datalake-log-bucket', {
       bucketName: buildS3BucketName({
         stage: props.stageName,
@@ -425,7 +424,7 @@ export class DataLake extends Construct {
       this.createPipelineResources(pipeline, dataProduct, ds);
     }
 
-    // only create the table if the lake has a catelog
+    // only create the table if the lake has a catalog
     if (pipeline.table && (this.lakeType === LakeType.CENTRAL_CATALOG || this.lakeType === LakeType.DATA_PRODUCT_AND_CATALOG)) {
       const table = new GlueTable(this, `${pipeline.name}-table`, {
         catalogId: pipeline.table.catalogId,

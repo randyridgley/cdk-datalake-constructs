@@ -85,6 +85,7 @@ export interface PipelineProperties {
   readonly s3NotificationProps?: S3NotificationProperties;
   readonly table? : TableProps;
   readonly job?: JobProperties;
+  readonly tiers?: DataTier[];
 }
 
 export interface DataCatalogOwner {
@@ -114,6 +115,7 @@ export class Pipeline {
   public readonly s3NotificationProps?: S3NotificationProperties;
   public readonly table? : TableProps;
   public readonly job?: JobProperties;
+  public readonly tiers: DataTier[];
 
   constructor(props: PipelineProperties) {
     this.type = props.type;
@@ -126,5 +128,6 @@ export class Pipeline {
     this.s3Properties = props.s3Properties ? props.s3Properties : undefined;
     this.streamProperties = props.streamProperties ? props.streamProperties : undefined;
     this.table = props.table ? props.table : undefined;
+    this.tiers = props.tiers ? props.tiers : [DataTier.RAW];
   }
 }

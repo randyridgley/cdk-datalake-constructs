@@ -3226,6 +3226,16 @@ public readonly table: TableProps;
 
 ---
 
+##### `tiers`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.PipelineProperties.property.tiers"></a>
+
+```typescript
+public readonly tiers: DataTier[];
+```
+
+- *Type:* [`@randyridgley/cdk-datalake-constructs.DataTier`](#@randyridgley/cdk-datalake-constructs.DataTier)[]
+
+---
+
 ### S3NotificationProperties <a name="@randyridgley/cdk-datalake-constructs.S3NotificationProperties"></a>
 
 #### Initializer <a name="[object Object].Initializer"></a>
@@ -3556,6 +3566,16 @@ public readonly name: string;
 ```
 
 - *Type:* `string`
+
+---
+
+##### `tiers`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.Pipeline.property.tiers"></a>
+
+```typescript
+public readonly tiers: DataTier[];
+```
+
+- *Type:* [`@randyridgley/cdk-datalake-constructs.DataTier`](#@randyridgley/cdk-datalake-constructs.DataTier)[]
 
 ---
 

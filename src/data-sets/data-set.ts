@@ -111,19 +111,26 @@ export class DataSet extends Construct {
     }
 
     props.dataTiers.forEach(r => {
-      this.createDataTierBucket({
-        bucketName: this.getDataSetBucketName(r),
-        crossAccount: crossAccount,
-        dataCatalogAccountId: dataCatalogAccountId,
-        lakeType: props.lakeType,
-        logBucket: props.logBucket,
-        pipelineName: props.pipeline.name,
-        s3BucketProps: props.s3BucketProps,
-        s3NotificationProps: props.pipeline.s3NotificationProps,
-        datalakeAdminRole: props.datalakeAdminRole,
-        datalakeDbCreatorRole: props.datalakeDbCreatorRole,
-        tier: r,
-      });
+      if (props.lakeType === LakeType.DATA_PRODUCT || props.lakeType === LakeType.DATA_PRODUCT_AND_CATALOG) {
+        this.createDataTierBucket({
+          bucketName: this.getDataSetBucketName(r),
+          crossAccount: crossAccount,
+          dataCatalogAccountId: dataCatalogAccountId,
+          lakeType: props.lakeType,
+          logBucket: props.logBucket,
+          pipelineName: props.pipeline.name,
+          s3BucketProps: props.s3BucketProps,
+          s3NotificationProps: props.pipeline.s3NotificationProps,
+          datalakeAdminRole: props.datalakeAdminRole,
+          datalakeDbCreatorRole: props.datalakeDbCreatorRole,
+          tier: r,
+        });
+      }
+
+      if (dataCatalogAccountId == Aws.ACCOUNT_ID) {
+        this.locationRegistry.push(this.registerDataLakeLocation(
+          props.datalakeAdminRole.roleArn, props.datalakeDbCreatorRole.roleArn, this.getDataSetBucketName(r)!));
+      }
     });
 
     // revisit this
@@ -146,23 +153,16 @@ export class DataSet extends Construct {
   }
 
   private createDataTierBucket(props: DataTierBucketProps) {
-    if (props.lakeType === LakeType.DATA_PRODUCT || props.lakeType === LakeType.DATA_PRODUCT_AND_CATALOG && props.bucketName) {
-      const bucket = new DataLakeBucket(this, `s3-${props.tier}-bucket-${props.pipelineName}`, {
-        bucketName: props.bucketName!,
-        dataCatalogAccountId: props.dataCatalogAccountId,
-        logBucket: props.logBucket,
-        crossAccount: props.crossAccount,
-        s3Properties: props.s3BucketProps,
-      }).bucket;
+    const bucket = new DataLakeBucket(this, `s3-${props.tier}-bucket-${props.pipelineName}`, {
+      bucketName: props.bucketName!,
+      dataCatalogAccountId: props.dataCatalogAccountId,
+      logBucket: props.logBucket,
+      crossAccount: props.crossAccount,
+      s3Properties: props.s3BucketProps,
+    }).bucket;
 
-      if (props.s3NotificationProps) {
-        this.createS3NotificationTopic(props.s3NotificationProps, bucket);
-      }
-
-      if (props.dataCatalogAccountId == Aws.ACCOUNT_ID) {
-        this.locationRegistry.push(this.registerDataLakeLocation(
-          props.datalakeAdminRole.roleArn, props.datalakeDbCreatorRole.roleArn, props.bucketName!));
-      }
+    if (props.s3NotificationProps) {
+      this.createS3NotificationTopic(props.s3NotificationProps, bucket);
     }
   }
 
