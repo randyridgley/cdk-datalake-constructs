@@ -1,9 +1,9 @@
+import { Resource } from 'aws-cdk-lib';
 import * as cloudwatch from 'aws-cdk-lib/aws-cloudwatch';
 import * as kinesis from 'aws-cdk-lib/aws-kinesis';
-import * as cdk from 'aws-cdk-lib/core';
 import { Construct } from 'constructs';
 
-export class KinesisStream extends cdk.Resource {
+export class KinesisStream extends Resource {
   public readonly stream: kinesis.Stream;
 
   constructor(parent: Construct, name: string, props: kinesis.StreamProps) {

@@ -14,14 +14,15 @@
     "coverage": "npx projen coverage",
     "default": "npx projen default",
     "docgen": "npx projen docgen",
+    "eject": "npx projen eject",
     "eslint": "npx projen eslint",
     "package": "npx projen package",
     "package-all": "npx projen package-all",
-    "package:dotnet": "npx projen package:dotnet",
     "package:java": "npx projen package:java",
     "package:js": "npx projen package:js",
     "package:python": "npx projen package:python",
     "post-compile": "npx projen post-compile",
+    "post-upgrade": "npx projen post-upgrade",
     "pre-compile": "npx projen pre-compile",
     "release": "npx projen release",
     "test": "npx projen test",
@@ -43,35 +44,32 @@
     "@types/node": "^12",
     "@typescript-eslint/eslint-plugin": "^5",
     "@typescript-eslint/parser": "^5",
-    "aws-cdk-lib": "^2.3.0",
-    "cdk-nag": "^2.6.7",
     "constructs": "10.0.5",
     "eslint": "^8",
     "eslint-import-resolver-node": "^0.3.6",
-    "eslint-import-resolver-typescript": "^2.5.0",
-    "eslint-plugin-import": "^2.25.4",
-    "jest": "^27.4.5",
+    "eslint-import-resolver-typescript": "^2.7.1",
+    "eslint-plugin-import": "^2.26.0",
+    "jest": "^27.5.1",
     "jest-junit": "^13",
-    "jsii": "^1.50.0",
-    "jsii-diff": "^1.50.0",
+    "jsii": "^1.57.0",
+    "jsii-diff": "^1.57.0",
     "jsii-docgen": "^3.8.31",
     "json-schema": "^0.4.0",
     "npm-check-updates": "^12",
-    "projen": "^0.50.6",
+    "projen": "^0.52.44",
     "standard-version": "^9",
-    "ts-jest": "^27.1.2",
-    "typescript": "^4.5.4"
+    "ts-jest": "^27.1.4",
+    "typescript": "^4.6.4"
   },
   "peerDependencies": {
-    "@aws-cdk/aws-glue-alpha": "^2.3.0-alpha.0",
-    "@aws-cdk/aws-lambda-python-alpha": "^2.3.0-alpha.0",
-    "aws-cdk-lib": "^2.1.0",
+    "@aws-cdk/aws-glue-alpha": "^2.22.0-alpha.0",
+    "aws-cdk-lib": "^2.13.0",
     "constructs": "^10.0.5"
   },
   "dependencies": {
-    "@aws-cdk/aws-glue-alpha": "^2.3.0-alpha.0",
-    "@aws-cdk/aws-lambda-python-alpha": "^2.3.0-alpha.0",
-    "aws-cdk-lib": "^2.3.0"
+    "@aws-cdk/aws-glue-alpha": "^2.22.0-alpha.0",
+    "@aws-cdk/aws-lambda-python-alpha": "^2.22.0-alpha.0",
+    "aws-cdk-lib": "^2.22.0"
   },
   "keywords": [
     "aws",
@@ -97,6 +95,7 @@
       "json",
       "lcov",
       "clover",
+      "cobertura",
       "text"
     ],
     "coverageDirectory": "coverage",
@@ -140,10 +139,6 @@
       "python": {
         "distName": "cdk-datalake-constructs",
         "module": "cdk_datalake_constructs"
-      },
-      "dotnet": {
-        "namespace": "Cdk.Datalake.Constructs",
-        "packageId": "Cdk.Datalake.Constructs"
       }
     },
     "tsc": {

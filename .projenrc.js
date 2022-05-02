@@ -4,7 +4,7 @@ const project = new awscdk.AwsCdkConstructLibrary({
   author: 'Randy Ridgley',
   authorAddress: 'randy.ridgley@gmail.com',
   description: 'AWS CDK Constructs that can be used to create datalakes/meshes and more',
-  cdkVersion: '2.1.0',
+  cdkVersion: '2.13.0',
   defaultReleaseBranch: 'main',
   name: '@randyridgley/cdk-datalake-constructs',
   repositoryUrl: 'https://github.com/randyridgley/cdk-datalake-constructs.git',
@@ -19,11 +19,6 @@ const project = new awscdk.AwsCdkConstructLibrary({
   ],
   peerDeps: [
     '@aws-cdk/aws-glue-alpha',
-    '@aws-cdk/aws-lambda-python-alpha',
-  ],
-  devDeps: [
-    'aws-cdk-lib',
-    'cdk-nag',
   ],
   gitignore: [
     'src/emr-studio.ts',
@@ -68,10 +63,10 @@ const project = new awscdk.AwsCdkConstructLibrary({
   //   gitUserEmail: 'randy.ridgley@gmail.com',
   //   moduleName: 'github.com/randyridgley/cdk-datalake-constructs',
   // },
-  publishToNuget: {
-    dotNetNamespace: 'Cdk.Datalake.Constructs',
-    packageId: 'Cdk.Datalake.Constructs',
-  },
+  // publishToNuget: {
+  //   dotNetNamespace: 'Cdk.Datalake.Constructs',
+  //   packageId: 'Cdk.Datalake.Constructs',
+  // },
   catalog: {
     announce: true,
     twitter: 'randyridgley',
@@ -88,7 +83,7 @@ const project = new awscdk.AwsCdkConstructLibrary({
   },
 });
 
-project.tasks.tryFind('package').prependExec('go env -w GOSUMDB=off');
+// project.tasks.tryFind('package').prependExec('go env -w GOSUMDB=off');
 
 const common_exclude = [
   'cdk.out', 'cdk.context.json', 'yarn-error.log', '.DS_Store', 'coverage', '.metals',

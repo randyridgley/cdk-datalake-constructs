@@ -1,7 +1,5 @@
-import { Aspects } from 'aws-cdk-lib';
 import { Template } from 'aws-cdk-lib/assertions';
 import { App, Stack } from 'aws-cdk-lib/core';
-import { AwsSolutionsChecks } from 'cdk-nag';
 import { DataLake, Stage, Pipeline, DataProduct, LakeType } from '../src';
 import * as pipelines from '../test/pipelines';
 
@@ -58,9 +56,5 @@ describe('default', () => {
     // When
     const t = Template.fromStack(stack);
     expect(t).toMatchSnapshot();
-  });
-  it('Should comply to best practices', () => {
-    // When
-    Aspects.of(app).add(new AwsSolutionsChecks({ verbose: true }));
   });
 });

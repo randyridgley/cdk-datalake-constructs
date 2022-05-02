@@ -210,7 +210,7 @@ export class DataLake extends Construct {
       new CfnOutput(this, 'GlueSecurityGroupName', { value: securityGroupName });
     }
 
-    // make this optional
+    // make this optional?
     this.logBucket = new s3.Bucket(this, 'datalake-log-bucket', {
       bucketName: buildS3BucketName({
         stage: props.stageName,
