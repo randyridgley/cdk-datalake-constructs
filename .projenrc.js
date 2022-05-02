@@ -17,6 +17,9 @@ const project = new awscdk.AwsCdkConstructLibrary({
     '@aws-cdk/aws-glue-alpha',
     '@aws-cdk/aws-lambda-python-alpha',
   ],
+  devDeps: [
+    'cdk-nag',
+  ],
   peerDeps: [
     '@aws-cdk/aws-glue-alpha',
   ],
@@ -41,7 +44,6 @@ const project = new awscdk.AwsCdkConstructLibrary({
     '@aws-cdk/core:newStyleStackSynthesis': 'true',
   },
   autoApproveUpgrades: true,
-  // docgen: true,
   eslint: true,
   mergify: true,
   antitamper: true,

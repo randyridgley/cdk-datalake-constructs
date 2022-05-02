@@ -1,7 +1,9 @@
 import { Template } from 'aws-cdk-lib/assertions';
-import { App, Stack } from 'aws-cdk-lib/core';
-import { DataLake, Stage, Pipeline, DataProduct, LakeType } from '../src';
+import { App, Aspects } from 'aws-cdk-lib/core';
+import { AwsSolutionsChecks } from 'cdk-nag';
+import { DataLake, Stage, Pipeline, DataProduct } from '../src';
 import * as pipelines from '../test/pipelines';
+import { CdkTestStack } from './test-stack';
 
 const stage = Stage.ALPHA;
 const dataProductAccountId = '123456789012';
@@ -27,22 +29,21 @@ const dataProducts: Array<DataProduct> = [{
   databaseName: 'taxi-product',
 }];
 
-describe('default', () => {
-  const app = new App();
-  const stack = new Stack(app, 'testStack', {
-    env: {
-      region: 'us-east-1',
-      account: dataProductAccountId,
-    },
-  });
+describe('cdk-nag AwsSolutions Pack', () => {
+  let stack: CdkTestStack;
+  let app: App;
+  let datalake: DataLake;
 
-  const datalake = new DataLake(stack, 'datalake', {
-    name: 'test-lake',
-    stageName: stage,
-    dataProducts: dataProducts,
-    createDefaultDatabase: true,
-    lakeType: LakeType.DATA_PRODUCT_AND_CATALOG,
-    createAthenaWorkgroup: true,
+  beforeAll(() => {
+    // GIVEN
+    app = new App();
+    stack = new CdkTestStack(app, 'test', {
+      dataProducts: dataProducts,
+      stage: stage,
+    });
+    datalake = stack.datalake;
+    // WHEN
+    Aspects.of(stack).add(new AwsSolutionsChecks({ verbose: true }));
   });
 
   test('Check Resources', () => {
@@ -52,6 +53,28 @@ describe('default', () => {
     // expect(stack).toHaveResource('AWS::S3::Bucket');
     // expect(SynthUtils.toCloudFormation(stack)).toMatchSnapshot();
   });
+  // THEN
+  // test('No unsuppressed Warnings', () => {
+  //   const warnings = Annotations.fromStack(stack).findWarning(
+  //     '*',
+  //     Match.stringLikeRegexp('AwsSolutions-.*')
+  //   );
+  //   if(warnings.length > 0) {
+  //     warnings.forEach(e => console.log(e['entry']));
+  //   }
+  //   expect(warnings).toHaveLength(0);
+  // });
+
+  // test('No unsuppressed Errors', () => {
+  //   const errors = Annotations.fromStack(stack).findError(
+  //     '*',
+  //     Match.stringLikeRegexp('AwsSolutions-.*')
+  //   );
+  //   if(errors.length > 0) {
+  //     errors.forEach(e => console.log(e.id + '\n'  + e['entry']['data']));
+  //   }
+  //   expect(errors).toHaveLength(0);
+  // });
   it('Should match snapshot', () => {
     // When
     const t = Template.fromStack(stack);

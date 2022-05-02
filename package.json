@@ -69,7 +69,8 @@
   "dependencies": {
     "@aws-cdk/aws-glue-alpha": "^2.22.0-alpha.0",
     "@aws-cdk/aws-lambda-python-alpha": "^2.22.0-alpha.0",
-    "aws-cdk-lib": "^2.22.0"
+    "aws-cdk-lib": "^2.22.0",
+    "cdk-nag": "^2.12.43"
   },
   "keywords": [
     "aws",

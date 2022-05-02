@@ -610,6 +610,7 @@ export class DataLake extends Construct {
         resourceUse: 'cr',
         stage: this.stageName,
       }),
+      timeout: Duration.minutes(15),
     });
 
     const myProvider = new cr.Provider(this, 'policy-tags-provider', {
@@ -634,6 +635,7 @@ export class DataLake extends Construct {
       runtime: lambda.Runtime.PYTHON_3_7,
       entry: path.join(__dirname, '../lambda/enable-hybrid-catalog'),
       role: this.datalakeAdminRole,
+      timeout: Duration.minutes(1),
       functionName: buildLambdaFunctionName({
         name: 'create-catalog',
         resourceUse: 'cr',
