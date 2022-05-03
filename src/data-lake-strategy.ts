@@ -35,9 +35,6 @@ export interface DataStrategyProps {
 }
 
 export abstract class LakeImplStrategy {
-  public rawBucketName?: string;
-  public trustedBucketName?: string;
-  public refinedBucketName?: string;
   public locationRegistry: CfnResource[] = [];
   public stageName: Stage = Stage.ALPHA;
   public downloadLocations: { [schema: string]: DataSetResult } = {}; //used for the Custom Resource to allow downloading of existing datasets into datalake
@@ -52,10 +49,10 @@ export abstract class LakeImplStrategy {
   abstract addPipeline(stack: Stack, pipeline: Pipeline, dataProduct: DataProduct, database: Database, bucketName: string): void;
   abstract lakeKind(): LakeKind
 
-  getDataSetBucketName(dataTier: DataTier) : string | undefined {
-    return dataTier == DataTier.RAW ? this.rawBucketName :
-      dataTier == DataTier.REFINED ? this.refinedBucketName :
-        dataTier == DataTier.TRUSTED ? this.trustedBucketName : undefined;
+  getDataSetBucketName(pipe: Pipeline, dataTier: DataTier) : string | undefined {
+    return dataTier == DataTier.RAW ? this.downloadLocations[pipe.name].rawBucketName :
+      dataTier == DataTier.REFINED ? this.downloadLocations[pipe.name].refinedBucketName :
+        dataTier == DataTier.TRUSTED ? this.downloadLocations[pipe.name].trustedBucketName : undefined;
   }
 
   createDataProduct(props: DataStrategyProps): void {
@@ -66,9 +63,34 @@ export abstract class LakeImplStrategy {
     this.securityGroup = props.securityGroup;
     this.vpc = props.vpc;
 
-    const bucketName = this.getDataSetBucketName(props.pipe.dataSetDropTier)!;
-
+    if (props.pipe.dataSetDropTier) {
+      this.downloadLocations[props.pipe.name] = {
+        destinationPrefix: props.pipe.destinationPrefix,
+        sourceBucketName: props.pipe.s3Properties? props.pipe.s3Properties.sourceBucketName! : undefined,
+        sourceKeys: props.pipe.s3Properties ? props.pipe.s3Properties.sourceKeys! : undefined,
+        rawBucketName: buildS3BucketName({
+          name: props.pipe.name,
+          accountId: props.product.accountId,
+          resourceUse: 'raw',
+          stage: this.stageName,
+        }),
+        refinedBucketName: buildS3BucketName({
+          name: props.pipe.name,
+          accountId: props.product.accountId,
+          resourceUse: 'refined',
+          stage: this.stageName,
+        }),
+        trustedBucketName: buildS3BucketName({
+          name: props.pipe.name,
+          accountId: props.product.accountId,
+          resourceUse: 'trusted',
+          stage: this.stageName,
+        }),
+      };
+    }
     this.createBuckets(pipelineStack, props.pipe, props.product);
+
+    const bucketName = this.getDataSetBucketName(props.pipe, props.pipe.dataSetDropTier)!;
     this.addPipeline(pipelineStack, props.pipe, props.product, props.database, bucketName);
 
     // find the correct metadata catalog account
@@ -131,14 +153,6 @@ export abstract class LakeImplStrategy {
   protected createPipelineResources(stack: Stack, pipeline: Pipeline, dataProduct: DataProduct, bucketName: string) {
     switch (pipeline.type) {
       case DataPipelineType.S3: {
-        if (pipeline.dataSetDropTier) {
-          this.downloadLocations[pipeline.name] = {
-            destinationPrefix: pipeline.destinationPrefix,
-            destinationBucketName: bucketName,
-            sourceBucketName: pipeline.s3Properties? pipeline.s3Properties.sourceBucketName! : undefined,
-            sourceKeys: pipeline.s3Properties ? pipeline.s3Properties.sourceKeys! : undefined,
-          };
-        }
         break;
       }
       case DataPipelineType.STREAM: {
@@ -157,7 +171,7 @@ export abstract class LakeImplStrategy {
 
       pipeline.job.jobArgs!['--TempDir'] = `s3://${this.logBucket!.bucketName}/temp/`;
       pipeline.job.jobArgs!['--spark-event-logs-path'] = `s3://${this.logBucket!.bucketName}/logs/`;
-      let s3Location = this.getDataSetBucketName(pipeline.job.destinationLocation!);
+      let s3Location = this.getDataSetBucketName(pipeline, pipeline.job.destinationLocation!);
 
       if (pipeline.job.destinationLocation && s3Location) {
         pipeline.job.jobArgs!['--DESTINATION_BUCKET'] = s3Location;
@@ -301,33 +315,6 @@ export abstract class LakeImplStrategy {
   }
 
   createBuckets(stack: Stack, pipe: Pipeline, product: DataProduct): void {
-    if (pipe.tiers.includes(DataTier.RAW)) {
-      this.rawBucketName = buildS3BucketName({
-        name: pipe.name,
-        accountId: product.accountId,
-        resourceUse: 'raw',
-        stage: this.stageName,
-      });
-    }
-
-    if (pipe.tiers.includes(DataTier.TRUSTED)) {
-      this.trustedBucketName = buildS3BucketName({
-        name: pipe.name,
-        accountId: product.accountId,
-        resourceUse: 'trusted',
-        stage: this.stageName,
-      });
-    }
-
-    if (pipe.tiers.includes(DataTier.REFINED)) {
-      this.refinedBucketName = buildS3BucketName({
-        name: pipe.name,
-        accountId: product.accountId,
-        resourceUse: 'refined',
-        stage: this.stageName,
-      });
-    }
-
     /// This is confusing. Find a way to simplify
     const dataCatalogAccountId = product.dataCatalogAccountId ?
       product.dataCatalogAccountId : product.accountId;
@@ -337,7 +324,7 @@ export abstract class LakeImplStrategy {
     pipe.tiers.forEach(r => {
       if (this.lakeKind() === LakeKind.DATA_PRODUCT || this.lakeKind() === LakeKind.DATA_PRODUCT_AND_CATALOG) {
         new DataLakeBucket(stack, `s3-${r}-bucket-${pipe.name}`, {
-          bucketName: this.getDataSetBucketName(r)!,
+          bucketName: this.getDataSetBucketName(pipe, r)!,
           dataCatalogAccountId: dataCatalogAccountId,
           logBucket: this.logBucket!,
           crossAccount: crossAccount,
@@ -348,7 +335,7 @@ export abstract class LakeImplStrategy {
       if (dataCatalogAccountId == Aws.ACCOUNT_ID) {
         if (this.datalakeDbCreatorRoleArn == undefined) throw new Error('Cannot have datalake without Data Lake DB Creator role defined.');
 
-        const name = this.getDataSetBucketName(r)!.replace(/\W/g, '');
+        const name = this.getDataSetBucketName(pipe, r)!.replace(/\W/g, '');
         const lfResource = this.registerDataLakeLocation(stack, this.datalakeDbCreatorRoleArn, name);
 
         this.locationRegistry.push(lfResource);
@@ -358,16 +345,6 @@ export abstract class LakeImplStrategy {
         }
       }
     });
-
-    // revisit this
-    if (pipe.dataSetDropTier) {
-      this.downloadLocations[pipe.name] = {
-        destinationPrefix: pipe.destinationPrefix,
-        destinationBucketName: this.getDataSetBucketName(pipe.dataSetDropTier),
-        sourceBucketName: pipe.s3Properties? pipe.s3Properties.sourceBucketName! : undefined,
-        sourceKeys: pipe.s3Properties ? pipe.s3Properties.sourceKeys! : undefined,
-      };
-    }
   }
 
   private registerDataLakeLocation(stack: Stack, datalakeDbCreatorRoleArn: string, bucketName: string) : CfnResource {

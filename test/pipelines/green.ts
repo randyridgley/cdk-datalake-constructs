@@ -6,7 +6,7 @@ export function GreenPipeline() {
     type: DataPipelineType.S3,
     name: 'taxi-green',
     destinationPrefix: 'green/',
-    dataSetDropTier: DataTier.RAW,
+    dataDropTier: DataTier.RAW,
     s3Properties: {
       sourceBucketName: 'nyc-tlc',
       sourceKeys: [

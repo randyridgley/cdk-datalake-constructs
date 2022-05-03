@@ -7,7 +7,7 @@ export function ReviewsPipeline() {
     type: DataPipelineType.S3,
     name: 'reviews',
     destinationPrefix: 'reviews/',
-    dataSetDropTier: DataTier.REFINED,
+    dataDropTier: DataTier.REFINED,
     s3Properties: {
       sourceBucketName: 'amazon-reviews-pds',
       sourceKeys: [

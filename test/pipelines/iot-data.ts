@@ -21,7 +21,7 @@ export function IoTDataPipeline(stage: string) {
     type: DataPipelineType.STREAM,
     name: 'iot-data',
     destinationPrefix: 'iot-data/',
-    dataSetDropTier: DataTier.RAW,
+    dataDropTier: DataTier.RAW,
     streamProperties: {
       streamName: streamName,
       lambdaDataGenerator: {

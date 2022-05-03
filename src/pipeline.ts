@@ -78,7 +78,7 @@ export interface PipelineProperties {
   readonly type: DataPipelineType;
   readonly name: string;
   readonly destinationPrefix: string;
-  readonly dataSetDropTier: DataTier;
+  readonly dataDropTier: DataTier;
   readonly s3Properties?: S3Properties;
   readonly streamProperties?: StreamProperties;
   readonly jdbcProperties?: JDBCProperties;
@@ -106,7 +106,7 @@ export class Pipeline {
   constructor(props: PipelineProperties) {
     this.type = props.type;
     this.name = props.name;
-    this.dataSetDropTier = props.dataSetDropTier;
+    this.dataSetDropTier = props.dataDropTier;
     this.destinationPrefix = props.destinationPrefix;
     this.jdbcProperties = props.jdbcProperties ? props.jdbcProperties : undefined;
     this.job = props.job ? props.job : undefined;

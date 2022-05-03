@@ -2020,10 +2020,30 @@ public readonly destinationPrefix: string;
 
 ---
 
-##### `destinationBucketName`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.DataSetResult.property.destinationBucketName"></a>
+##### `rawBucketName`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataSetResult.property.rawBucketName"></a>
 
 ```typescript
-public readonly destinationBucketName: string;
+public readonly rawBucketName: string;
+```
+
+- *Type:* `string`
+
+---
+
+##### `refinedBucketName`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataSetResult.property.refinedBucketName"></a>
+
+```typescript
+public readonly refinedBucketName: string;
+```
+
+- *Type:* `string`
+
+---
+
+##### `trustedBucketName`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataSetResult.property.trustedBucketName"></a>
+
+```typescript
+public readonly trustedBucketName: string;
 ```
 
 - *Type:* `string`
@@ -2820,10 +2840,10 @@ import { PipelineProperties } from '@randyridgley/cdk-datalake-constructs'
 const pipelineProperties: PipelineProperties = { ... }
 ```
 
-##### `dataSetDropTier`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.PipelineProperties.property.dataSetDropTier"></a>
+##### `dataDropTier`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.PipelineProperties.property.dataDropTier"></a>
 
 ```typescript
-public readonly dataSetDropTier: DataTier;
+public readonly dataDropTier: DataTier;
 ```
 
 - *Type:* [`@randyridgley/cdk-datalake-constructs.DataTier`](#@randyridgley/cdk-datalake-constructs.DataTier)

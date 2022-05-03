@@ -7,7 +7,7 @@ export function YellowPipeline() {
     type: DataPipelineType.S3,
     name: 'taxi-yellow',
     destinationPrefix: 'yellow/',
-    dataSetDropTier: DataTier.RAW,
+    dataDropTier: DataTier.RAW,
     s3Properties: {
       sourceBucketName: 'nyc-tlc',
       sourceKeys: [
