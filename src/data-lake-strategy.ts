@@ -86,6 +86,12 @@ export abstract class LakeImplStrategy {
           resourceUse: 'trusted',
           stage: this.stageName,
         }),
+        destinationBucketName: buildS3BucketName({
+          name: props.pipe.name,
+          accountId: props.product.accountId,
+          resourceUse: props.pipe.dataSetDropTier == DataTier.RAW ? 'raw' : props.pipe.dataSetDropTier == DataTier.REFINED ? 'refined' : 'trusted',
+          stage: this.stageName,
+        }),
       };
     }
     this.createBuckets(pipelineStack, props.pipe, props.product);

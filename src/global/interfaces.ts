@@ -5,4 +5,5 @@ export interface DataSetResult {
   readonly rawBucketName: string;
   readonly trustedBucketName: string;
   readonly refinedBucketName: string;
+  readonly destinationBucketName: string;
 }

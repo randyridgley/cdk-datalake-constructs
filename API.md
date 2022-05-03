@@ -2010,6 +2010,16 @@ import { DataSetResult } from '@randyridgley/cdk-datalake-constructs'
 const dataSetResult: DataSetResult = { ... }
 ```
 
+##### `destinationBucketName`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataSetResult.property.destinationBucketName"></a>
+
+```typescript
+public readonly destinationBucketName: string;
+```
+
+- *Type:* `string`
+
+---
+
 ##### `destinationPrefix`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataSetResult.property.destinationPrefix"></a>
 
 ```typescript
