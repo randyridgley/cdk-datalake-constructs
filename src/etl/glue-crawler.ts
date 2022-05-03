@@ -1,3 +1,4 @@
+import { CfnResource } from 'aws-cdk-lib';
 import * as cloudwatch from 'aws-cdk-lib/aws-cloudwatch';
 import * as events from 'aws-cdk-lib/aws-events';
 import * as glue from 'aws-cdk-lib/aws-glue';
@@ -13,6 +14,7 @@ export interface IGlueCrawlerProperties {
   trigger?: glue.CfnTrigger;
   bucketName: string;
   bucketPrefix?: string;
+  lfS3Resource: CfnResource;
 }
 
 export class GlueCrawler extends Construct {
@@ -71,6 +73,7 @@ export class GlueCrawler extends Construct {
       ],
     });
 
+    s3perms.addDependsOn(props.lfS3Resource);
     this.crawler.addDependsOn(dbPerms);
     this.crawler.addDependsOn(s3perms);
   }

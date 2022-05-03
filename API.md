@@ -3330,6 +3330,16 @@ public readonly databaseName: string;
 
 ---
 
+##### `lfS3Resource`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.IGlueCrawlerProperties.property.lfS3Resource"></a>
+
+```typescript
+public readonly lfS3Resource: CfnResource;
+```
+
+- *Type:* [`aws-cdk-lib.CfnResource`](#aws-cdk-lib.CfnResource)
+
+---
+
 ##### `name`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.IGlueCrawlerProperties.property.name"></a>
 
 ```typescript

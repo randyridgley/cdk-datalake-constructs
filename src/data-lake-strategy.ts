@@ -100,14 +100,9 @@ export abstract class LakeImplStrategy {
 
     const bucketName = this.getDataSetBucketName(props.pipe, props.pipe.dataSetDropTier)!;
     this.addPipeline(pipelineStack, props.pipe, props.product, bucketName);
-
-    // find the correct metadata catalog account
-    if (this.lakeKind() === LakeKind.CENTRAL_CATALOG || this.lakeKind() === LakeKind.DATA_PRODUCT_AND_CATALOG) {
-      this.createCrawler(pipelineStack, props.pipe, props.database, bucketName);
-    }
   }
 
-  protected createCrawler(stack: Stack, pipe: Pipeline, database: Database, bucketName: string): void {
+  protected createCrawler(stack: Stack, pipe: Pipeline, databaseName: string, bucketName: string, s3DataLFResource: CfnResource): void {
     if (pipe.table !== undefined) return;
 
     // only create a crawler for the drop location of the data in the data product of the pipeline
@@ -117,7 +112,7 @@ export abstract class LakeImplStrategy {
         resourceUse: 'crawler',
         name: pipe.name,
       }),
-      databaseName: database.databaseName,
+      databaseName: databaseName,
       bucketName: bucketName,
       bucketPrefix: pipe.destinationPrefix,
       roleName: buildRoleName({
@@ -125,6 +120,7 @@ export abstract class LakeImplStrategy {
         resourceUse: 'crawler-role',
         name: pipe.name,
       }),
+      lfS3Resource: s3DataLFResource,
     });
 
     this.locationRegistry.forEach(r => {
@@ -326,9 +322,9 @@ export abstract class LakeImplStrategy {
       product.dataCatalogAccountId != product.accountId ? true : false : false;
 
     pipe.tiers.forEach(r => {
-      if (this.lakeKind() === LakeKind.DATA_PRODUCT || this.lakeKind() === LakeKind.DATA_PRODUCT_AND_CATALOG) {
-        const bucketName = this.getDataSetBucketName(pipe, r)!;
+      const bucketName = this.getDataSetBucketName(pipe, r)!;
 
+      if (this.lakeKind() === LakeKind.DATA_PRODUCT || this.lakeKind() === LakeKind.DATA_PRODUCT_AND_CATALOG) {
         new DataLakeBucket(stack, `s3-${r}-bucket-${pipe.name}`, {
           bucketName: bucketName,
           dataCatalogAccountId: dataCatalogAccountId,
@@ -349,6 +345,7 @@ export abstract class LakeImplStrategy {
         if (this.datalakeAdminRoleArn) {
           this.createDataLocationAccessPermission(stack, `${name}-admin`, this.datalakeAdminRoleArn, name, lfResource);
         }
+        this.createCrawler(stack, pipe, product.databaseName, bucketName, lfResource);
       }
     });
   }
