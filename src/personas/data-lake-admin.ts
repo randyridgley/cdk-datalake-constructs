@@ -1,6 +1,5 @@
-import { CfnOutput, Stack } from 'aws-cdk-lib';
+import { Stack } from 'aws-cdk-lib';
 import * as iam from 'aws-cdk-lib/aws-iam';
-import * as lf from 'aws-cdk-lib/aws-lakeformation';
 import { Construct } from 'constructs';
 
 export interface DataLakeAdministratorProps {
@@ -106,13 +105,5 @@ export class DataLakeAdministrator extends Construct {
         }),
       ],
     }));
-
-    const lfAdminRole = new lf.CfnDataLakeSettings(this, 'lf-datalake-role-admin-settings', {
-      admins: [{
-        dataLakePrincipalIdentifier: this.role.roleArn,
-      }],
-    });
-    lfAdminRole.node.addDependency(this.role);
-    new CfnOutput(this, 'DataLakeAdminRole', { value: this.role.roleName });
   }
 }

@@ -217,6 +217,14 @@ export class DataLake extends Construct {
       }).role;
     }
 
+    const lfAdminRole = new lf.CfnDataLakeSettings(this, 'lf-datalake-role-admin-settings', {
+      admins: [{
+        dataLakePrincipalIdentifier: this.datalakeAdminRole.roleArn,
+      }],
+    });
+    lfAdminRole.node.addDependency(this.datalakeAdminRole);
+    new CfnOutput(this, 'DataLakeAdminRole', { value: this.datalakeAdminRole.roleName });
+
     if (this.crossAccountAccess) {
       this.createCrossAccountGlueCatalogResourcePolicy(
         this.crossAccountAccess.consumerAccountIds, this.crossAccountAccess.dataCatalogOwnerAccountId);
@@ -247,7 +255,7 @@ export class DataLake extends Construct {
     }
 
     if (props.policyTags) {
-      this.createPolicyTagsCustomResource(props.policyTags, this.datalakeAdminRole);
+      this.createPolicyTagsCustomResource(props.policyTags);
     }
 
     this.dataLakeStrategy = LakeStrategyFactory.getLakeStrategy(props.lakeKind);
@@ -335,7 +343,7 @@ export class DataLake extends Construct {
     return db;
   }
 
-  private createPolicyTagsCustomResource(policyTags: { [name: string]: string }, datalakeAdminRole: iam.IRole) {
+  private createPolicyTagsCustomResource(policyTags: { [name: string]: string }) {
     const onEvent = new PythonFunction(this, 'create-policy-tags-handler', {
       runtime: lambda.Runtime.PYTHON_3_7,
       entry: path.join(__dirname, '../lambda/create-tags-handler'),
@@ -347,6 +355,7 @@ export class DataLake extends Construct {
       }),
       timeout: Duration.minutes(15),
     });
+    onEvent.node.addDependency(this.datalakeAdminRole);
 
     const myProvider = new cr.Provider(this, 'policy-tags-provider', {
       onEventHandler: onEvent,
@@ -362,7 +371,7 @@ export class DataLake extends Construct {
         catalogId: Aws.ACCOUNT_ID,
       },
     });
-    outputs.node.addDependency(datalakeAdminRole);
+    outputs.node.addDependency(this.datalakeAdminRole);
   }
 
   public createCrossAccountGlueCatalogResourcePolicy(consumerAccountIds: string[], dataCatalogOwnerAccountId: string) {
