@@ -46,7 +46,7 @@ export abstract class LakeImplStrategy {
   protected datalakeAdminRoleArn?: string;
   protected datalakeDbCreatorRoleArn?: string;
 
-  abstract addPipeline(stack: Stack, pipeline: Pipeline, dataProduct: DataProduct, database: Database, bucketName: string): void;
+  abstract addPipeline(stack: Stack, pipeline: Pipeline, dataProduct: DataProduct, bucketName: string): void;
   abstract lakeKind(): LakeKind
 
   getDataSetBucketName(pipe: Pipeline, dataTier: DataTier) : string | undefined {
@@ -56,13 +56,14 @@ export abstract class LakeImplStrategy {
   }
 
   createDataProduct(props: DataStrategyProps): void {
-    const pipelineStack = props.product.accountId == Aws.ACCOUNT_ID ? new NestedStack(props.stack, `${props.pipe.name}-dataset-stack`) : props.stack;
+    const pipelineStack = new NestedStack(props.stack, `${props.pipe.name}-dataset-stack`); // props.product.accountId == Aws.ACCOUNT_ID ? new NestedStack(props.stack, `${props.pipe.name}-dataset-stack`) : props.stack;
     const catelogAccountId = props.product.dataCatalogAccountId ? props.product.dataCatalogAccountId : Aws.ACCOUNT_ID;
     this.logBucket = props.logBucket;
     this.stageName = props.stage;
     this.securityGroup = props.securityGroup;
     this.vpc = props.vpc;
 
+    // if data to download into a tier create the download locations
     if (props.pipe.dataSetDropTier) {
       this.downloadLocations[props.pipe.name] = {
         destinationPrefix: props.pipe.destinationPrefix,
@@ -97,19 +98,15 @@ export abstract class LakeImplStrategy {
     this.createBuckets(pipelineStack, props.pipe, props.product);
 
     const bucketName = this.getDataSetBucketName(props.pipe, props.pipe.dataSetDropTier)!;
-    this.addPipeline(pipelineStack, props.pipe, props.product, props.database, bucketName);
+    this.addPipeline(pipelineStack, props.pipe, props.product, bucketName);
 
     // find the correct metadata catalog account
-    if (catelogAccountId == Aws.ACCOUNT_ID && !props.pipe.table) {
-      // still dirty needs more refactoring
-      if (bucketName) {
-        const name = bucketName.replace(/\W/g, '');
-        this.createCrawler(pipelineStack, props.pipe, props.database, name);
-      }
+    if (this.lakeKind() === LakeKind.CENTRAL_CATALOG || this.lakeKind() === LakeKind.DATA_PRODUCT_AND_CATALOG) {
+      this.createCrawler(pipelineStack, props.pipe, props.database, bucketName);
     }
   }
 
-  private createCrawler(stack: Stack, pipe: Pipeline, database: Database, bucketName: string): void {
+  protected createCrawler(stack: Stack, pipe: Pipeline, database: Database, bucketName: string): void {
     if (pipe.table) return;
 
     // only create a crawler for the drop location of the data in the data product of the pipeline
@@ -134,13 +131,13 @@ export abstract class LakeImplStrategy {
     });
   }
 
-  protected createGlueTable(stack: Stack, pipeline: Pipeline, database: Database, bucketName: string): void {
+  protected createGlueTable(stack: Stack, pipeline: Pipeline, product: DataProduct, bucketName: string): void {
     if (!pipeline.table) return;
 
     const table = new GlueTable(stack, `${pipeline.name}-table`, {
       catalogId: pipeline.table.catalogId,
       columns: pipeline.table.columns,
-      databaseName: database.databaseName,
+      databaseName: product.databaseName,
       description: pipeline.table.description,
       inputFormat: pipeline.table.inputFormat,
       outputFormat: pipeline.table.outputFormat,
@@ -152,7 +149,7 @@ export abstract class LakeImplStrategy {
       tableName: pipeline.table.tableName,
     });
 
-    table.node.addDependency(database.databaseName);
+    table.node.addDependency(product.databaseName);
   }
 
   // this is a jumbled mess clean up once refecto
@@ -329,8 +326,10 @@ export abstract class LakeImplStrategy {
 
     pipe.tiers.forEach(r => {
       if (this.lakeKind() === LakeKind.DATA_PRODUCT || this.lakeKind() === LakeKind.DATA_PRODUCT_AND_CATALOG) {
+        const bucketName = this.getDataSetBucketName(pipe, r)!
+
         new DataLakeBucket(stack, `s3-${r}-bucket-${pipe.name}`, {
-          bucketName: this.getDataSetBucketName(pipe, r)!,
+          bucketName: bucketName,
           dataCatalogAccountId: dataCatalogAccountId,
           logBucket: this.logBucket!,
           crossAccount: crossAccount,
@@ -338,7 +337,7 @@ export abstract class LakeImplStrategy {
         }).bucket;
       }
 
-      if (dataCatalogAccountId == Aws.ACCOUNT_ID) {
+      if (this.lakeKind() === LakeKind.CENTRAL_CATALOG || this.lakeKind() === LakeKind.DATA_PRODUCT_AND_CATALOG) {
         if (this.datalakeDbCreatorRoleArn == undefined) throw new Error('Cannot have datalake without Data Lake DB Creator role defined.');
 
         const name = this.getDataSetBucketName(pipe, r)!.replace(/\W/g, '');
@@ -387,9 +386,7 @@ class DataProductStrategy extends LakeImplStrategy {
     return LakeKind.DATA_PRODUCT;
   }
 
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  addPipeline(stack: Stack, pipeline: Pipeline, dataProduct: DataProduct, database: Database, bucketName: string): void {
+  addPipeline(stack: Stack, pipeline: Pipeline, dataProduct: DataProduct, bucketName: string): void {
     this.createPipelineResources(stack, pipeline, dataProduct, bucketName);
   }
 }
@@ -399,11 +396,9 @@ class CentralCatalogStrategy extends LakeImplStrategy {
     return LakeKind.CENTRAL_CATALOG;
   }
 
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  addPipeline(stack: Stack, pipeline: Pipeline, dataProduct: DataProduct, database: Database, bucketName: string): void {
+  addPipeline(stack: Stack, pipeline: Pipeline, dataProduct: DataProduct, bucketName: string): void {
     if (pipeline.table) {
-      this.createGlueTable(stack, pipeline, database, bucketName);
+      this.createGlueTable(stack, pipeline, dataProduct, bucketName);
     }
   }
 }
@@ -415,7 +410,7 @@ class ConsumerStrategy extends LakeImplStrategy {
 
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
-  addPipeline(stack: Stack, pipeline: Pipeline, dataProduct: DataProduct, database: Database, bucketName: string): void {
+  addPipeline(stack: Stack, pipeline: Pipeline, dataProduct: DataProduct, bucketName: string): void {
     return;
   }
 }
@@ -425,10 +420,10 @@ class DataProductAndCatalogStrategy extends LakeImplStrategy {
     return LakeKind.DATA_PRODUCT_AND_CATALOG;
   }
 
-  addPipeline(stack: Stack, pipeline: Pipeline, dataProduct: DataProduct, database: Database, bucketName: string): void {
+  addPipeline(stack: Stack, pipeline: Pipeline, dataProduct: DataProduct, bucketName: string): void {
     this.createPipelineResources(stack, pipeline, dataProduct, bucketName);
     if (pipeline.table) {
-      this.createGlueTable(stack, pipeline, database, bucketName);
+      this.createGlueTable(stack, pipeline, dataProduct, bucketName);
     }
   }
 }

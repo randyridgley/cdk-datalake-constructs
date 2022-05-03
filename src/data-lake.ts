@@ -95,12 +95,7 @@ export interface DataLakeProperties {
    * @see https://docs.aws.amazon.com/lake-formation/latest/dg/permissions-reference.html
    */
   readonly datalakeCreatorRole?: iam.Role;
-  /**
-  * Create default Glue Database for DataLake
-  *
-  * @default - false
-  */
-  readonly createDefaultDatabase: Boolean;
+  
   /* Default S3 Bucket Properties for Log Bucket
   *
   * @default - lifecycleRules: [
@@ -222,11 +217,6 @@ export class DataLake extends Construct {
       }).role;
     }
 
-    if (props.createDefaultDatabase) {
-      this.databases[props.name] = this.createDatabase(props.name);
-      new CfnOutput(this, 'DataLakeDefaultDatabase', { value: props.name });
-    }
-
     if (this.crossAccountAccess) {
       this.createCrossAccountGlueCatalogResourcePolicy(
         this.crossAccountAccess.consumerAccountIds, this.crossAccountAccess.dataCatalogOwnerAccountId);
@@ -264,10 +254,11 @@ export class DataLake extends Construct {
 
     if (props.dataProducts && props.dataProducts.length > 0) {
       props.dataProducts.forEach((product: DataProduct) => {
-        this.databases[product.databaseName] = this.createDatabase(product.databaseName);
+        if(this.databases[product.databaseName] == undefined) {
+          this.databases[product.databaseName] = this.createDatabase(product.databaseName);
+        }
 
         product.pipelines.forEach((pipe: Pipeline) => {
-          // create a new nested stack per pipeline and pass to strategy
           this.dataLakeStrategy.createDataProduct({
             stack: Stack.of(this),
             pipe: pipe,

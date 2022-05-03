@@ -50,7 +50,7 @@ def on_create(event):
     print("create new resource with props %s" % props)
     tags = props["policyTags"]
     catalogId = props["catalogId"]
-    print(tags)
+    
     for key in tags:
       # if not check_tag_exists(key, catalogId):
       print(key, '->', tags[key])
@@ -89,6 +89,5 @@ def on_delete(event):
     for key in tags:
       # if not check_tag_exists(key, catalogId):
       print(key, '->', tags[key])
-      values = tags[key].split (",")
       delete_tag(key, catalogId)
     # ...
