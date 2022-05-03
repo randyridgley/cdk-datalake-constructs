@@ -95,7 +95,7 @@ export interface DataLakeProperties {
    * @see https://docs.aws.amazon.com/lake-formation/latest/dg/permissions-reference.html
    */
   readonly datalakeCreatorRole?: iam.Role;
-  
+
   /* Default S3 Bucket Properties for Log Bucket
   *
   * @default - lifecycleRules: [
@@ -254,7 +254,7 @@ export class DataLake extends Construct {
 
     if (props.dataProducts && props.dataProducts.length > 0) {
       props.dataProducts.forEach((product: DataProduct) => {
-        if(this.databases[product.databaseName] == undefined) {
+        if (this.databases[product.databaseName] == undefined) {
           this.databases[product.databaseName] = this.createDatabase(product.databaseName);
         }
 

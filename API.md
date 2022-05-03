@@ -1765,19 +1765,6 @@ import { DataLakeProperties } from '@randyridgley/cdk-datalake-constructs'
 const dataLakeProperties: DataLakeProperties = { ... }
 ```
 
-##### `createDefaultDatabase`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataLakeProperties.property.createDefaultDatabase"></a>
-
-```typescript
-public readonly createDefaultDatabase: boolean;
-```
-
-- *Type:* `boolean`
-- *Default:* false
-
-Create default Glue Database for DataLake.
-
----
-
 ##### `lakeKind`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataLakeProperties.property.lakeKind"></a>
 
 ```typescript

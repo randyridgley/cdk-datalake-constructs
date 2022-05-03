@@ -1,5 +1,5 @@
 import { Connection, ConnectionType, Database } from '@aws-cdk/aws-glue-alpha';
-import { Aws, NestedStack, Stack } from 'aws-cdk-lib';
+import { NestedStack, Stack } from 'aws-cdk-lib';
 import { SecurityGroup, Vpc } from 'aws-cdk-lib/aws-ec2';
 import { Rule } from 'aws-cdk-lib/aws-events';
 import { LambdaFunction } from 'aws-cdk-lib/aws-events-targets';
@@ -61,6 +61,8 @@ export abstract class LakeImplStrategy {
     this.stageName = props.stage;
     this.securityGroup = props.securityGroup;
     this.vpc = props.vpc;
+    this.datalakeAdminRoleArn = props.datalakeAdminRoleArn;
+    this.datalakeDbCreatorRoleArn = props.datalakeDbCreatorRoleArn;
 
     // if data to download into a tier create the download locations
     if (props.pipe.dataSetDropTier) {
@@ -252,7 +254,7 @@ export abstract class LakeImplStrategy {
     const dataStreamStack = new NestedStack(stack, `${schemaName}-datastream-stack`);
 
     if (!pipeline.streamProperties) {
-      throw Error("Cannot create a stream pipeline without 'sreamProperties'");
+      throw Error("Cannot create a stream pipeline without 'streamProperties'");
     }
 
     this.dataStreams[pipeline.name] = new KinesisStream(dataStreamStack, 'DataStream', {
@@ -325,7 +327,7 @@ export abstract class LakeImplStrategy {
 
     pipe.tiers.forEach(r => {
       if (this.lakeKind() === LakeKind.DATA_PRODUCT || this.lakeKind() === LakeKind.DATA_PRODUCT_AND_CATALOG) {
-        const bucketName = this.getDataSetBucketName(pipe, r)!
+        const bucketName = this.getDataSetBucketName(pipe, r)!;
 
         new DataLakeBucket(stack, `s3-${r}-bucket-${pipe.name}`, {
           bucketName: bucketName,

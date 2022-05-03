@@ -25,7 +25,6 @@ export class CdkTestStack extends Stack {
       name: 'test-lake',
       stageName: props.stage,
       dataProducts: props.dataProducts,
-      createDefaultDatabase: true,
       lakeKind: LakeKind.DATA_PRODUCT_AND_CATALOG,
       createAthenaWorkgroup: true,
     });
