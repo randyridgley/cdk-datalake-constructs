@@ -108,7 +108,7 @@ export abstract class LakeImplStrategy {
   }
 
   protected createCrawler(stack: Stack, pipe: Pipeline, database: Database, bucketName: string): void {
-    if (pipe.table) return;
+    if (pipe.table !== undefined) return;
 
     // only create a crawler for the drop location of the data in the data product of the pipeline
     const crawler = new GlueCrawler(stack, `data-lake-crawler-${pipe.name}`, {

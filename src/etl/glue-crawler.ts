@@ -42,7 +42,7 @@ export class GlueCrawler extends Construct {
       },
     });
 
-    new lf.CfnPermissions(this, 'glue-role-database-permission', {
+    const dbPerms = new lf.CfnPermissions(this, 'glue-role-database-permission', {
       dataLakePrincipal: {
         dataLakePrincipalIdentifier: this.role.roleArn,
       },
@@ -57,7 +57,7 @@ export class GlueCrawler extends Construct {
       ],
     });
 
-    new lf.CfnPermissions(this, 'datalake-creator-permission', {
+    const s3perms = new lf.CfnPermissions(this, 'datalake-creator-permission', {
       dataLakePrincipal: {
         dataLakePrincipalIdentifier: this.role.roleArn,
       },
@@ -70,6 +70,9 @@ export class GlueCrawler extends Construct {
         Permissions.DATA_LOCATION_ACCESS,
       ],
     });
+
+    this.crawler.addDependsOn(dbPerms);
+    this.crawler.addDependsOn(s3perms);
   }
 
   metricSuccess(props?: cloudwatch.MetricOptions): cloudwatch.Metric {
