@@ -102,17 +102,18 @@ export abstract class LakeImplStrategy {
     this.addPipeline(pipelineStack, props.pipe, props.product, bucketName);
   }
 
-  protected createCrawler(stack: Stack, pipe: Pipeline, databaseName: string, bucketName: string, s3DataLFResource: CfnResource): void {
+  protected createCrawler(stack: Stack, pipe: Pipeline, product: DataProduct, bucketName: string, s3DataLFResource: CfnResource): void {
     if (pipe.table !== undefined) return;
 
+    const name = bucketName.replace(/\W/g, '');
     // only create a crawler for the drop location of the data in the data product of the pipeline
-    const crawler = new GlueCrawler(stack, `data-lake-crawler-${pipe.name}`, {
+    const crawler = new GlueCrawler(stack, `data-lake-crawler-${name}`, {
       name: buildGlueCrawlerName({
         stage: this.stageName,
         resourceUse: 'crawler',
         name: pipe.name,
       }),
-      databaseName: databaseName,
+      databaseName: product.databaseName,
       bucketName: bucketName,
       bucketPrefix: pipe.destinationPrefix,
       roleName: buildRoleName({
@@ -345,7 +346,7 @@ export abstract class LakeImplStrategy {
         if (this.datalakeAdminRoleArn) {
           this.createDataLocationAccessPermission(stack, `${name}-admin`, this.datalakeAdminRoleArn, name, lfResource);
         }
-        this.createCrawler(stack, pipe, product.databaseName, bucketName, lfResource);
+        this.createCrawler(stack, pipe, product, bucketName, lfResource);
       }
     });
   }
