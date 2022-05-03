@@ -1,5 +1,6 @@
-import { DataTier } from '../../src';
-import { Pipeline, DataPipelineType } from '../../src/pipeline';
+
+import { DataPipelineType, DataTier } from '../../src/global/enums';
+import { Pipeline } from '../../src/pipeline';
 
 export function ReviewsPipeline() {
   return new Pipeline({

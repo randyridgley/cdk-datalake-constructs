@@ -1,7 +1,8 @@
 import { Stack, StackProps } from 'aws-cdk-lib';
 import { NagSuppressions } from 'cdk-nag';
 import { Construct } from 'constructs';
-import { DataLake, DataProduct, LakeType, Stage } from '../src';
+import { DataLake, DataProduct } from '../src';
+import { LakeKind, Stage } from '../src/global/enums';
 
 export interface TestStackProps extends StackProps {
   readonly stage: Stage;
@@ -25,7 +26,7 @@ export class CdkTestStack extends Stack {
       stageName: props.stage,
       dataProducts: props.dataProducts,
       createDefaultDatabase: true,
-      lakeType: LakeType.DATA_PRODUCT_AND_CATALOG,
+      lakeKind: LakeKind.DATA_PRODUCT_AND_CATALOG,
       createAthenaWorkgroup: true,
     });
   }

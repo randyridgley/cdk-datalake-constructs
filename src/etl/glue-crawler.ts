@@ -4,7 +4,7 @@ import * as glue from 'aws-cdk-lib/aws-glue';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import * as lf from 'aws-cdk-lib/aws-lakeformation';
 import { Construct } from 'constructs';
-import { Permissions } from '../data-lake';
+import { Permissions } from '../global/enums';
 
 export interface IGlueCrawlerProperties {
   name: string;

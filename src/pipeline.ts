@@ -3,9 +3,9 @@ import * as glue from 'aws-cdk-lib/aws-glue';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as s3 from 'aws-cdk-lib/aws-s3';
 import * as cdk from 'aws-cdk-lib/core';
-import { DataTier } from '.';
 
 import { GlueJobType, GlueVersion, GlueWorkerType } from './etl/glue-job';
+import { DataPipelineType, DataTier } from './global/enums';
 
 export interface JDBCProperties {
   readonly jdbc: string;
@@ -82,7 +82,6 @@ export interface PipelineProperties {
   readonly s3Properties?: S3Properties;
   readonly streamProperties?: StreamProperties;
   readonly jdbcProperties?: JDBCProperties;
-  readonly s3NotificationProps?: S3NotificationProperties;
   readonly table? : TableProps;
   readonly job?: JobProperties;
   readonly tiers?: DataTier[];
@@ -90,18 +89,6 @@ export interface PipelineProperties {
 
 export interface DataCatalogOwner {
   readonly accountId: string;
-}
-
-export interface S3NotificationProperties {
-  readonly event: s3.EventType;
-  readonly prefix: string;
-  readonly suffix: string;
-}
-
-export enum DataPipelineType {
-  STREAM = 'stream',
-  JDBC = 'jdbc',
-  S3 = 's3'
 }
 
 export class Pipeline {
@@ -112,7 +99,6 @@ export class Pipeline {
   public readonly s3Properties?: S3Properties;
   public readonly streamProperties?: StreamProperties;
   public readonly jdbcProperties?: JDBCProperties;
-  public readonly s3NotificationProps?: S3NotificationProperties;
   public readonly table? : TableProps;
   public readonly job?: JobProperties;
   public readonly tiers: DataTier[];
@@ -124,7 +110,6 @@ export class Pipeline {
     this.destinationPrefix = props.destinationPrefix;
     this.jdbcProperties = props.jdbcProperties ? props.jdbcProperties : undefined;
     this.job = props.job ? props.job : undefined;
-    this.s3NotificationProps = props.s3NotificationProps ? props.s3NotificationProps : undefined;
     this.s3Properties = props.s3Properties ? props.s3Properties : undefined;
     this.streamProperties = props.streamProperties ? props.streamProperties : undefined;
     this.table = props.table ? props.table : undefined;

@@ -97,33 +97,13 @@ public readonly datalakeDbCreatorRole: IRole;
 
 ---
 
-##### `dataSets`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataLake.property.dataSets"></a>
+##### `lakeKind`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataLake.property.lakeKind"></a>
 
 ```typescript
-public readonly dataSets: {[ key: string ]: DataSet};
+public readonly lakeKind: LakeKind;
 ```
 
-- *Type:* {[ key: string ]: [`@randyridgley/cdk-datalake-constructs.DataSet`](#@randyridgley/cdk-datalake-constructs.DataSet)}
-
----
-
-##### `dataStreams`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataLake.property.dataStreams"></a>
-
-```typescript
-public readonly dataStreams: {[ key: string ]: KinesisStream};
-```
-
-- *Type:* {[ key: string ]: [`@randyridgley/cdk-datalake-constructs.KinesisStream`](#@randyridgley/cdk-datalake-constructs.KinesisStream)}
-
----
-
-##### `lakeType`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataLake.property.lakeType"></a>
-
-```typescript
-public readonly lakeType: LakeType;
-```
-
-- *Type:* [`@randyridgley/cdk-datalake-constructs.LakeType`](#@randyridgley/cdk-datalake-constructs.LakeType)
+- *Type:* [`@randyridgley/cdk-datalake-constructs.LakeKind`](#@randyridgley/cdk-datalake-constructs.LakeKind)
 
 ---
 
@@ -336,172 +316,6 @@ public readonly role: IRole;
 ```
 
 - *Type:* [`aws-cdk-lib.aws_iam.IRole`](#aws-cdk-lib.aws_iam.IRole)
-
----
-
-
-### DataSet <a name="@randyridgley/cdk-datalake-constructs.DataSet"></a>
-
-#### Initializers <a name="@randyridgley/cdk-datalake-constructs.DataSet.Initializer"></a>
-
-```typescript
-import { DataSet } from '@randyridgley/cdk-datalake-constructs'
-
-new DataSet(scope: Construct, id: string, props: DataSetProperties)
-```
-
-##### `scope`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataSet.parameter.scope"></a>
-
-- *Type:* [`constructs.Construct`](#constructs.Construct)
-
----
-
-##### `id`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataSet.parameter.id"></a>
-
-- *Type:* `string`
-
----
-
-##### `props`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataSet.parameter.props"></a>
-
-- *Type:* [`@randyridgley/cdk-datalake-constructs.DataSetProperties`](#@randyridgley/cdk-datalake-constructs.DataSetProperties)
-
----
-
-#### Methods <a name="Methods"></a>
-
-##### `getDataSetBucketName` <a name="@randyridgley/cdk-datalake-constructs.DataSet.getDataSetBucketName"></a>
-
-```typescript
-public getDataSetBucketName(dataTier: DataTier)
-```
-
-###### `dataTier`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataSet.parameter.dataTier"></a>
-
-- *Type:* [`@randyridgley/cdk-datalake-constructs.DataTier`](#@randyridgley/cdk-datalake-constructs.DataTier)
-
----
-
-
-#### Properties <a name="Properties"></a>
-
-##### `dataProduct`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataSet.property.dataProduct"></a>
-
-```typescript
-public readonly dataProduct: DataProduct;
-```
-
-- *Type:* [`@randyridgley/cdk-datalake-constructs.DataProduct`](#@randyridgley/cdk-datalake-constructs.DataProduct)
-
----
-
-##### `lakeType`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataSet.property.lakeType"></a>
-
-```typescript
-public readonly lakeType: LakeType;
-```
-
-- *Type:* [`@randyridgley/cdk-datalake-constructs.LakeType`](#@randyridgley/cdk-datalake-constructs.LakeType)
-
----
-
-##### `name`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataSet.property.name"></a>
-
-```typescript
-public readonly name: string;
-```
-
-- *Type:* `string`
-
----
-
-##### `pipeline`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataSet.property.pipeline"></a>
-
-```typescript
-public readonly pipeline: Pipeline;
-```
-
-- *Type:* [`@randyridgley/cdk-datalake-constructs.Pipeline`](#@randyridgley/cdk-datalake-constructs.Pipeline)
-
----
-
-##### `downloadLocations`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.DataSet.property.downloadLocations"></a>
-
-```typescript
-public readonly downloadLocations: DataSetResult;
-```
-
-- *Type:* [`@randyridgley/cdk-datalake-constructs.DataSetResult`](#@randyridgley/cdk-datalake-constructs.DataSetResult)
-
----
-
-##### `dropLocation`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.DataSet.property.dropLocation"></a>
-
-```typescript
-public readonly dropLocation: DataTier;
-```
-
-- *Type:* [`@randyridgley/cdk-datalake-constructs.DataTier`](#@randyridgley/cdk-datalake-constructs.DataTier)
-
----
-
-##### `encryptionKey`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.DataSet.property.encryptionKey"></a>
-
-```typescript
-public readonly encryptionKey: Key;
-```
-
-- *Type:* [`aws-cdk-lib.aws_kms.Key`](#aws-cdk-lib.aws_kms.Key)
-
----
-
-##### `rawBucketName`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.DataSet.property.rawBucketName"></a>
-
-```typescript
-public readonly rawBucketName: string;
-```
-
-- *Type:* `string`
-
----
-
-##### `refinedBucketName`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.DataSet.property.refinedBucketName"></a>
-
-```typescript
-public readonly refinedBucketName: string;
-```
-
-- *Type:* `string`
-
----
-
-##### `trustedBucketName`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.DataSet.property.trustedBucketName"></a>
-
-```typescript
-public readonly trustedBucketName: string;
-```
-
-- *Type:* `string`
-
----
-
-##### `locationRegistry`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataSet.property.locationRegistry"></a>
-
-```typescript
-public readonly locationRegistry: CfnResource[];
-```
-
-- *Type:* [`aws-cdk-lib.aws_lakeformation.CfnResource`](#aws-cdk-lib.aws_lakeformation.CfnResource)[]
-
----
-
-##### `s3NotificationTopic`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.DataSet.property.s3NotificationTopic"></a>
-
-```typescript
-public readonly s3NotificationTopic: Topic;
-```
-
-- *Type:* [`aws-cdk-lib.aws_sns.Topic`](#aws-cdk-lib.aws_sns.Topic)
 
 ---
 
@@ -1964,13 +1778,13 @@ Create default Glue Database for DataLake.
 
 ---
 
-##### `lakeType`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataLakeProperties.property.lakeType"></a>
+##### `lakeKind`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataLakeProperties.property.lakeKind"></a>
 
 ```typescript
-public readonly lakeType: LakeType;
+public readonly lakeKind: LakeKind;
 ```
 
-- *Type:* [`@randyridgley/cdk-datalake-constructs.LakeType`](#@randyridgley/cdk-datalake-constructs.LakeType)
+- *Type:* [`@randyridgley/cdk-datalake-constructs.LakeKind`](#@randyridgley/cdk-datalake-constructs.LakeKind)
 
 The Type of DataLake this instance is.
 
@@ -2186,116 +2000,6 @@ public readonly s3BucketProps: BucketProps;
 
 ---
 
-### DataSetProperties <a name="@randyridgley/cdk-datalake-constructs.DataSetProperties"></a>
-
-#### Initializer <a name="[object Object].Initializer"></a>
-
-```typescript
-import { DataSetProperties } from '@randyridgley/cdk-datalake-constructs'
-
-const dataSetProperties: DataSetProperties = { ... }
-```
-
-##### `datalakeAdminRole`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataSetProperties.property.datalakeAdminRole"></a>
-
-```typescript
-public readonly datalakeAdminRole: IRole;
-```
-
-- *Type:* [`aws-cdk-lib.aws_iam.IRole`](#aws-cdk-lib.aws_iam.IRole)
-
----
-
-##### `datalakeDbCreatorRole`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataSetProperties.property.datalakeDbCreatorRole"></a>
-
-```typescript
-public readonly datalakeDbCreatorRole: IRole;
-```
-
-- *Type:* [`aws-cdk-lib.aws_iam.IRole`](#aws-cdk-lib.aws_iam.IRole)
-
----
-
-##### `dataProduct`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataSetProperties.property.dataProduct"></a>
-
-```typescript
-public readonly dataProduct: DataProduct;
-```
-
-- *Type:* [`@randyridgley/cdk-datalake-constructs.DataProduct`](#@randyridgley/cdk-datalake-constructs.DataProduct)
-
----
-
-##### `dataTiers`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataSetProperties.property.dataTiers"></a>
-
-```typescript
-public readonly dataTiers: DataTier[];
-```
-
-- *Type:* [`@randyridgley/cdk-datalake-constructs.DataTier`](#@randyridgley/cdk-datalake-constructs.DataTier)[]
-
----
-
-##### `lakeType`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataSetProperties.property.lakeType"></a>
-
-```typescript
-public readonly lakeType: LakeType;
-```
-
-- *Type:* [`@randyridgley/cdk-datalake-constructs.LakeType`](#@randyridgley/cdk-datalake-constructs.LakeType)
-
----
-
-##### `logBucket`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataSetProperties.property.logBucket"></a>
-
-```typescript
-public readonly logBucket: Bucket;
-```
-
-- *Type:* [`aws-cdk-lib.aws_s3.Bucket`](#aws-cdk-lib.aws_s3.Bucket)
-
----
-
-##### `pipeline`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataSetProperties.property.pipeline"></a>
-
-```typescript
-public readonly pipeline: Pipeline;
-```
-
-- *Type:* [`@randyridgley/cdk-datalake-constructs.Pipeline`](#@randyridgley/cdk-datalake-constructs.Pipeline)
-
----
-
-##### `stage`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataSetProperties.property.stage"></a>
-
-```typescript
-public readonly stage: Stage;
-```
-
-- *Type:* [`@randyridgley/cdk-datalake-constructs.Stage`](#@randyridgley/cdk-datalake-constructs.Stage)
-
----
-
-##### `encryptionKey`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.DataSetProperties.property.encryptionKey"></a>
-
-```typescript
-public readonly encryptionKey: Key;
-```
-
-- *Type:* [`aws-cdk-lib.aws_kms.Key`](#aws-cdk-lib.aws_kms.Key)
-
----
-
-##### `s3BucketProps`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.DataSetProperties.property.s3BucketProps"></a>
-
-```typescript
-public readonly s3BucketProps: BucketProps;
-```
-
-- *Type:* [`aws-cdk-lib.aws_s3.BucketProps`](#aws-cdk-lib.aws_s3.BucketProps)
-
----
-
 ### DataSetResult <a name="@randyridgley/cdk-datalake-constructs.DataSetResult"></a>
 
 #### Initializer <a name="[object Object].Initializer"></a>
@@ -2469,10 +2173,10 @@ public readonly datalakeDbCreatorRole: IRole;
 ##### `lakeType`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataTierBucketProps.property.lakeType"></a>
 
 ```typescript
-public readonly lakeType: LakeType;
+public readonly lakeType: LakeKind;
 ```
 
-- *Type:* [`@randyridgley/cdk-datalake-constructs.LakeType`](#@randyridgley/cdk-datalake-constructs.LakeType)
+- *Type:* [`@randyridgley/cdk-datalake-constructs.LakeKind`](#@randyridgley/cdk-datalake-constructs.LakeKind)
 
 ---
 
@@ -2523,16 +2227,6 @@ public readonly s3BucketProps: BucketProps;
 ```
 
 - *Type:* [`aws-cdk-lib.aws_s3.BucketProps`](#aws-cdk-lib.aws_s3.BucketProps)
-
----
-
-##### `s3NotificationProps`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.DataTierBucketProps.property.s3NotificationProps"></a>
-
-```typescript
-public readonly s3NotificationProps: S3NotificationProperties;
-```
-
-- *Type:* [`@randyridgley/cdk-datalake-constructs.S3NotificationProperties`](#@randyridgley/cdk-datalake-constructs.S3NotificationProperties)
 
 ---
 
@@ -3186,16 +2880,6 @@ public readonly job: JobProperties;
 
 ---
 
-##### `s3NotificationProps`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.PipelineProperties.property.s3NotificationProps"></a>
-
-```typescript
-public readonly s3NotificationProps: S3NotificationProperties;
-```
-
-- *Type:* [`@randyridgley/cdk-datalake-constructs.S3NotificationProperties`](#@randyridgley/cdk-datalake-constructs.S3NotificationProperties)
-
----
-
 ##### `s3Properties`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.PipelineProperties.property.s3Properties"></a>
 
 ```typescript
@@ -3233,46 +2917,6 @@ public readonly tiers: DataTier[];
 ```
 
 - *Type:* [`@randyridgley/cdk-datalake-constructs.DataTier`](#@randyridgley/cdk-datalake-constructs.DataTier)[]
-
----
-
-### S3NotificationProperties <a name="@randyridgley/cdk-datalake-constructs.S3NotificationProperties"></a>
-
-#### Initializer <a name="[object Object].Initializer"></a>
-
-```typescript
-import { S3NotificationProperties } from '@randyridgley/cdk-datalake-constructs'
-
-const s3NotificationProperties: S3NotificationProperties = { ... }
-```
-
-##### `event`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.S3NotificationProperties.property.event"></a>
-
-```typescript
-public readonly event: EventType;
-```
-
-- *Type:* [`aws-cdk-lib.aws_s3.EventType`](#aws-cdk-lib.aws_s3.EventType)
-
----
-
-##### `prefix`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.S3NotificationProperties.property.prefix"></a>
-
-```typescript
-public readonly prefix: string;
-```
-
-- *Type:* `string`
-
----
-
-##### `suffix`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.S3NotificationProperties.property.suffix"></a>
-
-```typescript
-public readonly suffix: string;
-```
-
-- *Type:* `string`
 
 ---
 
@@ -3606,16 +3250,6 @@ public readonly job: JobProperties;
 ```
 
 - *Type:* [`@randyridgley/cdk-datalake-constructs.JobProperties`](#@randyridgley/cdk-datalake-constructs.JobProperties)
-
----
-
-##### `s3NotificationProps`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.Pipeline.property.s3NotificationProps"></a>
-
-```typescript
-public readonly s3NotificationProps: S3NotificationProperties;
-```
-
-- *Type:* [`@randyridgley/cdk-datalake-constructs.S3NotificationProperties`](#@randyridgley/cdk-datalake-constructs.S3NotificationProperties)
 
 ---
 
@@ -4131,24 +3765,24 @@ public readonly inputStreamWriteThroughputWarning: CreateAlarmOptions;
 ---
 
 
-### LakeType <a name="LakeType"></a>
+### LakeKind <a name="LakeKind"></a>
 
-#### `DATA_PRODUCT` <a name="@randyridgley/cdk-datalake-constructs.LakeType.DATA_PRODUCT"></a>
-
----
-
-
-#### `CENTRAL_CATALOG` <a name="@randyridgley/cdk-datalake-constructs.LakeType.CENTRAL_CATALOG"></a>
+#### `DATA_PRODUCT` <a name="@randyridgley/cdk-datalake-constructs.LakeKind.DATA_PRODUCT"></a>
 
 ---
 
 
-#### `CONSUMER` <a name="@randyridgley/cdk-datalake-constructs.LakeType.CONSUMER"></a>
+#### `CENTRAL_CATALOG` <a name="@randyridgley/cdk-datalake-constructs.LakeKind.CENTRAL_CATALOG"></a>
 
 ---
 
 
-#### `DATA_PRODUCT_AND_CATALOG` <a name="@randyridgley/cdk-datalake-constructs.LakeType.DATA_PRODUCT_AND_CATALOG"></a>
+#### `CONSUMER` <a name="@randyridgley/cdk-datalake-constructs.LakeKind.CONSUMER"></a>
+
+---
+
+
+#### `DATA_PRODUCT_AND_CATALOG` <a name="@randyridgley/cdk-datalake-constructs.LakeKind.DATA_PRODUCT_AND_CATALOG"></a>
 
 ---
 

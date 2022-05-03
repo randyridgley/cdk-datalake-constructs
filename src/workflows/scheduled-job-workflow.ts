@@ -5,9 +5,7 @@ import * as iam from 'aws-cdk-lib/aws-iam';
 import * as logs from 'aws-cdk-lib/aws-logs';
 import * as sfn from 'aws-cdk-lib/aws-stepfunctions';
 import * as tasks from 'aws-cdk-lib/aws-stepfunctions-tasks';import { Construct } from 'constructs';
-;
-
-import { Stage } from '../data-lake';
+import { Stage } from '../global/enums';
 import { buildEventRuleName, buildRoleName } from '../utils';
 
 export interface ScheduledJobWorkflowProps {

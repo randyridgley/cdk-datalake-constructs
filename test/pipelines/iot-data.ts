@@ -2,9 +2,9 @@ import * as path from 'path';
 import * as events from 'aws-cdk-lib/aws-events';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import { Aws, Duration } from 'aws-cdk-lib/core';
-import { DataTier } from '../../src';
 import { GlueJobType, GlueVersion, GlueWorkerType } from '../../src/etl/glue-job';
-import { Pipeline, DataPipelineType } from '../../src/pipeline';
+import { DataPipelineType, DataTier } from '../../src/global/enums';
+import { Pipeline } from '../../src/pipeline';
 import { buildEventRuleName, buildGlueJobName, buildKinesisStreamName, buildLambdaFunctionName, buildRoleName } from '../../src/utils';
 
 export function IoTDataPipeline(stage: string) {

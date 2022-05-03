@@ -1,32 +1,26 @@
 import * as path from 'path';
 import * as glue from '@aws-cdk/aws-glue-alpha';
 import { PythonFunction } from '@aws-cdk/aws-lambda-python-alpha';
-import { Aws, CfnOutput, CustomResource, Duration, NestedStack, RemovalPolicy, Stack } from 'aws-cdk-lib';
+import { Aws, CfnOutput, CustomResource, Duration, RemovalPolicy, Stack } from 'aws-cdk-lib';
 import * as athena from 'aws-cdk-lib/aws-athena';
 import * as ec2 from 'aws-cdk-lib/aws-ec2';
-import * as events from 'aws-cdk-lib/aws-events';
-import * as targets from 'aws-cdk-lib/aws-events-targets';
 import * as iam from 'aws-cdk-lib/aws-iam';
+import { IRole } from 'aws-cdk-lib/aws-iam';
 import * as lf from 'aws-cdk-lib/aws-lakeformation';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as logs from 'aws-cdk-lib/aws-logs';
 import * as s3 from 'aws-cdk-lib/aws-s3';
+import { Bucket } from 'aws-cdk-lib/aws-s3';
 import * as cr from 'aws-cdk-lib/custom-resources';
 
 import { Construct } from 'constructs';
+import { LakeImplStrategy, LakeStrategyFactory } from './data-lake-strategy';
 import { DataProduct } from './data-product';
-import { DataSet, DataSetResult, DataTier } from './data-sets/data-set';
-import { KinesisOps } from './data-streams/kinesis-ops';
-import { KinesisStream } from './data-streams/kinesis-stream';
-import { CompressionType, S3DeliveryStream } from './data-streams/s3-delivery-stream';
-import { GlueCrawler } from './etl/glue-crawler';
-import { GlueJob } from './etl/glue-job';
-import { GlueJobOps } from './etl/glue-job-ops';
-import { GlueTable } from './etl/glue-table';
+import { DataTier, LakeKind, Permissions, Stage } from './global/enums';
 import { DataLakeAdministrator } from './personas/data-lake-admin';
 import { DataLakeCreator } from './personas/data-lake-creator';
-import { DataPipelineType, Pipeline } from './pipeline';
-import { buildGlueCrawlerName, buildRoleName, buildLambdaFunctionName, buildS3BucketName, buildUniqueName, packageAsset, toS3Path } from './utils';
+import { Pipeline } from './pipeline';
+import { buildLambdaFunctionName, buildS3BucketName, buildUniqueName } from './utils';
 
 export interface CrossAccountProperties {
   readonly consumerAccountIds: string[];
@@ -53,7 +47,7 @@ export interface DataLakeProperties {
   /**
    * The Type of DataLake this instance is. This can be a DATA_PRODUCT only, CENTRAL_CATALOG, CONSUMER, or DATA_PRODUCT_AND_CATALOG type.
    */
-  readonly lakeType: LakeType;
+  readonly lakeKind: LakeKind;
   /**
    * VPC for Glue jobs
    *
@@ -126,39 +120,23 @@ export interface DataLakeProperties {
   readonly createAthenaWorkgroup?: Boolean;
 }
 
-export enum Stage {
-  ALPHA = 'alpha',
-  BETA = 'beta',
-  GAMMA = 'gamma',
-  PROD = 'prod',
-}
-
-export enum Permissions {
-  ALTER = 'ALTER',
-  CREATE_DATABASE = 'CREATE_DATABASE',
-  CREATE_TABLE = 'CREATE_TABLE',
-  DATA_LOCATION_ACCESS = 'DATA_LOCATION_ACCESS',
-  DELETE = 'DELETE',
-  DESCRIBE = 'DESCRIBE',
-  DROP = 'DROP',
-  INSERT = 'INSERT',
-  SELECT = 'SELECT',
-  ASSOCIATE = 'ASSOCIATE',
-}
-
-export enum LakeType {
-  DATA_PRODUCT = 'DATA_PRODUCT',
-  CENTRAL_CATALOG = 'CENTRAL_CATALOG',
-  CONSUMER = 'CONSUMER',
-  DATA_PRODUCT_AND_CATALOG = 'DATA_PRODUCT_AND_CATALOG',
+export interface DataTierBucketProps {
+  readonly lakeType: LakeKind;
+  readonly pipelineName: string;
+  readonly bucketName: string | undefined;
+  readonly dataCatalogAccountId: string;
+  readonly logBucket: Bucket;
+  readonly crossAccount:boolean;
+  readonly s3BucketProps: s3.BucketProps | undefined;
+  readonly datalakeAdminRole: IRole;
+  readonly datalakeDbCreatorRole: IRole;
+  readonly tier: DataTier;
 }
 
 /**
  * A CDK construct to create a DataLake.
  */
 export class DataLake extends Construct {
-  public readonly dataSets: { [schemaName: string]: DataSet } = {};
-  public readonly dataStreams: { [schemaName: string]: KinesisStream } = {};
   public readonly databases: { [name: string]: glue.Database } = {};
   public readonly datalakeAdminRole: iam.IRole;
   public readonly datalakeDbCreatorRole: iam.IRole;
@@ -166,19 +144,19 @@ export class DataLake extends Construct {
   public readonly stageName: Stage;
   public readonly vpc?: ec2.Vpc;
   public readonly athenaWorkgroup?: athena.CfnWorkGroup;
-  public readonly lakeType: LakeType;
+  public readonly lakeKind: LakeKind;
 
   private readonly glueSecurityGroup?: ec2.SecurityGroup;
   private readonly crossAccountAccess?: CrossAccountProperties;
-  private readonly downloadLocations: { [schema: string]: DataSetResult } = {}; //used for the Custom Resource to allow downloading of existing datasets into datalake
   private readonly logBucketProps: s3.BucketProps;
+  private readonly dataLakeStrategy: LakeImplStrategy;
 
   constructor(scope: Construct, id: string, props: DataLakeProperties) {
     super(scope, id);
     this.stageName = props.stageName;
     this.crossAccountAccess = props.crossAccountAccess ? props.crossAccountAccess : undefined;
     this.vpc = props.vpc ? props.vpc : undefined;
-    this.lakeType = props.lakeType;
+    this.lakeKind = props.lakeKind;
 
     if (props.logBucketProps) {
       this.logBucketProps = props.logBucketProps;
@@ -282,12 +260,24 @@ export class DataLake extends Construct {
       this.createPolicyTagsCustomResource(props.policyTags, this.datalakeAdminRole);
     }
 
+    this.dataLakeStrategy = LakeStrategyFactory.getLakeStrategy(props.lakeKind);
+
     if (props.dataProducts && props.dataProducts.length > 0) {
       props.dataProducts.forEach((product: DataProduct) => {
         this.databases[product.databaseName] = this.createDatabase(product.databaseName);
 
         product.pipelines.forEach((pipe: Pipeline) => {
-          this.addPipeline(pipe, product);
+          // create a new nested stack per pipeline and pass to strategy
+          this.dataLakeStrategy.createDataProduct({
+            stack: Stack.of(this),
+            pipe: pipe,
+            product: product,
+            database: this.databases[product.databaseName],
+            logBucket: this.logBucket,
+            stage: this.stageName,
+            datalakeAdminRoleArn: this.datalakeAdminRole.roleArn,
+            datalakeDbCreatorRoleArn: this.datalakeDbCreatorRole.roleArn,
+          });
         });
       });
     }
@@ -323,7 +313,7 @@ export class DataLake extends Construct {
     new CustomResource(this, 'LoadDatalakeCustomResource', {
       serviceToken: dataLoadProvider.serviceToken,
       properties: {
-        dataSets: this.downloadLocations,
+        dataSets: this.dataLakeStrategy.downloadLocations,
         stackName: Stack.name,
         regionName: Aws.REGION,
       },
@@ -352,251 +342,6 @@ export class DataLake extends Construct {
     });
     dbPerm.node.addDependency(db);
     return db;
-  }
-
-  private addDataStream(pipeline: Pipeline, dataSet: DataSet) : KinesisStream {
-    const schemaName = pipeline.name;
-    const dataStreamStack = new NestedStack(Stack.of(this), `${schemaName}-datastream-stack`);
-
-    if (!pipeline.streamProperties) {
-      throw Error("Cannot create a stream pipeline without 'sreamProperties'");
-    }
-
-    this.dataStreams[schemaName] = new KinesisStream(dataStreamStack, 'DataStream', {
-      shardCount: 1,
-      streamName: pipeline.streamProperties.streamName,
-    });
-
-    const deliveryStream = new S3DeliveryStream(dataStreamStack, 'deliveryStream', {
-      compression: CompressionType.UNCOMPRESSED,
-      kinesisStream: this.dataStreams[schemaName].stream,
-      s3Bucket: s3.Bucket.fromBucketName(this, 'get-bucket-for-kinesis', dataSet.getDataSetBucketName(pipeline.dataSetDropTier)!),
-      s3Prefix: pipeline.destinationPrefix,
-    });
-
-    new KinesisOps(dataStreamStack, 'kinesis-ops', {
-      stream: this.dataStreams[schemaName],
-      deliveryStream: deliveryStream,
-    });
-
-    if (pipeline.streamProperties.lambdaDataGenerator) {
-      const dataGeneratorFunction = new lambda.Function(dataStreamStack, 'data-generator-function', {
-        code: pipeline.streamProperties.lambdaDataGenerator.code,
-        handler: pipeline.streamProperties.lambdaDataGenerator.handler,
-        timeout: pipeline.streamProperties.lambdaDataGenerator.timeout,
-        runtime: pipeline.streamProperties.lambdaDataGenerator.runtime,
-        functionName: pipeline.streamProperties.lambdaDataGenerator.functionName,
-        environment: {
-          KINESIS_STREAM: this.dataStreams[schemaName].stream.streamName,
-        },
-      });
-
-      this.dataStreams[schemaName].stream.grantWrite(dataGeneratorFunction);
-      const rule = new events.Rule(this, 'Rule', {
-        schedule: pipeline.streamProperties.lambdaDataGenerator.schedule,
-        ruleName: pipeline.streamProperties.lambdaDataGenerator.ruleName,
-      });
-      rule.addTarget(new targets.LambdaFunction(dataGeneratorFunction));
-    }
-    return this.dataStreams[schemaName];
-  }
-
-  private addPipeline(pipeline:Pipeline, dataProduct: DataProduct) {
-    const schemaName = pipeline.name;
-    const dataSetStack = dataProduct.accountId == Aws.ACCOUNT_ID ? new NestedStack(Stack.of(this), `${schemaName}-dataset-stack`) : this;
-
-    // create the dataSet
-    this.dataSets[schemaName] = new DataSet(dataSetStack, schemaName, {
-      pipeline: pipeline,
-      dataProduct: dataProduct,
-      logBucket: this.logBucket,
-      stage: this.stageName,
-      s3BucketProps: dataProduct.s3BucketProps,
-      lakeType: this.lakeType,
-      dataTiers: [DataTier.RAW, DataTier.TRUSTED, DataTier.REFINED],
-      datalakeAdminRole: this.datalakeAdminRole,
-      datalakeDbCreatorRole: this.datalakeDbCreatorRole,
-    });
-    const ds = this.dataSets[schemaName];
-    const catelogAccountId = dataProduct.dataCatalogAccountId ? dataProduct.dataCatalogAccountId : Aws.ACCOUNT_ID;
-
-    if (this.lakeType === LakeType.DATA_PRODUCT || this.lakeType === LakeType.DATA_PRODUCT_AND_CATALOG) {
-      this.createPipelineResources(pipeline, dataProduct, ds);
-    }
-
-    // only create the table if the lake has a catalog
-    if (pipeline.table && (this.lakeType === LakeType.CENTRAL_CATALOG || this.lakeType === LakeType.DATA_PRODUCT_AND_CATALOG)) {
-      const table = new GlueTable(this, `${pipeline.name}-table`, {
-        catalogId: pipeline.table.catalogId,
-        columns: pipeline.table.columns,
-        databaseName: this.databases[dataProduct.databaseName].databaseName,
-        description: pipeline.table.description,
-        inputFormat: pipeline.table.inputFormat,
-        outputFormat: pipeline.table.outputFormat,
-        parameters: pipeline.table.parameters,
-        partitionKeys: pipeline.table.partitionKeys,
-        s3Location: `s3://${ds.getDataSetBucketName(pipeline.dataSetDropTier)}/${pipeline.destinationPrefix}`,
-        serdeParameters: pipeline.table.serdeParameters,
-        serializationLibrary: pipeline.table.serializationLibrary,
-        tableName: pipeline.table.tableName,
-      });
-
-      table.node.addDependency(this.databases[dataProduct.databaseName]);
-    }
-
-    // find the correct metadata catalog account
-    if (catelogAccountId == Aws.ACCOUNT_ID) {
-      // refactor to only register the needed buckets from the data product account
-      if (!pipeline.table) {
-        const bucketName = ds.getDataSetBucketName(pipeline.dataSetDropTier);
-        // still dirty needs more refactoring
-        if (bucketName) {
-          const name = bucketName.replace(/\W/g, '');
-
-          // only create a crawler for the drop location of the data in the data product of the pipeline
-          const crawler = new GlueCrawler(this, `data-lake-crawler-${name}`, {
-            name: buildGlueCrawlerName({
-              stage: this.stageName,
-              resourceUse: 'crawler',
-              name: pipeline.name,
-            }),
-            databaseName: dataProduct.databaseName,
-            bucketName: bucketName,
-            bucketPrefix: pipeline.destinationPrefix,
-            roleName: buildRoleName({
-              stage: this.stageName,
-              resourceUse: 'crawler-role',
-              name: pipeline.name,
-            }),
-          });
-
-          ds.locationRegistry.forEach(r => {
-            crawler.node.addDependency(r);
-          });
-        }
-      }
-    }
-  }
-
-  // this is a jumbled mess clean up once refecto
-  private createPipelineResources(pipeline: Pipeline, dataProduct: DataProduct, ds: DataSet) {
-    switch (pipeline.type) {
-      case DataPipelineType.S3: {
-        if (ds.downloadLocations) {
-          this.downloadLocations[pipeline.name] = ds.downloadLocations;
-        }
-        break;
-      }
-      case DataPipelineType.STREAM: {
-        this.addDataStream(pipeline, ds);
-        break;
-      }
-      case DataPipelineType.JDBC: {
-        this.createJDBCConnection(pipeline);
-        break;
-      }
-    }
-
-    // rethink this whole section
-    if (pipeline.job) {
-      const jobScript = packageAsset(this, `${pipeline.name}Script`, pipeline.job.jobScript);
-
-      pipeline.job.jobArgs!['--TempDir'] = `s3://${this.logBucket.bucketName}/temp/`;
-      pipeline.job.jobArgs!['--spark-event-logs-path'] = `s3://${this.logBucket.bucketName}/logs/`;
-      let s3Location = ds.getDataSetBucketName(pipeline.job.destinationLocation!);
-
-      if (pipeline.job.destinationLocation && s3Location) {
-        pipeline.job.jobArgs!['--DESTINATION_BUCKET'] = s3Location;
-
-        const job = new GlueJob(this, `${pipeline.name}-etl-job`, {
-          deploymentBucket: jobScript.bucket,
-          jobScript: toS3Path(jobScript),
-          name: pipeline.job.name,
-          workerType: pipeline.job.workerType,
-          description: pipeline.job.description,
-          glueVersion: pipeline.job.glueVersion,
-          jobArgs: pipeline.job.jobArgs,
-          maxCapacity: pipeline.job.maxCapacity,
-          maxConcurrentRuns: pipeline.job.maxConcurrentRuns,
-          maxRetries: pipeline.job.maxRetries,
-          numberOfWorkers: pipeline.job.numberOfWorkers,
-          roleName: pipeline.job.roleName,
-          timeout: pipeline.job.timeout,
-          jobType: pipeline.job.jobType,
-          readAccessBuckets: [
-            this.logBucket,
-          ],
-          writeAccessBuckets: [
-            this.logBucket,
-            s3.Bucket.fromBucketName(this, 'raw-bucket-role', s3Location),
-          ],
-        });
-
-        new GlueJobOps(this, `${pipeline.name}-etl-job-ops`, {
-          job: job,
-        });
-
-        if (pipeline.streamProperties) {
-          this.dataStreams[pipeline.name].stream.grantRead(job.role);
-        }
-
-        new lf.CfnPermissions(this, `${pipeline.name}-create-table-perm`, {
-          dataLakePrincipal: {
-            dataLakePrincipalIdentifier: job.role.roleArn,
-          },
-          resource: {
-            databaseResource: {
-              name: dataProduct.databaseName,
-            },
-          },
-          permissions: [
-            Permissions.ALTER,
-            Permissions.CREATE_TABLE,
-            Permissions.DESCRIBE,
-          ],
-        });
-
-        if (pipeline.table) {
-          new lf.CfnPermissions(this, `${pipeline.name}-access-table-perm`, {
-            dataLakePrincipal: {
-              dataLakePrincipalIdentifier: job.role.roleArn,
-            },
-            resource: {
-              tableResource: {
-                databaseName: dataProduct.databaseName,
-                name: pipeline.table.tableName,
-              },
-            },
-            permissions: [
-              Permissions.SELECT,
-              Permissions.DESCRIBE,
-            ],
-          });
-        }
-      }
-    }
-  }
-
-  private createJDBCConnection(pipeline:Pipeline) {
-    if (this.vpc && this.glueSecurityGroup) {
-      new glue.Connection(this, `${pipeline.name}-glue-connection`, {
-        type: glue.ConnectionType.JDBC,
-        connectionName: `${pipeline.name}-jdbc`,
-        description: `JDBC connection for glue to use on pipeline ${pipeline.name}`,
-        subnet: this.vpc.isolatedSubnets[0],
-        securityGroups: [this.glueSecurityGroup],
-        properties: {
-          JDBC_CONNECTION_URL:
-            pipeline.jdbcProperties!.jdbc!,
-          USERNAME: pipeline.jdbcProperties!.username!, //figure this out
-          PASSWORD: pipeline.jdbcProperties!.password!,
-        },
-      });
-    } else {
-      throw new Error(
-        'VPC required to create a JDBC pipeline.',
-      );
-    }
   }
 
   private createPolicyTagsCustomResource(policyTags: { [name: string]: string }, datalakeAdminRole: iam.IRole) {
