@@ -96,13 +96,14 @@ export abstract class LakeImplStrategy {
         }),
       };
     }
-    this.createBuckets(pipelineStack, props.pipe, props.product);
+    this.createBuckets(pipelineStack, props.pipe, props.product, props.database);
 
     const bucketName = this.getDataSetBucketName(props.pipe, props.pipe.dataSetDropTier)!;
     this.addPipeline(pipelineStack, props.pipe, props.product, bucketName);
   }
 
-  protected createCrawler(stack: Stack, pipe: Pipeline, product: DataProduct, bucketName: string, s3DataLFResource: CfnResource): void {
+  protected createCrawler(stack: Stack, pipe: Pipeline, product: DataProduct,
+    bucketName: string, s3DataLFResource: CfnResource, database: Database): void {
     if (pipe.table !== undefined) return;
 
     const name = bucketName.replace(/\W/g, '');
@@ -123,6 +124,7 @@ export abstract class LakeImplStrategy {
       }),
       lfS3Resource: s3DataLFResource,
     });
+    crawler.node.addDependency(database);
 
     this.locationRegistry.forEach(r => {
       crawler.node.addDependency(r);
@@ -315,7 +317,7 @@ export abstract class LakeImplStrategy {
     }
   }
 
-  createBuckets(stack: Stack, pipe: Pipeline, product: DataProduct): void {
+  createBuckets(stack: Stack, pipe: Pipeline, product: DataProduct, database: Database): void {
     /// This is confusing. Find a way to simplify
     const dataCatalogAccountId = product.dataCatalogAccountId ?
       product.dataCatalogAccountId : product.accountId;
@@ -346,7 +348,7 @@ export abstract class LakeImplStrategy {
         if (this.datalakeAdminRoleArn) {
           this.createDataLocationAccessPermission(stack, `${name}-admin`, this.datalakeAdminRoleArn, name, lfResource);
         }
-        this.createCrawler(stack, pipe, product, bucketName, lfResource);
+        this.createCrawler(stack, pipe, product, bucketName, lfResource, database);
       }
     });
   }
@@ -421,6 +423,7 @@ class DataProductAndCatalogStrategy extends LakeImplStrategy {
 
   addPipeline(stack: Stack, pipeline: Pipeline, dataProduct: DataProduct, bucketName: string): void {
     this.createPipelineResources(stack, pipeline, dataProduct, bucketName);
+
     if (pipeline.table) {
       this.createGlueTable(stack, pipeline, dataProduct, bucketName);
     }
