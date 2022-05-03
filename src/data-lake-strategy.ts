@@ -57,7 +57,6 @@ export abstract class LakeImplStrategy {
 
   createDataProduct(props: DataStrategyProps): void {
     const pipelineStack = new NestedStack(props.stack, `${props.pipe.name}-dataset-stack`); // props.product.accountId == Aws.ACCOUNT_ID ? new NestedStack(props.stack, `${props.pipe.name}-dataset-stack`) : props.stack;
-    const catelogAccountId = props.product.dataCatalogAccountId ? props.product.dataCatalogAccountId : Aws.ACCOUNT_ID;
     this.logBucket = props.logBucket;
     this.stageName = props.stage;
     this.securityGroup = props.securityGroup;
