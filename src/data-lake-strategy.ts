@@ -354,12 +354,12 @@ export abstract class LakeImplStrategy {
   }
 
   private registerDataLakeLocation(stack: Stack, datalakeDbCreatorRoleArn: string, bucketName: string, name: string) : CfnResource {
-    const dlResource = new CfnResource(stack, `lf-resource-${bucketName}`, {
+    const dlResource = new CfnResource(stack, `lf-resource-${name}`, {
       resourceArn: `arn:aws:s3:::${bucketName}`,
       useServiceLinkedRole: false,
       roleArn: datalakeDbCreatorRoleArn,
     });
-    this.createDataLocationAccessPermission(stack, `${bucketName}-creator`, datalakeDbCreatorRoleArn, bucketName, dlResource);
+    this.createDataLocationAccessPermission(stack, `${name}-creator`, datalakeDbCreatorRoleArn, bucketName, dlResource);
     return dlResource;
   }
 
