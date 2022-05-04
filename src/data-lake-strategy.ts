@@ -386,7 +386,7 @@ export abstract class LakeImplStrategy {
     return perm;
   }
 
-  private createDataLocationCrossAccountOwner(stack: Stack, name: string, ownerAccountId: string, 
+  private createDataLocationCrossAccountOwner(stack: Stack, name: string, ownerAccountId: string,
     catalogAccountId: string, bucketName: string, resource: IDependable): CfnPermissions {
     const perm = new CfnPermissions(stack, `datalake-ca-owner-perm-${name}`, {
       dataLakePrincipal: {
