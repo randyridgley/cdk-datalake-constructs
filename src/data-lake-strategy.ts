@@ -349,7 +349,7 @@ export abstract class LakeImplStrategy {
           this.createDataLocationAccessPermission(stack, `${name}-admin`, this.datalakeAdminRoleArn, bucketName, lfResource);
         }
 
-        if(product.dataCatalogAccountId != product.accountId) {
+        if (product.dataCatalogAccountId != product.accountId) {
           this.createDataLocationCrossAccountOwner(stack, `${name}-ca-owner`, product.accountId, product.dataCatalogAccountId!, bucketName, lfResource);
         }
 
@@ -386,12 +386,13 @@ export abstract class LakeImplStrategy {
     return perm;
   }
 
-  private createDataLocationCrossAccountOwner(stack: Stack, name: string, ownerAccountId: string, catalogAccountId: string, bucketName: string, resource: IDependable): CfnPermissions {
+  private createDataLocationCrossAccountOwner(stack: Stack, name: string, ownerAccountId: string, 
+    catalogAccountId: string, bucketName: string, resource: IDependable): CfnPermissions {
     const perm = new CfnPermissions(stack, `datalake-ca-owner-perm-${name}`, {
       dataLakePrincipal: {
         dataLakePrincipalIdentifier: ownerAccountId,
       },
-      resource: {        
+      resource: {
         dataLocationResource: {
           catalogId: catalogAccountId,
           s3Resource: `arn:aws:s3:::${bucketName}`,
@@ -402,7 +403,7 @@ export abstract class LakeImplStrategy {
       ],
       permissionsWithGrantOption: [
         Permissions.CREATE_TABLE_READ_WRITE,
-      ]
+      ],
     });
     perm.node.addDependency(resource);
     return perm;

@@ -3866,6 +3866,11 @@ public readonly inputStreamWriteThroughputWarning: CreateAlarmOptions;
 ---
 
 
+#### `CREATE_TABLE_READ_WRITE` <a name="@randyridgley/cdk-datalake-constructs.Permissions.CREATE_TABLE_READ_WRITE"></a>
+
+---
+
+
 ### ProcessorType <a name="ProcessorType"></a>
 
 #### `LAMBDA` <a name="@randyridgley/cdk-datalake-constructs.ProcessorType.LAMBDA"></a>
