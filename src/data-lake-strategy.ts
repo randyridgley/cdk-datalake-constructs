@@ -400,6 +400,9 @@ export abstract class LakeImplStrategy {
       permissions: [
         Permissions.CREATE_TABLE_READ_WRITE,
       ],
+      permissionsWithGrantOption: [
+        Permissions.CREATE_TABLE_READ_WRITE,
+      ]
     });
     perm.node.addDependency(resource);
     return perm;
