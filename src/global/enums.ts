@@ -16,6 +16,7 @@ export enum Permissions {
   INSERT = 'INSERT',
   SELECT = 'SELECT',
   ASSOCIATE = 'ASSOCIATE',
+  CREATE_TABLE_READ_WRITE = 'CREATE_TABLE_READ_WRITE',
 }
 
 export enum LakeKind {

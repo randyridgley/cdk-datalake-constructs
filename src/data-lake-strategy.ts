@@ -1,5 +1,5 @@
 import { Connection, ConnectionType, Database } from '@aws-cdk/aws-glue-alpha';
-import { NestedStack, Stack } from 'aws-cdk-lib';
+import { Aws, NestedStack, Stack } from 'aws-cdk-lib';
 import { SecurityGroup, Vpc } from 'aws-cdk-lib/aws-ec2';
 import { Rule } from 'aws-cdk-lib/aws-events';
 import { LambdaFunction } from 'aws-cdk-lib/aws-events-targets';
@@ -348,6 +348,11 @@ export abstract class LakeImplStrategy {
         if (this.datalakeAdminRoleArn) {
           this.createDataLocationAccessPermission(stack, `${name}-admin`, this.datalakeAdminRoleArn, bucketName, lfResource);
         }
+
+        if(product.dataCatalogAccountId != product.accountId) {
+          this.createDataLocationCrossAccountOwner(stack, `${name}-ca-owner`, product.accountId, product.dataCatalogAccountId!, bucketName, lfResource);
+        }
+
         this.createCrawler(stack, pipe, product, bucketName, lfResource, database);
       }
     });
@@ -375,6 +380,25 @@ export abstract class LakeImplStrategy {
       },
       permissions: [
         Permissions.DATA_LOCATION_ACCESS,
+      ],
+    });
+    perm.node.addDependency(resource);
+    return perm;
+  }
+
+  private createDataLocationCrossAccountOwner(stack: Stack, name: string, ownerAccountId: string, catalogAccountId: string, bucketName: string, resource: IDependable): CfnPermissions {
+    const perm = new CfnPermissions(stack, `datalake-ca-owner-perm-${name}`, {
+      dataLakePrincipal: {
+        dataLakePrincipalIdentifier: ownerAccountId,
+      },
+      resource: {        
+        dataLocationResource: {
+          catalogId: catalogAccountId,
+          s3Resource: `arn:aws:s3:::${bucketName}`,
+        },
+      },
+      permissions: [
+        Permissions.CREATE_TABLE_READ_WRITE,
       ],
     });
     perm.node.addDependency(resource);
