@@ -340,20 +340,20 @@ export abstract class LakeImplStrategy {
       if (this.lakeKind() === LakeKind.CENTRAL_CATALOG || this.lakeKind() === LakeKind.DATA_PRODUCT_AND_CATALOG) {
         if (this.datalakeDbCreatorRoleArn == undefined) throw new Error('Cannot have datalake without Data Lake DB Creator role defined.');
 
-        const name = this.getDataSetBucketName(pipe, r)!.replace(/\W/g, '');
-        const lfResource = this.registerDataLakeLocation(stack, this.datalakeDbCreatorRoleArn, name);
+        const name = bucketName.replace(/\W/g, '');
+        const lfResource = this.registerDataLakeLocation(stack, this.datalakeDbCreatorRoleArn, bucketName, name);
 
         this.locationRegistry.push(lfResource);
 
         if (this.datalakeAdminRoleArn) {
-          this.createDataLocationAccessPermission(stack, `${name}-admin`, this.datalakeAdminRoleArn, name, lfResource);
+          this.createDataLocationAccessPermission(stack, `${name}-admin`, this.datalakeAdminRoleArn, bucketName, lfResource);
         }
         this.createCrawler(stack, pipe, product, bucketName, lfResource, database);
       }
     });
   }
 
-  private registerDataLakeLocation(stack: Stack, datalakeDbCreatorRoleArn: string, bucketName: string) : CfnResource {
+  private registerDataLakeLocation(stack: Stack, datalakeDbCreatorRoleArn: string, bucketName: string, name: string) : CfnResource {
     const dlResource = new CfnResource(stack, `lf-resource-${bucketName}`, {
       resourceArn: `arn:aws:s3:::${bucketName}`,
       useServiceLinkedRole: false,
