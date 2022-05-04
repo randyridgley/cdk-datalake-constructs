@@ -1,5 +1,5 @@
 import { Connection, ConnectionType, Database } from '@aws-cdk/aws-glue-alpha';
-import { Aws, NestedStack, Stack } from 'aws-cdk-lib';
+import { NestedStack, Stack } from 'aws-cdk-lib';
 import { SecurityGroup, Vpc } from 'aws-cdk-lib/aws-ec2';
 import { Rule } from 'aws-cdk-lib/aws-events';
 import { LambdaFunction } from 'aws-cdk-lib/aws-events-targets';
