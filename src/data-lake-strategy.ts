@@ -112,7 +112,7 @@ export abstract class LakeImplStrategy {
       name: buildGlueCrawlerName({
         stage: this.stageName,
         resourceUse: 'crawler',
-        name: pipe.name,
+        name: name,
       }),
       databaseName: product.databaseName,
       bucketName: bucketName,
@@ -120,7 +120,7 @@ export abstract class LakeImplStrategy {
       roleName: buildRoleName({
         stage: this.stageName,
         resourceUse: 'crawler-role',
-        name: pipe.name,
+        name: name,
       }),
       lfS3Resource: s3DataLFResource,
     });
