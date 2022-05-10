@@ -5,7 +5,6 @@ import { Rule } from 'aws-cdk-lib/aws-events';
 import { LambdaFunction } from 'aws-cdk-lib/aws-events-targets';
 import { CfnPermissions, CfnResource } from 'aws-cdk-lib/aws-lakeformation';
 import { Function } from 'aws-cdk-lib/aws-lambda';
-import { CfnResourceShare } from 'aws-cdk-lib/aws-ram';
 import { Bucket } from 'aws-cdk-lib/aws-s3';
 import { IDependable } from 'constructs';
 import { DataLakeBucket } from './data-lake-bucket';
@@ -391,23 +390,44 @@ class DataProductStrategy extends LakeImplStrategy {
     if (dataProduct.dataCatalogAccountId && dataProduct.dataCatalogAccountId != Aws.ACCOUNT_ID) {
       // Create the ram share cross account if the product has a cross account GDC
       //TODO: create ram share??
-      new CfnResourceShare(stack, `${pipeline.name}-resource-share`, {
-        name: `LakeFormation-${pipeline.name}-${dataProduct.dataCatalogAccountId}`,
-        allowExternalPrincipals: false,
-        permissionArns: [
-          'arn:aws:ram::aws:permission/AWSRAMPermissionGlueDatabaseReadWrite',
-          'arn:aws:ram::aws:permission/AWSRAMPermissionGlueDatabaseReadWriteForCatalog',
-          'arn:aws:ram::aws:permission/AWSRAMPermissionGlueDatabaseReadWriteForTable',
+      new CfnPermissions(stack, `datalake-ca-owner-perm-${pipeline.name}`, {
+        dataLakePrincipal: {
+          dataLakePrincipalIdentifier: dataProduct.dataCatalogAccountId,
+        },
+        resource: {
+          tableResource: {
+            catalogId: Aws.ACCOUNT_ID,
+            databaseName: dataProduct.databaseName,
+            name: pipeline.name
+          },
+        },
+        permissions: [
+          Permissions.SELECT,
+          Permissions.DESCRIBE
         ],
-        principals: [
-          dataProduct.dataCatalogAccountId,
-        ],
-        resourceArns: [
-          `arn:aws:glue:us-east-1:${Aws.ACCOUNT_ID}:catalog`,
-          `arn:aws:glue:us-east-1:${Aws.ACCOUNT_ID}:database/${dataProduct.databaseName}`,
-          `arn:aws:glue:us-east-1:${Aws.ACCOUNT_ID}:table/${dataProduct.databaseName}/*`,
+        permissionsWithGrantOption: [
+          Permissions.SELECT,
+          Permissions.DESCRIBE
         ],
       });
+
+      // new CfnResourceShare(stack, `${pipeline.name}-resource-share`, {
+      //   name: `LakeFormation-${pipeline.name}-${dataProduct.dataCatalogAccountId}`,
+      //   allowExternalPrincipals: false,
+      //   permissionArns: [
+      //     'arn:aws:ram::aws:permission/AWSRAMPermissionGlueDatabaseReadWrite',
+      //     'arn:aws:ram::aws:permission/AWSRAMPermissionGlueDatabaseReadWriteForCatalog',
+      //     'arn:aws:ram::aws:permission/AWSRAMPermissionGlueDatabaseReadWriteForTable',
+      //   ],
+      //   principals: [
+      //     dataProduct.dataCatalogAccountId,
+      //   ],
+      //   resourceArns: [
+      //     `arn:aws:glue:us-east-1:${Aws.ACCOUNT_ID}:catalog`,
+      //     `arn:aws:glue:us-east-1:${Aws.ACCOUNT_ID}:database/${dataProduct.databaseName}`,
+      //     `arn:aws:glue:us-east-1:${Aws.ACCOUNT_ID}:table/${dataProduct.databaseName}/*`,
+      //   ],
+      // });
     }
     this.createPipelineResources(stack, pipeline, dataProduct, bucketName);
   }
