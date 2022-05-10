@@ -1,5 +1,6 @@
 import { Duration, RemovalPolicy } from 'aws-cdk-lib';
 import * as s3 from 'aws-cdk-lib/aws-s3';
+import { IDependable } from 'constructs';
 import { Pipeline } from './pipeline';
 
 export interface DataProductProperties {
@@ -10,7 +11,7 @@ export interface DataProductProperties {
   readonly s3BucketProps?: s3.BucketProps;
 }
 
-export class DataProduct {
+export class DataProduct implements IDependable {
   readonly accountId: string;
   readonly dataCatalogAccountId?: string;
   readonly databaseName: string;

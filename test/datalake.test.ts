@@ -1,4 +1,4 @@
-// import { Template } from 'aws-cdk-lib/assertions';
+import { Template } from 'aws-cdk-lib/assertions';
 import { App, Aspects } from 'aws-cdk-lib/core';
 import { AwsSolutionsChecks } from 'cdk-nag';
 import { DataLake, Pipeline, DataProduct } from '../src';
@@ -11,7 +11,7 @@ const dataProductAccountId = '123456789012';
 
 const pipes: Array<Pipeline> = [
   pipelines.ReviewsPipeline(),
-  pipelines.IoTDataPipeline(stage),
+  //pipelines.IoTDataPipeline(stage),
 ];
 
 const taxiPipes: Array<Pipeline> = [
@@ -19,16 +19,18 @@ const taxiPipes: Array<Pipeline> = [
   pipelines.GreenPipeline(),
 ];
 
-const dataProducts: Array<DataProduct> = [{
-  pipelines: pipes,
-  accountId: dataProductAccountId,
-  databaseName: 'data-product',
-},
-{
-  pipelines: taxiPipes,
-  accountId: dataProductAccountId,
-  databaseName: 'taxi-product',
-}];
+const dataProducts: Array<DataProduct> = [
+  {
+    pipelines: pipes,
+    accountId: dataProductAccountId,
+    databaseName: 'reviews-product',
+  },
+  {
+    pipelines: taxiPipes,
+    accountId: dataProductAccountId,
+    databaseName: 'taxi-product',
+  },
+];
 
 describe('cdk-nag AwsSolutions Pack', () => {
   let stack: CdkTestStack;
@@ -74,13 +76,10 @@ describe('cdk-nag AwsSolutions Pack', () => {
   //   }
   //   expect(errors).toHaveLength(0);
   // });
-  // it('Should match snapshot', () => {
-  //   // When
-  //   const t = Template.fromStack(stack);
-  //   expect(t).toMatchSnapshot();
-  // });  // it('Should match snapshot', () => {
-  //   // When
-  //   const t = Template.fromStack(stack);
-  //   expect(t).toMatchSnapshot();
-  // });
+
+  it('Should match snapshot', () => {
+    // When
+    const t = Template.fromStack(stack);
+    expect(t).toMatchSnapshot();
+  });
 });

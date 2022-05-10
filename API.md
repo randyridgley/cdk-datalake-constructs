@@ -34,24 +34,6 @@ new DataLake(scope: Construct, id: string, props: DataLakeProperties)
 
 #### Methods <a name="Methods"></a>
 
-##### `createCrossAccountGlueCatalogResourcePolicy` <a name="@randyridgley/cdk-datalake-constructs.DataLake.createCrossAccountGlueCatalogResourcePolicy"></a>
-
-```typescript
-public createCrossAccountGlueCatalogResourcePolicy(consumerAccountIds: string[], dataCatalogOwnerAccountId: string)
-```
-
-###### `consumerAccountIds`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataLake.parameter.consumerAccountIds"></a>
-
-- *Type:* `string`[]
-
----
-
-###### `dataCatalogOwnerAccountId`<sup>Required</sup> <a name="@randyridgley/cdk-datalake-constructs.DataLake.parameter.dataCatalogOwnerAccountId"></a>
-
-- *Type:* `string`
-
----
-
 ##### `createDownloaderCustomResource` <a name="@randyridgley/cdk-datalake-constructs.DataLake.createDownloaderCustomResource"></a>
 
 ```typescript
@@ -1816,6 +1798,19 @@ Create default Athena workgroup for querying data lake resources.
 
 ---
 
+##### `createDefaultDatabse`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.DataLakeProperties.property.createDefaultDatabse"></a>
+
+```typescript
+public readonly createDefaultDatabse: boolean;
+```
+
+- *Type:* `boolean`
+- *Default:* false
+
+Create default glue database for the data lake.
+
+---
+
 ##### `crossAccountAccess`<sup>Optional</sup> <a name="@randyridgley/cdk-datalake-constructs.DataLakeProperties.property.crossAccountAccess"></a>
 
 ```typescript
@@ -3110,6 +3105,8 @@ public readonly tableName: string;
 ## Classes <a name="Classes"></a>
 
 ### DataProduct <a name="@randyridgley/cdk-datalake-constructs.DataProduct"></a>
+
+- *Implements:* [`constructs.IDependable`](#constructs.IDependable)
 
 #### Initializers <a name="@randyridgley/cdk-datalake-constructs.DataProduct.Initializer"></a>
 

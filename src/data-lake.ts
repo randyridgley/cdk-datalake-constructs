@@ -112,7 +112,14 @@ export interface DataLakeProperties {
   *
   * @default - false
   */
-  readonly createAthenaWorkgroup?: Boolean;
+  readonly createAthenaWorkgroup?: boolean;
+  /**
+  * Create default glue database for the data lake
+  *
+  * @default false
+  */
+  readonly createDefaultDatabse?: boolean;
+
 }
 
 export interface DataTierBucketProps {
@@ -159,7 +166,7 @@ export class DataLake extends Construct {
       this.logBucketProps = {
         lifecycleRules: [
           {
-            expiration: Duration.days(30),
+            expiration: Duration.days(7),
           },
         ],
         removalPolicy: RemovalPolicy.DESTROY,
@@ -254,8 +261,14 @@ export class DataLake extends Construct {
       new CfnOutput(this, 'DataLakeAthenaWorkgroup', { value: this.athenaWorkgroup.name });
     }
 
+    // if there are custom tags passed into the datya lake create them here with a custom resource
+    // TODO: once Tags are included as part of CFN remove the custom resource.
     if (props.policyTags) {
       this.createPolicyTagsCustomResource(props.policyTags);
+    }
+
+    if (props.createDefaultDatabse) {
+      this.createDatabase(`${props.name}-${props.stageName}`);
     }
 
     this.dataLakeStrategy = LakeStrategyFactory.getLakeStrategy(props.lakeKind);
@@ -374,7 +387,7 @@ export class DataLake extends Construct {
     outputs.node.addDependency(this.datalakeAdminRole);
   }
 
-  public createCrossAccountGlueCatalogResourcePolicy(consumerAccountIds: string[], dataCatalogOwnerAccountId: string) {
+  protected createCrossAccountGlueCatalogResourcePolicy(consumerAccountIds: string[], dataCatalogOwnerAccountId: string) {
     const onCatalogEvent = new PythonFunction(this, 'enable-hybrid-catalog-handler', {
       runtime: lambda.Runtime.PYTHON_3_7,
       entry: path.join(__dirname, '../lambda/enable-hybrid-catalog'),

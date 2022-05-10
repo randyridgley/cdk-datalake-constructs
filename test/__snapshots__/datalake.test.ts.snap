@@ -1,0 +1,777 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`cdk-nag AwsSolutions Pack Should match snapshot 1`] = `
+Object {
+  "Outputs": Object {
+    "datalakeDataLakeAdminRole3EA5FF19": Object {
+      "Value": Object {
+        "Ref": "datalaketestlakedatalakeadminroledatalakeadministratorrole0CE6C3E6",
+      },
+    },
+    "datalakeDataLakeAthenaWorkgroup48F354CE": Object {
+      "Value": "test-lake-workgroup-alpha",
+    },
+    "datalakeDataLakeLogBucket7E4B6A14": Object {
+      "Value": Object {
+        "Ref": "datalakedatalakelogbucket0A814944",
+      },
+    },
+    "datalaketestlakedatalakecreatorroleDataLakeDatabaseCreatorRoleC012854C": Object {
+      "Value": Object {
+        "Ref": "datalaketestlakedatalakecreatorroleAWSDBCreatorServiceRoletestlakedatalakecreatoralphaF5D800D9",
+      },
+    },
+  },
+  "Parameters": Object {
+    "BootstrapVersion": Object {
+      "Default": "/cdk-bootstrap/hnb659fds/version",
+      "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
+  },
+  "Resources": Object {
+    "CustomS3AutoDeleteObjectsCustomResourceProviderHandler9D90184F": Object {
+      "DependsOn": Array [
+        "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092",
+      ],
+      "Properties": Object {
+        "Code": Object {
+          "S3Bucket": Object {
+            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
+          },
+          "S3Key": "483ae06ed27ef8ca76e011264d772420593a6cfe8544759c306ef3b98c9e25be.zip",
+        },
+        "Description": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "Lambda function for auto-deleting objects in ",
+              Object {
+                "Ref": "datalakedatalakelogbucket0A814944",
+              },
+              " S3 bucket.",
+            ],
+          ],
+        },
+        "Handler": "__entrypoint__.handler",
+        "MemorySize": 128,
+        "Role": Object {
+          "Fn::GetAtt": Array [
+            "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs12.x",
+        "Timeout": 900,
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Sub": "arn:\${AWS::Partition}:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "datalakedatalakelogbucket0A814944": Object {
+      "DeletionPolicy": "Delete",
+      "Properties": Object {
+        "AccessControl": "LogDeliveryWrite",
+        "BucketName": "test-lake-log-bucket-alpha",
+        "LifecycleConfiguration": Object {
+          "Rules": Array [
+            Object {
+              "ExpirationInDays": 7,
+              "Status": "Enabled",
+            },
+          ],
+        },
+        "Tags": Array [
+          Object {
+            "Key": "aws-cdk:auto-delete-objects",
+            "Value": "true",
+          },
+        ],
+      },
+      "Type": "AWS::S3::Bucket",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "datalakedatalakelogbucketAutoDeleteObjectsCustomResource3DCF9F10": Object {
+      "DeletionPolicy": "Delete",
+      "DependsOn": Array [
+        "datalakedatalakelogbucketPolicyD1691576",
+      ],
+      "Properties": Object {
+        "BucketName": Object {
+          "Ref": "datalakedatalakelogbucket0A814944",
+        },
+        "ServiceToken": Object {
+          "Fn::GetAtt": Array [
+            "CustomS3AutoDeleteObjectsCustomResourceProviderHandler9D90184F",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "Custom::S3AutoDeleteObjects",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "datalakedatalakelogbucketPolicyD1691576": Object {
+      "Properties": Object {
+        "Bucket": Object {
+          "Ref": "datalakedatalakelogbucket0A814944",
+        },
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "s3:GetBucket*",
+                "s3:List*",
+                "s3:DeleteObject*",
+              ],
+              "Effect": "Allow",
+              "Principal": Object {
+                "AWS": Object {
+                  "Fn::GetAtt": Array [
+                    "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092",
+                    "Arn",
+                  ],
+                },
+              },
+              "Resource": Array [
+                Object {
+                  "Fn::GetAtt": Array [
+                    "datalakedatalakelogbucket0A814944",
+                    "Arn",
+                  ],
+                },
+                Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      Object {
+                        "Fn::GetAtt": Array [
+                          "datalakedatalakelogbucket0A814944",
+                          "Arn",
+                        ],
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::S3::BucketPolicy",
+    },
+    "datalakelfdatalakeroleadminsettings2C1ACF95": Object {
+      "DependsOn": Array [
+        "datalaketestlakedatalakeadminroledatalakeadministratorrole0CE6C3E6",
+      ],
+      "Properties": Object {
+        "Admins": Array [
+          Object {
+            "DataLakePrincipalIdentifier": Object {
+              "Fn::GetAtt": Array [
+                "datalaketestlakedatalakeadminroledatalakeadministratorrole0CE6C3E6",
+                "Arn",
+              ],
+            },
+          },
+        ],
+      },
+      "Type": "AWS::LakeFormation::DataLakeSettings",
+    },
+    "datalakereviewsproductdatabaseC2ED5A77": Object {
+      "Properties": Object {
+        "CatalogId": Object {
+          "Ref": "AWS::AccountId",
+        },
+        "DatabaseInput": Object {
+          "Name": "reviews-product",
+        },
+      },
+      "Type": "AWS::Glue::Database",
+    },
+    "datalakereviewsproductlfdbcreatorpermission342BCB9F": Object {
+      "DependsOn": Array [
+        "datalakereviewsproductdatabaseC2ED5A77",
+      ],
+      "Properties": Object {
+        "DataLakePrincipal": Object {
+          "DataLakePrincipalIdentifier": Object {
+            "Fn::GetAtt": Array [
+              "datalaketestlakedatalakecreatorroleAWSDBCreatorServiceRoletestlakedatalakecreatoralphaF5D800D9",
+              "Arn",
+            ],
+          },
+        },
+        "Permissions": Array [
+          "ALTER",
+          "CREATE_TABLE",
+          "DROP",
+        ],
+        "Resource": Object {
+          "DatabaseResource": Object {
+            "Name": "reviews-product",
+          },
+        },
+      },
+      "Type": "AWS::LakeFormation::Permissions",
+    },
+    "datalaketaxiproductdatabase4B8A23BF": Object {
+      "Properties": Object {
+        "CatalogId": Object {
+          "Ref": "AWS::AccountId",
+        },
+        "DatabaseInput": Object {
+          "Name": "taxi-product",
+        },
+      },
+      "Type": "AWS::Glue::Database",
+    },
+    "datalaketaxiproductlfdbcreatorpermission5C31145A": Object {
+      "DependsOn": Array [
+        "datalaketaxiproductdatabase4B8A23BF",
+      ],
+      "Properties": Object {
+        "DataLakePrincipal": Object {
+          "DataLakePrincipalIdentifier": Object {
+            "Fn::GetAtt": Array [
+              "datalaketestlakedatalakecreatorroleAWSDBCreatorServiceRoletestlakedatalakecreatoralphaF5D800D9",
+              "Arn",
+            ],
+          },
+        },
+        "Permissions": Array [
+          "ALTER",
+          "CREATE_TABLE",
+          "DROP",
+        ],
+        "Resource": Object {
+          "DatabaseResource": Object {
+            "Name": "taxi-product",
+          },
+        },
+      },
+      "Type": "AWS::LakeFormation::Permissions",
+    },
+    "datalaketestlakedatalakeadminroledatalakeadministratorTBACC6D7714B": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "lakeformation:AddLFTagsToResource",
+                "lakeformation:RemoveLFTagsFromResource",
+                "lakeformation:GetResourceLFTags",
+                "lakeformation:ListLFTags",
+                "lakeformation:CreateLFTag",
+                "lakeformation:GetLFTag",
+                "lakeformation:UpdateLFTag",
+                "lakeformation:DeleteLFTag",
+                "lakeformation:SearchTablesByLFTags",
+                "lakeformation:SearchDatabasesByLFTags",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "datalaketestlakedatalakeadminroledatalakeadministratorTBACC6D7714B",
+        "Roles": Array [
+          Object {
+            "Ref": "datalaketestlakedatalakeadminroledatalakeadministratorrole0CE6C3E6",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "datalaketestlakedatalakeadminroledatalakeadministratorbasic42E4DDDE": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "iam:CreateServiceLinkedRole",
+              "Condition": Object {
+                "StringEquals": Object {
+                  "iam:AWSServiceName": "lakeformation.amazonaws.com",
+                },
+              },
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            Object {
+              "Action": "iam:PutRolePolicy",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    "arn:aws:iam::",
+                    Object {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":role/aws-service-role/lakeformation.amazonaws.com/AWSServiceRoleForLakeFormationDataAccess",
+                  ],
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "datalaketestlakedatalakeadminroledatalakeadministratorbasic42E4DDDE",
+        "Roles": Array [
+          Object {
+            "Ref": "datalaketestlakedatalakeadminroledatalakeadministratorrole0CE6C3E6",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "datalaketestlakedatalakeadminroledatalakeadministratorcrossaccountCA5F9CEB": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "ram:AcceptResourceShareInvitation",
+                "ram:RejectResourceShareInvitation",
+                "ec2:DescribeAvailabilityZones",
+                "ram:EnableSharingWithAwsOrganization",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "datalaketestlakedatalakeadminroledatalakeadministratorcrossaccountCA5F9CEB",
+        "Roles": Array [
+          Object {
+            "Ref": "datalaketestlakedatalakeadminroledatalakeadministratorrole0CE6C3E6",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "datalaketestlakedatalakeadminroledatalakeadministratorlambdawriteCWlogs84641127": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "logs:CreateLogGroup",
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+              "Sid": "AllowLogging",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "datalaketestlakedatalakeadminroledatalakeadministratorlambdawriteCWlogs84641127",
+        "Roles": Array [
+          Object {
+            "Ref": "datalaketestlakedatalakeadminroledatalakeadministratorrole0CE6C3E6",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "datalaketestlakedatalakeadminroledatalakeadministratorrole0CE6C3E6": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "lakeformation.amazonaws.com",
+              },
+            },
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "sagemaker.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/AWSLakeFormationDataAdmin",
+              ],
+            ],
+          },
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/AWSGlueConsoleFullAccess",
+              ],
+            ],
+          },
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/CloudWatchLogsReadOnlyAccess",
+              ],
+            ],
+          },
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/AWSLakeFormationCrossAccountManager",
+              ],
+            ],
+          },
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/AmazonAthenaFullAccess",
+              ],
+            ],
+          },
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/AmazonSageMakerFullAccess",
+              ],
+            ],
+          },
+        ],
+        "RoleName": "test-lake-datalake-admin-alpha",
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "datalaketestlakedatalakecreatorroleAWSDBCreatorServiceRoletestlakedatalakecreatoralphaDefaultPolicy03434DE7": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "lakeformation:GetDataAccess",
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "datalaketestlakedatalakecreatorroleAWSDBCreatorServiceRoletestlakedatalakecreatoralphaDefaultPolicy03434DE7",
+        "Roles": Array [
+          Object {
+            "Ref": "datalaketestlakedatalakecreatorroleAWSDBCreatorServiceRoletestlakedatalakecreatoralphaF5D800D9",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "datalaketestlakedatalakecreatorroleAWSDBCreatorServiceRoletestlakedatalakecreatoralphaF5D800D9": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "glue.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSGlueServiceRole",
+              ],
+            ],
+          },
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/AWSLakeFormationDataAdmin",
+              ],
+            ],
+          },
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/AmazonS3FullAccess",
+              ],
+            ],
+          },
+        ],
+        "Path": "/service-role/",
+        "RoleName": "test-lake-datalake-creator-alpha",
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "datalakeworkgroup682714D0": Object {
+      "Properties": Object {
+        "Description": "Default Data Lake Workgroup",
+        "Name": "test-lake-workgroup-alpha",
+        "RecursiveDeleteOption": true,
+        "State": "ENABLED",
+        "WorkGroupConfiguration": Object {
+          "EnforceWorkGroupConfiguration": true,
+          "EngineVersion": Object {
+            "EffectiveEngineVersion": "Athena engine version 2",
+            "SelectedEngineVersion": "Athena engine version 2",
+          },
+          "ResultConfiguration": Object {
+            "OutputLocation": Object {
+              "Fn::Join": Array [
+                "",
+                Array [
+                  "s3://",
+                  Object {
+                    "Ref": "datalakedatalakelogbucket0A814944",
+                  },
+                  "/results/",
+                ],
+              ],
+            },
+          },
+        },
+      },
+      "Type": "AWS::Athena::WorkGroup",
+    },
+    "reviewsdatasetstackNestedStackreviewsdatasetstackNestedStackResource3B660F85": Object {
+      "DeletionPolicy": "Delete",
+      "Properties": Object {
+        "Parameters": Object {
+          "referencetotestdatalakedatalakelogbucket7EE4523BRef": Object {
+            "Ref": "datalakedatalakelogbucket0A814944",
+          },
+          "referencetotestdatalaketestlakedatalakeadminroledatalakeadministratorrole4029157BArn": Object {
+            "Fn::GetAtt": Array [
+              "datalaketestlakedatalakeadminroledatalakeadministratorrole0CE6C3E6",
+              "Arn",
+            ],
+          },
+          "referencetotestdatalaketestlakedatalakecreatorroleAWSDBCreatorServiceRoletestlakedatalakecreatoralpha2AEEF09DArn": Object {
+            "Fn::GetAtt": Array [
+              "datalaketestlakedatalakecreatorroleAWSDBCreatorServiceRoletestlakedatalakecreatoralphaF5D800D9",
+              "Arn",
+            ],
+          },
+        },
+        "TemplateURL": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "https://s3.",
+              Object {
+                "Ref": "AWS::Region",
+              },
+              ".",
+              Object {
+                "Ref": "AWS::URLSuffix",
+              },
+              "/",
+              Object {
+                "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
+              },
+              "/16329d110accc6fc933f0f598753c61fbe14b9d76cf40fe11bd91cb045acf693.json",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::CloudFormation::Stack",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "taxigreendatasetstackNestedStacktaxigreendatasetstackNestedStackResource56C75800": Object {
+      "DeletionPolicy": "Delete",
+      "Properties": Object {
+        "Parameters": Object {
+          "referencetotestdatalakedatalakelogbucket7EE4523BRef": Object {
+            "Ref": "datalakedatalakelogbucket0A814944",
+          },
+          "referencetotestdatalaketestlakedatalakeadminroledatalakeadministratorrole4029157BArn": Object {
+            "Fn::GetAtt": Array [
+              "datalaketestlakedatalakeadminroledatalakeadministratorrole0CE6C3E6",
+              "Arn",
+            ],
+          },
+          "referencetotestdatalaketestlakedatalakecreatorroleAWSDBCreatorServiceRoletestlakedatalakecreatoralpha2AEEF09DArn": Object {
+            "Fn::GetAtt": Array [
+              "datalaketestlakedatalakecreatorroleAWSDBCreatorServiceRoletestlakedatalakecreatoralphaF5D800D9",
+              "Arn",
+            ],
+          },
+        },
+        "TemplateURL": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "https://s3.",
+              Object {
+                "Ref": "AWS::Region",
+              },
+              ".",
+              Object {
+                "Ref": "AWS::URLSuffix",
+              },
+              "/",
+              Object {
+                "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
+              },
+              "/3bd9052ea75414d15d886bac69f40cba9ebb7a00dd4d38d64351ce8c5885e842.json",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::CloudFormation::Stack",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "taxiyellowdatasetstackNestedStacktaxiyellowdatasetstackNestedStackResource56DD6B4B": Object {
+      "DeletionPolicy": "Delete",
+      "Properties": Object {
+        "Parameters": Object {
+          "referencetotestdatalakedatalakelogbucket7EE4523BRef": Object {
+            "Ref": "datalakedatalakelogbucket0A814944",
+          },
+          "referencetotestdatalaketestlakedatalakeadminroledatalakeadministratorrole4029157BArn": Object {
+            "Fn::GetAtt": Array [
+              "datalaketestlakedatalakeadminroledatalakeadministratorrole0CE6C3E6",
+              "Arn",
+            ],
+          },
+          "referencetotestdatalaketestlakedatalakecreatorroleAWSDBCreatorServiceRoletestlakedatalakecreatoralpha2AEEF09DArn": Object {
+            "Fn::GetAtt": Array [
+              "datalaketestlakedatalakecreatorroleAWSDBCreatorServiceRoletestlakedatalakecreatoralphaF5D800D9",
+              "Arn",
+            ],
+          },
+        },
+        "TemplateURL": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "https://s3.",
+              Object {
+                "Ref": "AWS::Region",
+              },
+              ".",
+              Object {
+                "Ref": "AWS::URLSuffix",
+              },
+              "/",
+              Object {
+                "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
+              },
+              "/47773d6a5cd15609edd23b3c773b54bcfaa6c607b5008692a7450eabf3ae6a5b.json",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::CloudFormation::Stack",
+      "UpdateReplacePolicy": "Delete",
+    },
+  },
+  "Rules": Object {
+    "CheckBootstrapVersion": Object {
+      "Assertions": Array [
+        Object {
+          "Assert": Object {
+            "Fn::Not": Array [
+              Object {
+                "Fn::Contains": Array [
+                  Array [
+                    "1",
+                    "2",
+                    "3",
+                    "4",
+                    "5",
+                  ],
+                  Object {
+                    "Ref": "BootstrapVersion",
+                  },
+                ],
+              },
+            ],
+          },
+          "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI.",
+        },
+      ],
+    },
+  },
+}
+`;

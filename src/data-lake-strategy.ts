@@ -1,10 +1,11 @@
 import { Connection, ConnectionType, Database } from '@aws-cdk/aws-glue-alpha';
-import { NestedStack, Stack } from 'aws-cdk-lib';
+import { Aws, NestedStack, Stack } from 'aws-cdk-lib';
 import { SecurityGroup, Vpc } from 'aws-cdk-lib/aws-ec2';
 import { Rule } from 'aws-cdk-lib/aws-events';
 import { LambdaFunction } from 'aws-cdk-lib/aws-events-targets';
 import { CfnPermissions, CfnResource } from 'aws-cdk-lib/aws-lakeformation';
 import { Function } from 'aws-cdk-lib/aws-lambda';
+import { CfnResourceShare } from 'aws-cdk-lib/aws-ram';
 import { Bucket } from 'aws-cdk-lib/aws-s3';
 import { IDependable } from 'constructs';
 import { DataLakeBucket } from './data-lake-bucket';
@@ -12,14 +13,13 @@ import { DataProduct } from './data-product';
 import { KinesisOps } from './data-streams/kinesis-ops';
 import { KinesisStream } from './data-streams/kinesis-stream';
 import { CompressionType, S3DeliveryStream } from './data-streams/s3-delivery-stream';
-import { GlueCrawler } from './etl/glue-crawler';
 import { GlueJob } from './etl/glue-job';
 import { GlueJobOps } from './etl/glue-job-ops';
 import { GlueTable } from './etl/glue-table';
 import { DataPipelineType, DataTier, LakeKind, Permissions, Stage } from './global/enums';
 import { DataSetResult } from './global/interfaces';
 import { Pipeline } from './pipeline';
-import { buildGlueCrawlerName, buildRoleName, buildS3BucketName, packageAsset, toS3Path } from './utils';
+import { buildS3BucketName, packageAsset, toS3Path } from './utils';
 
 export interface DataStrategyProps {
   readonly stack: Stack;
@@ -52,11 +52,12 @@ export abstract class LakeImplStrategy {
   getDataSetBucketName(pipe: Pipeline, dataTier: DataTier) : string | undefined {
     return dataTier == DataTier.RAW ? this.downloadLocations[pipe.name].rawBucketName :
       dataTier == DataTier.REFINED ? this.downloadLocations[pipe.name].refinedBucketName :
-        dataTier == DataTier.TRUSTED ? this.downloadLocations[pipe.name].trustedBucketName : undefined;
+        dataTier == DataTier.TRUSTED ? this.downloadLocations[pipe.name].trustedBucketName : this.downloadLocations[pipe.name].rawBucketName;
   }
 
   createDataProduct(props: DataStrategyProps): void {
-    const pipelineStack = new NestedStack(props.stack, `${props.pipe.name}-dataset-stack`); // props.product.accountId == Aws.ACCOUNT_ID ? new NestedStack(props.stack, `${props.pipe.name}-dataset-stack`) : props.stack;
+    // create a nested stack per data product to allow for independent updates
+    const pipelineStack = new NestedStack(props.stack, `${props.pipe.name}-dataset-stack`);
     this.logBucket = props.logBucket;
     this.stageName = props.stage;
     this.securityGroup = props.securityGroup;
@@ -64,71 +65,41 @@ export abstract class LakeImplStrategy {
     this.datalakeAdminRoleArn = props.datalakeAdminRoleArn;
     this.datalakeDbCreatorRoleArn = props.datalakeDbCreatorRoleArn;
 
-    // if data to download into a tier create the download locations
-    if (props.pipe.dataSetDropTier) {
-      this.downloadLocations[props.pipe.name] = {
-        destinationPrefix: props.pipe.destinationPrefix,
-        sourceBucketName: props.pipe.s3Properties? props.pipe.s3Properties.sourceBucketName! : undefined,
-        sourceKeys: props.pipe.s3Properties ? props.pipe.s3Properties.sourceKeys! : undefined,
-        rawBucketName: buildS3BucketName({
-          name: props.pipe.name,
-          accountId: props.product.accountId,
-          resourceUse: 'raw',
-          stage: this.stageName,
-        }),
-        refinedBucketName: buildS3BucketName({
-          name: props.pipe.name,
-          accountId: props.product.accountId,
-          resourceUse: 'refined',
-          stage: this.stageName,
-        }),
-        trustedBucketName: buildS3BucketName({
-          name: props.pipe.name,
-          accountId: props.product.accountId,
-          resourceUse: 'trusted',
-          stage: this.stageName,
-        }),
-        destinationBucketName: buildS3BucketName({
-          name: props.pipe.name,
-          accountId: props.product.accountId,
-          resourceUse: props.pipe.dataSetDropTier == DataTier.RAW ? 'raw' : props.pipe.dataSetDropTier == DataTier.REFINED ? 'refined' : 'trusted',
-          stage: this.stageName,
-        }),
-      };
-    }
-    this.createBuckets(pipelineStack, props.pipe, props.product, props.database);
-
-    const bucketName = this.getDataSetBucketName(props.pipe, props.pipe.dataSetDropTier)!;
-    this.addPipeline(pipelineStack, props.pipe, props.product, bucketName);
-  }
-
-  protected createCrawler(stack: Stack, pipe: Pipeline, product: DataProduct,
-    bucketName: string, s3DataLFResource: CfnResource, database: Database): void {
-    if (pipe.table !== undefined) return;
-
-    const name = bucketName.replace(/\W/g, '');
-    // only create a crawler for the drop location of the data in the data product of the pipeline
-    const crawler = new GlueCrawler(stack, `data-lake-crawler-${name}`, {
-      name: buildGlueCrawlerName({
+    // create list of data drop locations to use later in the custom resource to download the data
+    this.downloadLocations[props.pipe.name] = {
+      destinationPrefix: props.pipe.destinationPrefix,
+      sourceBucketName: props.pipe.s3Properties? props.pipe.s3Properties.sourceBucketName! : undefined,
+      sourceKeys: props.pipe.s3Properties ? props.pipe.s3Properties.sourceKeys! : undefined,
+      rawBucketName: buildS3BucketName({
+        name: props.pipe.name,
+        accountId: props.product.accountId,
+        resourceUse: 'raw',
         stage: this.stageName,
-        resourceUse: 'crawler',
-        name: name,
       }),
-      databaseName: product.databaseName,
-      bucketName: bucketName,
-      bucketPrefix: pipe.destinationPrefix,
-      roleName: buildRoleName({
+      refinedBucketName: buildS3BucketName({
+        name: props.pipe.name,
+        accountId: props.product.accountId,
+        resourceUse: 'refined',
         stage: this.stageName,
-        resourceUse: 'crawler-role',
-        name: name,
       }),
-      lfS3Resource: s3DataLFResource,
-    });
-    crawler.node.addDependency(database);
+      trustedBucketName: buildS3BucketName({
+        name: props.pipe.name,
+        accountId: props.product.accountId,
+        resourceUse: 'trusted',
+        stage: this.stageName,
+      }),
+      destinationBucketName: buildS3BucketName({
+        name: props.pipe.name,
+        accountId: props.product.accountId,
+        resourceUse: props.pipe.dataSetDropTier == DataTier.RAW ? 'raw' : props.pipe.dataSetDropTier == DataTier.REFINED ? 'refined' : 'trusted',
+        stage: this.stageName,
+      }),
+    };
 
-    this.locationRegistry.forEach(r => {
-      crawler.node.addDependency(r);
-    });
+    this.createTierBucketsAndPermissions(pipelineStack, props.pipe, props.product);
+
+    const dataDropBucketName = this.getDataSetBucketName(props.pipe, props.pipe.dataSetDropTier)!;
+    this.addPipeline(pipelineStack, props.pipe, props.product, dataDropBucketName);
   }
 
   protected createGlueTable(stack: Stack, pipeline: Pipeline, product: DataProduct, bucketName: string): void {
@@ -317,13 +288,14 @@ export abstract class LakeImplStrategy {
     }
   }
 
-  createBuckets(stack: Stack, pipe: Pipeline, product: DataProduct, database: Database): void {
+  private createTierBucketsAndPermissions(stack: Stack, pipe: Pipeline, product: DataProduct): void {
     /// This is confusing. Find a way to simplify
     const dataCatalogAccountId = product.dataCatalogAccountId ?
       product.dataCatalogAccountId : product.accountId;
     const crossAccount = product.dataCatalogAccountId ?
       product.dataCatalogAccountId != product.accountId ? true : false : false;
 
+    // for each data tier create the appropriate buckets
     pipe.tiers.forEach(r => {
       const bucketName = this.getDataSetBucketName(pipe, r)!;
 
@@ -334,7 +306,7 @@ export abstract class LakeImplStrategy {
           logBucket: this.logBucket!,
           crossAccount: crossAccount,
           s3Properties: product.s3BucketProps,
-        }).bucket;
+        });
       }
 
       if (this.lakeKind() === LakeKind.CENTRAL_CATALOG || this.lakeKind() === LakeKind.DATA_PRODUCT_AND_CATALOG) {
@@ -350,10 +322,8 @@ export abstract class LakeImplStrategy {
         }
 
         if (product.dataCatalogAccountId != product.accountId) {
-          this.createDataLocationCrossAccountOwner(stack, `${name}-ca-owner`, product.accountId, product.dataCatalogAccountId!, bucketName, lfResource);
+          this.createDataLocationCrossAccountOwner(stack, `${name}-xa-owner`, product.accountId, product.dataCatalogAccountId!, bucketName, lfResource);
         }
-
-        this.createCrawler(stack, pipe, product, bucketName, lfResource, database);
       }
     });
   }
@@ -416,6 +386,31 @@ class DataProductStrategy extends LakeImplStrategy {
   }
 
   addPipeline(stack: Stack, pipeline: Pipeline, dataProduct: DataProduct, bucketName: string): void {
+    if (pipeline.table) {
+      this.createGlueTable(stack, pipeline, dataProduct, bucketName);
+    }
+
+    if (dataProduct.dataCatalogAccountId && dataProduct.dataCatalogAccountId != Aws.ACCOUNT_ID) {
+      // Create the ram share cross account if the product has a cross account GDC
+      //TODO: create ram share??
+      new CfnResourceShare(stack, `${pipeline.name}-resource-share`, {
+        name: `LakeFormation-${pipeline.name}-${dataProduct.dataCatalogAccountId}`,
+        allowExternalPrincipals: false,
+        permissionArns: [
+          'arn:aws:ram::aws:permission/AWSRAMPermissionGlueDatabaseReadWrite',
+          'arn:aws:ram::aws:permission/AWSRAMPermissionGlueDatabaseReadWriteForCatalog',
+          'arn:aws:ram::aws:permission/AWSRAMPermissionGlueDatabaseReadWriteForTable',
+        ],
+        principals: [
+          dataProduct.dataCatalogAccountId,
+        ],
+        resourceArns: [
+          `arn:aws:glue:us-east-1:${Aws.ACCOUNT_ID}:catalog`,
+          `arn:aws:glue:us-east-1:${Aws.ACCOUNT_ID}:database/${dataProduct.databaseName}`,
+          `arn:aws:glue:us-east-1:${Aws.ACCOUNT_ID}:table/${dataProduct.databaseName}/*`,
+        ],
+      });
+    }
     this.createPipelineResources(stack, pipeline, dataProduct, bucketName);
   }
 }
@@ -425,10 +420,10 @@ class CentralCatalogStrategy extends LakeImplStrategy {
     return LakeKind.CENTRAL_CATALOG;
   }
 
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
   addPipeline(stack: Stack, pipeline: Pipeline, dataProduct: DataProduct, bucketName: string): void {
-    if (pipeline.table) {
-      this.createGlueTable(stack, pipeline, dataProduct, bucketName);
-    }
+    //
   }
 }
 
@@ -450,11 +445,10 @@ class DataProductAndCatalogStrategy extends LakeImplStrategy {
   }
 
   addPipeline(stack: Stack, pipeline: Pipeline, dataProduct: DataProduct, bucketName: string): void {
-    this.createPipelineResources(stack, pipeline, dataProduct, bucketName);
-
     if (pipeline.table) {
       this.createGlueTable(stack, pipeline, dataProduct, bucketName);
     }
+    this.createPipelineResources(stack, pipeline, dataProduct, bucketName);
   }
 }
 

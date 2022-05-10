@@ -1,5 +1,5 @@
 import { Stack, StackProps } from 'aws-cdk-lib';
-import { NagSuppressions } from 'cdk-nag';
+// import { NagSuppressions } from 'cdk-nag';
 import { Construct } from 'constructs';
 import { DataLake, DataProduct } from '../src';
 import { LakeKind, Stage } from '../src/global/enums';
@@ -14,12 +14,12 @@ export class CdkTestStack extends Stack {
 
   constructor(scope: Construct, id: string, props: TestStackProps) {
     super(scope, id, props);
-    NagSuppressions.addStackSuppressions(this, [
-      {
-        id: 'AwsSolutions-S1',
-        reason: 'Demonstrate a stack level suppression.',
-      },
-    ]);
+    // NagSuppressions.addStackSuppressions(this, [
+    //   {
+    //     id: 'AwsSolutions-S1',
+    //     reason: 'Demonstrate a stack level suppression.',
+    //   },
+    // ]);
 
     this.datalake = new DataLake(this, 'datalake', {
       name: 'test-lake',

@@ -23,6 +23,7 @@ export class DataLakeBucket extends Construct {
     });
 
     if (props.crossAccount) {
+      // TODO: revisit this bucket policy for cross account access.
       this.bucket.addToResourcePolicy(
         new iam.PolicyStatement({
           resources: [
