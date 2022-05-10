@@ -105,7 +105,7 @@ export abstract class LakeImplStrategy {
   protected createGlueTable(stack: Stack, pipeline: Pipeline, product: DataProduct, bucketName: string): void {
     if (!pipeline.table) return;
 
-    const table = new GlueTable(stack, `${pipeline.name}-table`, {
+    new GlueTable(stack, `${pipeline.name}-table`, {
       catalogId: pipeline.table.catalogId,
       columns: pipeline.table.columns,
       databaseName: product.databaseName,
@@ -119,8 +119,6 @@ export abstract class LakeImplStrategy {
       serializationLibrary: pipeline.table.serializationLibrary,
       tableName: pipeline.table.tableName,
     });
-
-    table.node.addDependency(product.databaseName);
   }
 
   // this is a jumbled mess clean up once refecto
