@@ -398,16 +398,16 @@ class DataProductStrategy extends LakeImplStrategy {
           tableResource: {
             catalogId: Aws.ACCOUNT_ID,
             databaseName: dataProduct.databaseName,
-            name: pipeline.name
+            name: pipeline.name,
           },
         },
         permissions: [
           Permissions.SELECT,
-          Permissions.DESCRIBE
+          Permissions.DESCRIBE,
         ],
         permissionsWithGrantOption: [
           Permissions.SELECT,
-          Permissions.DESCRIBE
+          Permissions.DESCRIBE,
         ],
       });
 
