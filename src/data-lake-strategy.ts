@@ -389,7 +389,7 @@ class DataProductStrategy extends LakeImplStrategy {
 
     if (dataProduct.dataCatalogAccountId && dataProduct.dataCatalogAccountId != Aws.ACCOUNT_ID) {
       // Create the ram share cross account if the product has a cross account GDC
-      //TODO: create ram share??
+      //TODO: make this an optional field to create the cross account share in the pipeline or data product??
       new CfnPermissions(stack, `datalake-ca-owner-perm-${pipeline.name}`, {
         dataLakePrincipal: {
           dataLakePrincipalIdentifier: dataProduct.dataCatalogAccountId,
@@ -410,24 +410,6 @@ class DataProductStrategy extends LakeImplStrategy {
           Permissions.DESCRIBE,
         ],
       });
-
-      // new CfnResourceShare(stack, `${pipeline.name}-resource-share`, {
-      //   name: `LakeFormation-${pipeline.name}-${dataProduct.dataCatalogAccountId}`,
-      //   allowExternalPrincipals: false,
-      //   permissionArns: [
-      //     'arn:aws:ram::aws:permission/AWSRAMPermissionGlueDatabaseReadWrite',
-      //     'arn:aws:ram::aws:permission/AWSRAMPermissionGlueDatabaseReadWriteForCatalog',
-      //     'arn:aws:ram::aws:permission/AWSRAMPermissionGlueDatabaseReadWriteForTable',
-      //   ],
-      //   principals: [
-      //     dataProduct.dataCatalogAccountId,
-      //   ],
-      //   resourceArns: [
-      //     `arn:aws:glue:us-east-1:${Aws.ACCOUNT_ID}:catalog`,
-      //     `arn:aws:glue:us-east-1:${Aws.ACCOUNT_ID}:database/${dataProduct.databaseName}`,
-      //     `arn:aws:glue:us-east-1:${Aws.ACCOUNT_ID}:table/${dataProduct.databaseName}/*`,
-      //   ],
-      // });
     }
     this.createPipelineResources(stack, pipeline, dataProduct, bucketName);
   }

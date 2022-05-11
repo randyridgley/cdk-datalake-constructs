@@ -1,4 +1,4 @@
-import * as iam from 'aws-cdk-lib/aws-iam';
+// import * as iam from 'aws-cdk-lib/aws-iam';
 import * as s3 from 'aws-cdk-lib/aws-s3';
 import { Construct } from 'constructs';
 
@@ -22,20 +22,20 @@ export class DataLakeBucket extends Construct {
       serverAccessLogsBucket: props.logBucket,
     });
 
-    if (props.crossAccount) {
-      // TODO: revisit this bucket policy for cross account access.
-      this.bucket.addToResourcePolicy(
-        new iam.PolicyStatement({
-          resources: [
-            this.bucket.arnForObjects('*'),
-            this.bucket.bucketArn,
-          ],
-          actions: ['s3:List*', 's3:Get*'],
-          principals: [
-            new iam.ArnPrincipal(`arn:aws:iam::${props.dataCatalogAccountId}:root`),
-          ],
-        }),
-      );
-    }
+    // if (props.crossAccount) {
+    //   // TODO: revisit this bucket policy for cross account access.
+    //   this.bucket.addToResourcePolicy(
+    //     new iam.PolicyStatement({
+    //       resources: [
+    //         this.bucket.arnForObjects('*'),
+    //         this.bucket.bucketArn,
+    //       ],
+    //       actions: ['s3:List*', 's3:Get*'],
+    //       principals: [
+    //         new iam.ArnPrincipal(`arn:aws:iam::${props.dataCatalogAccountId}:root`),
+    //       ],
+    //     }),
+    //   );
+    // }
   }
 }
