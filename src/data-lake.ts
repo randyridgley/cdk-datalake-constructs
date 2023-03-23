@@ -118,7 +118,7 @@ export interface DataLakeProperties {
   *
   * @default false
   */
-  readonly createDefaultDatabse?: boolean;
+  readonly createDefaultDatabase?: boolean;
 
 }
 
@@ -267,7 +267,7 @@ export class DataLake extends Construct {
       this.createPolicyTagsCustomResource(props.policyTags);
     }
 
-    if (props.createDefaultDatabse) {
+    if (props.createDefaultDatabase) {
       this.createDatabase(`${props.name}-${props.stageName}`);
     }
 
